@@ -1,41 +1,40 @@
 package pl.edu.agh.ki.io.models;
 
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
+@Getter
+@ToString
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "peaks")
 public class Peak {
     @Id
     @GeneratedValue
     @Column(name = "id")
-    @Getter
-    private Long id;
+    Long id;
 
     @Column(name="name")
-    @Getter
-    private int name;
+    int name;
 
     @Column(name="height")
-    @Getter
-    private int height;
+    int height;
 
     @Column(name="region")
-    @Getter
-    private String region;
+    String region;
 
     @Column(name="about")
-    @Getter
-    private String about;
+    String about;
 
     @Column(name="mountainRange")
-    @Getter
-    private String mountainRange;
+    String mountainRange;
 
-    @OneToMany(mappedBy = "peaks")
-    @Getter
-    private Set<PeakCompletion> peakCompletions;
+    @OneToMany(mappedBy = "peak")
+    Set<PeakCompletion> peakCompletions;
 }

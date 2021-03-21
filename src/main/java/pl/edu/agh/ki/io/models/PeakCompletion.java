@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.sql.Time;
 
 @Entity
+@Getter
 @Table(name = "peak_completions")
 public class PeakCompletion {
     @EmbeddedId
@@ -14,16 +15,12 @@ public class PeakCompletion {
     @ManyToOne
     @MapsId("userId")
     @JoinColumn(name = "user_id")
-    @Getter
     private User user;
 
     @ManyToOne
     @MapsId("peakId")
     @JoinColumn(name = "peak_id")
-    @Getter
     private Peak peak;
 
-    @Column(name = "completion_time")
-    @Getter
     private Time completionTime;
 }

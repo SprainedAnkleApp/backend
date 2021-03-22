@@ -13,7 +13,7 @@ import java.util.Date;
 public class Friendship {
     @Id
     @GeneratedValue
-    private int id;
+    private Long id;
 
     @Column(name = "date_established")
     private Date dateEstablished;

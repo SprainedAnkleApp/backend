@@ -13,7 +13,7 @@ public class Gender {
     @Id
     @GeneratedValue
     @Column(name = "id")
-    private int id;
+    private Long id;
 
     @Column(name = "label")
     private String label;

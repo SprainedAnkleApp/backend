@@ -24,7 +24,7 @@ public class DbInit implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        this.userRepository.deleteAll();
+        /*this.userRepository.deleteAll();
         this.genderRepository.deleteAll();
 
         Gender male = new Gender("Male");
@@ -34,6 +34,6 @@ public class DbInit implements CommandLineRunner {
         User testUser = new User("admin", passwordEncoder.encode("admin"), "Test",
                 "Testowski", "test1@mail.com", "https://i.imgur.com/VNNp6zWb.jpg", birthday, male, "+48880053535");
 
-        userRepository.save(testUser);
+        userRepository.save(testUser);*/
     }
 }

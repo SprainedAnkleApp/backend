@@ -1,10 +1,12 @@
 package pl.edu.agh.ki.io.models;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
 
+@NoArgsConstructor
 @Entity
 @Getter
 @Table(name = "friendships")

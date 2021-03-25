@@ -1,10 +1,13 @@
 package pl.edu.agh.ki.io.models;
 
 import lombok.Getter;
+
 import lombok.NoArgsConstructor;
+
 
 import javax.persistence.*;
 import java.util.Date;
+
 
 @NoArgsConstructor
 @Entity
@@ -13,6 +16,7 @@ import java.util.Date;
 public class Friendship {
     @Id
     @GeneratedValue
+
     private Long id;
 
     @Column(name = "date_established")

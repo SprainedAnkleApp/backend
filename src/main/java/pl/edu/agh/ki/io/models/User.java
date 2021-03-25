@@ -1,11 +1,11 @@
 package pl.edu.agh.ki.io.models;
 
+
 import ch.qos.logback.core.net.server.Client;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.Collection;

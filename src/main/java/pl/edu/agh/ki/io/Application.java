@@ -29,8 +29,4 @@ public class Application {
         return "secret";
     }
 
-    @GetMapping("login")
-    public String login() {
-        return "login";
-    }
 }

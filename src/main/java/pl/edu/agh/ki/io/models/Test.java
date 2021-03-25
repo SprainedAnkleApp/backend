@@ -7,8 +7,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@NoArgsConstructor
 @Entity
 @Table(name = "TEST")
 public class Test {
@@ -23,7 +25,4 @@ public class Test {
     @Getter
     @Setter
     private String test;
-
-    public Test() {
-    }
 }

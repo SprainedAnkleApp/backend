@@ -1,10 +1,9 @@
 package pl.edu.agh.ki.io.models;
 
 import lombok.Getter;
-
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import lombok.NoArgsConstructor;
-
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -16,14 +15,11 @@ import java.util.Date;
 public class Friendship {
     @Id
     @GeneratedValue
-
+    @Column(name = "id")
     private Long id;
 
-    @Column(name = "date_established")
-    private Date dateEstablished;
-
     //0 - pending, 1 - accepted, 2 - declined, 3 - blocked
-    @Column(name = "status")
+    @Column(name = "status", nullable = false)
     private int status;
 
     @ManyToOne
@@ -31,4 +27,22 @@ public class Friendship {
 
     @ManyToOne
     private User addressee;
+
+    @CreationTimestamp
+    @Column(name = "create_date", nullable = false)
+    private Date createDate;
+
+    @UpdateTimestamp
+    @Column(name = "update_date", nullable = false)
+    private Date updateDate;
+
+    @PrePersist
+    protected void onCreate() {
+        createDate = updateDate = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updateDate = new Date();
+    }
 }

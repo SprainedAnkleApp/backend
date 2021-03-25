@@ -3,6 +3,9 @@ package pl.edu.agh.ki.io.models;
 
 import ch.qos.logback.core.net.server.Client;
 import lombok.Getter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,21 +22,22 @@ import java.util.Set;
 public class User implements UserDetails {
     @Id
     @GeneratedValue
+    @Column(name = "id")
     private Long id;
 
-    @Column(name = "login")
+    @Column(name = "login", unique = true, nullable = false)
     private String login;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name="first_name")
+    @Column(name="first_name", nullable = false)
     private String firstName;
 
-    @Column(name="last_name")
+    @Column(name="last_name", nullable = false)
     private String lastName;
 
-    @Column(name="email")
+    @Column(name="email", unique = true, nullable = false)
     private String email;
 
     @Column(name = "profile_photo")
@@ -101,5 +105,23 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @CreationTimestamp
+    @Column(name = "create_date", nullable = false)
+    private java.util.Date createDate;
+
+    @UpdateTimestamp
+    @Column(name = "update_date", nullable = false)
+    private java.util.Date updateDate;
+
+    @PrePersist
+    protected void onCreate() {
+        createDate = updateDate = new java.util.Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updateDate = new java.util.Date();
     }
 }

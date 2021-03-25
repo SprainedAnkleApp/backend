@@ -10,7 +10,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "photos")
-public class Photo extends WallElement {
+public class Photo extends WallItem {
 
     //TODO: implement show photo
 }

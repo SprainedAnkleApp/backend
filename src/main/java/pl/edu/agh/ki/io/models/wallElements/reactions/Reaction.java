@@ -1,27 +1,21 @@
-package pl.edu.agh.ki.io.models.wallElements;
+package pl.edu.agh.ki.io.models.wallElements.reactions;
 
-import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import pl.edu.agh.ki.io.models.User;
 
 import javax.persistence.*;
 import java.util.Date;
 
-@Getter
+@NoArgsConstructor
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class WallElement {
-    @Id
-    @GeneratedValue
-    @Column
-    private Long id;
+@Table(name = "reactions")
+public class Reaction {
+    @EmbeddedId
+    private ReactionKey id;
 
-    @ManyToOne
-    private User user;
-
-    @Column(name = "content")
-    private String content;
+    @Column(name = "type", nullable = false)
+    private ReactionType type;
 
     @CreationTimestamp
     @Column(name = "create_date", nullable = false)

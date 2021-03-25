@@ -9,6 +9,6 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "posts")
-public class Post extends WallElement{
+public class Post extends WallItem {
 
 }

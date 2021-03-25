@@ -1,6 +1,8 @@
 package pl.edu.agh.ki.io.models;
 
 import lombok.Getter;
+import pl.edu.agh.ki.io.models.wallElements.WallElement;
+//import pl.edu.agh.ki.io.models.wallElements.WallElement;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -46,4 +48,7 @@ public class User {
 
     @OneToMany()
     private Set<User> friends;
+
+    @OneToMany()
+    private Set<WallElement> wallElements;
 }

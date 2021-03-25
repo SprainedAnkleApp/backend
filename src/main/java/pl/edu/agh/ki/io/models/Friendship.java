@@ -2,16 +2,22 @@ package pl.edu.agh.ki.io.models;
 
 import lombok.Getter;
 
+import lombok.NoArgsConstructor;
+
+
 import javax.persistence.*;
 import java.util.Date;
 
+
+@NoArgsConstructor
 @Entity
 @Getter
 @Table(name = "friendships")
 public class Friendship {
     @Id
     @GeneratedValue
-    private int id;
+
+    private Long id;
 
     @Column(name = "date_established")
     private Date dateEstablished;

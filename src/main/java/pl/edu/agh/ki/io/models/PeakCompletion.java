@@ -1,10 +1,12 @@
 package pl.edu.agh.ki.io.models;
 
 import lombok.Getter;
-
+import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.sql.Time;
 
+
+@NoArgsConstructor
 @Entity
 @Getter
 @Table(name = "peak_completions")

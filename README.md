@@ -14,6 +14,8 @@
     
     
 ## Running app:
+Hint: for local tests use `spring.datasource.url=jdbc:h2:mem:testdb`
+
 To run app use maven and run:
 - set environment variable SECRET_ENCRYPTION_KEY to let Jasypt decrypt the `spring.datasource.password`
 - run `./mvnw spring-boot:run`

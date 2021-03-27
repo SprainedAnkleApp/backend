@@ -1,4 +1,4 @@
-package pl.config;
+package pl.edu.agh.ki.io.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;

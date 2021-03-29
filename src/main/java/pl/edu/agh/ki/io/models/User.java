@@ -1,7 +1,6 @@
 package pl.edu.agh.ki.io.models;
 
 
-import ch.qos.logback.core.net.server.Client;
 import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -9,6 +8,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import pl.edu.agh.ki.io.models.wallElements.WallItem;
+
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.Collection;
@@ -57,6 +58,10 @@ public class User implements UserDetails {
 
     @OneToMany()
     private Set<User> friends = new HashSet<>();
+
+    @OneToMany
+    private  Set<WallItem> wallItems = new HashSet<>();
+
 
     public User(String login, String password, String firstName, String lastName, String email, String profilePhoto,
                   Date birthday, Gender gender, String phoneNumber) {

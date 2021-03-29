@@ -24,7 +24,7 @@ public abstract class WallItem {
     @Column(name = "content", nullable = false)
     private String content;
 
-    @OneToMany()
+    @OneToMany
     private Set<Reaction> reactions;
 
     @CreationTimestamp

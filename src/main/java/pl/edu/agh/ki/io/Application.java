@@ -12,9 +12,9 @@ import java.util.List;
 
 
 @RestController
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = { "pl.edu.agh.ki.io" })
 public class Application {
-
+    
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }

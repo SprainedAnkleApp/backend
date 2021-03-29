@@ -11,6 +11,4 @@ import javax.persistence.*;
 @Entity
 @Table(name = "photos")
 public class Photo extends WallItem {
-
-    //TODO: implement show photo
 }

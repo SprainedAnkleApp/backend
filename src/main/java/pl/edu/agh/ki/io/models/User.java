@@ -62,7 +62,6 @@ public class User implements UserDetails {
     @OneToMany
     private  Set<WallItem> wallItems = new HashSet<>();
 
-  //TODO return liked things based on likes (Select * from wall elements join likes on user id join wall elements on wall elementid)
 
     public User(String login, String password, String firstName, String lastName, String email, String profilePhoto,
                   Date birthday, Gender gender, String phoneNumber) {

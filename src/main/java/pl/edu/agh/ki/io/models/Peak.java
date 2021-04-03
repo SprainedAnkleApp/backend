@@ -26,7 +26,7 @@ public class Peak {
     private Long id;
 
     @Column(name="name", unique = true, nullable = false)
-    int name;
+    String name;
 
     @Column(name="height", nullable = false)
     int height;

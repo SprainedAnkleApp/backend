@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import pl.edu.agh.ki.io.models.wallElements.WallItem;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -56,6 +57,10 @@ public class User implements UserDetails {
 
     @OneToMany()
     private Set<User> friends = new HashSet<>();
+
+    @OneToMany
+    private  Set<WallItem> wallItems = new HashSet<>();
+
 
     public User(String login, String password, String firstName, String lastName, String email, String profilePhoto,
                   Date birthday, Gender gender, String phoneNumber) {

@@ -18,6 +18,7 @@ import java.util.Date;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;
+    public static final String ACCESS_CONTROL_HEADER = "Access-Control-Expose-Headers";
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
@@ -45,5 +46,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .sign(Algorithm.HMAC512(JwtProperties.SECRET));
 
         response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + token);
+        response.addHeader(ACCESS_CONTROL_HEADER, JwtProperties.HEADER_STRING);
     }
 }

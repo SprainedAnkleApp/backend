@@ -86,6 +86,18 @@ public class User implements UserDetails {
         this.gender = gender;
     }
 
+    public User(String login, String password, String firstName, String lastName, String email, String profilePhoto,
+                Date birthday, String phoneNumber) {
+        this.login = login;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.profilePhoto = profilePhoto;
+        this.birthday = birthday;
+        this.phoneNumber = phoneNumber;
+    }
+
     public User(String login, String password, String firstName, String lastName, String email) {
         this.login = login;
         this.password = password;

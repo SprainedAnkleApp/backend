@@ -32,33 +32,34 @@ public class CreateUserRequest {
     @SimpleSqlProtected
     private String lastName;
 
-    private Date birthday;
-
-    private String profilePhoto;
-
-    private String phoneNumber;
-
     @NotNull
     @ValidEmail
     @SimpleSqlProtected
     private String email;
+
+    @SimpleSqlProtected
+    private String profilePhoto;
+
+    private Date birthday;
+
+    @SimpleSqlProtected
+    private String phoneNumber;
 
     @NotNull
     @SimpleSqlProtected
     private String gender;
 
     public User toUser() {
-        User user = new User(
+
+        return new User(
                 this.username,
                 this.password,
                 this.firstName,
                 this.lastName,
-                this.email
+                this.email,
+                this.profilePhoto,
+                this.birthday,
+                this.phoneNumber
         );
-        user.setBirthday(this.birthday);
-        user.setProfilePhoto(this.profilePhoto);
-        user.setPhoneNumber(this.phoneNumber);
-
-        return user;
     }
 }

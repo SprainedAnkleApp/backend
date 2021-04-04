@@ -23,7 +23,7 @@ public class DbInit implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-       this.userRepository.deleteAll();
+        this.userRepository.deleteAll();
         this.genderRepository.deleteAll();
 
         Gender male = new Gender("Male");

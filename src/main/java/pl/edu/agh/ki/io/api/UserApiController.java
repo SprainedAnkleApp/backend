@@ -1,0 +1,36 @@
+package pl.edu.agh.ki.io.api;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import pl.edu.agh.ki.io.db.GenderStorage;
+import pl.edu.agh.ki.io.db.UserStorage;
+import pl.edu.agh.ki.io.models.Gender;
+import pl.edu.agh.ki.io.models.User;
+
+import javax.validation.Valid;
+
+@RestController
+@RequestMapping("/")
+public class UserApiController {
+
+    private UserStorage userStorage;
+    private GenderStorage genderStorage;
+
+    public UserApiController(UserStorage userStorage, GenderStorage genderStorage) {
+        this.userStorage = userStorage;
+        this.genderStorage = genderStorage;
+    }
+
+    // TODO: add email verification
+    @PostMapping("/signup")
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserResponse createUser(@RequestBody @Valid CreateUserRequest request) {
+        User newUser = request.toUser();
+        Gender userGender = genderStorage.findGenderByLabel(request.getGender());
+        newUser.setGender(userGender);
+
+        newUser = userStorage.createOrUpdateUser(newUser);
+
+        return UserResponse.fromUser(newUser);
+    }
+}

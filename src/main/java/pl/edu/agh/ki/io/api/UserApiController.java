@@ -9,6 +9,7 @@ import pl.edu.agh.ki.io.models.User;
 
 import javax.validation.Valid;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/")
 public class UserApiController {

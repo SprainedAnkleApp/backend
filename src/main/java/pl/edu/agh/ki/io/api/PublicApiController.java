@@ -1,4 +1,4 @@
-package pl.edu.agh.ki.io;
+package pl.edu.agh.ki.io.api;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,10 +10,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/public")
-public class RestApiController {
+public class PublicApiController {
     private UserRepository userRepository;
 
-    public RestApiController(UserRepository userRepository) {
+    public PublicApiController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

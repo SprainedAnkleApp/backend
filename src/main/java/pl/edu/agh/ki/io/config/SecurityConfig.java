@@ -2,6 +2,7 @@ package pl.edu.agh.ki.io.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,14 +10,13 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import pl.edu.agh.ki.io.db.UserStorage;
 import pl.edu.agh.ki.io.security.JwtAuthenticationFilter;
 import pl.edu.agh.ki.io.security.JwtAuthorizationFilter;
-import pl.edu.agh.ki.io.security.UserStorage;
 
 import java.util.List;
 
@@ -24,9 +24,11 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private UserStorage userStorage;
+    private PasswordEncoder passwordEncoder;
 
-    public SecurityConfig(UserStorage userStorage) {
+    public SecurityConfig(UserStorage userStorage, PasswordEncoder passwordEncoder) {
         this.userStorage = userStorage;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -46,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), userStorage))
                 .authorizeRequests()
-                .antMatchers("/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/login", "/signup").permitAll()
                 .anyRequest().authenticated();
     }
 
@@ -71,13 +73,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
         daoAuthenticationProvider.setUserDetailsService(this.userStorage);
         return daoAuthenticationProvider;
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10);
     }
 }

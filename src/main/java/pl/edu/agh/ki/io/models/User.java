@@ -3,6 +3,7 @@ package pl.edu.agh.ki.io.models;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,6 +18,7 @@ import java.util.Set;
 
 @NoArgsConstructor
 @Getter
+@Setter
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
@@ -73,6 +75,35 @@ public class User implements UserDetails {
         this.birthday = birthday;
         this.gender = gender;
         this.phoneNumber = phoneNumber;
+    }
+
+    public User(String login, String password, String firstName, String lastName, String email, Gender gender) {
+        this.login = login;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.gender = gender;
+    }
+
+    public User(String login, String password, String firstName, String lastName, String email, String profilePhoto,
+                Date birthday, String phoneNumber) {
+        this.login = login;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.profilePhoto = profilePhoto;
+        this.birthday = birthday;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public User(String login, String password, String firstName, String lastName, String email) {
+        this.login = login;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
     }
 
     @Override

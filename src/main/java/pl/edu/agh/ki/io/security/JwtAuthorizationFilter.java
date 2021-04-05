@@ -7,6 +7,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import pl.edu.agh.ki.io.db.UserStorage;
 import pl.edu.agh.ki.io.models.User;
 
 import javax.servlet.FilterChain;

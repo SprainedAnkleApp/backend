@@ -39,13 +39,13 @@ public class DbInit implements CommandLineRunner {
 
         userRepository.save(testUser);
 
-        Peak testPeak = new Peak("Rysy", 2499, "małopolskie", "Góra położona na granicy polsko-słowackiej, w Tatrach Wysokich (jednej z części Tatr).", "Tatry");
+        Peak testPeak = new Peak("Rysy", 2499, "małopolskie", "Góra położona na granicy polsko-słowackiej, w Tatrach Wysokich (jednej z części Tatr).", "Tatry", "https://www.pinterest.com/pin/78250112250865517/");
         peakRepository.save(testPeak);
 
-        Peak testPeak2 = new Peak("Babia Góra", 1725, "małopolskie", "Masyw górski w Paśmie Babiogórskim należącym do Beskidu Żywieckiego w Beskidach Zachodnich", "Beskid Żywiecki");
+        Peak testPeak2 = new Peak("Babia Góra", 1725, "małopolskie", "Masyw górski w Paśmie Babiogórskim należącym do Beskidu Żywieckiego w Beskidach Zachodnich", "Beskid Żywiecki", "https://www.pinterest.com/pin/78250112250865517/");
         peakRepository.save(testPeak2);
 
-        Peak testPeak3 = new Peak("Śnieżka", 1603, "dolnośląskie", "Najwyższy szczyt Karkonoszy oraz Sudetów, jak również Czech.", "Karkonosze");
+        Peak testPeak3 = new Peak("Śnieżka", 1603, "dolnośląskie", "Najwyższy szczyt Karkonoszy oraz Sudetów, jak również Czech.", "Karkonosze", "https://www.pinterest.com/pin/78250112250865517/");
         peakRepository.save(testPeak3);
     }
 }

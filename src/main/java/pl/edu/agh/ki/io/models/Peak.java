@@ -10,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -41,7 +42,7 @@ public class Peak {
     String mountainRange;
 
     @OneToMany(mappedBy = "peak")
-    Set<PeakCompletion> peakCompletions;
+    Set<PeakCompletion> peakCompletions = new HashSet<>();
 
     @CreationTimestamp
     @Column(name = "create_date", nullable = false)
@@ -50,6 +51,14 @@ public class Peak {
     @UpdateTimestamp
     @Column(name = "update_date", nullable = false)
     private Date updateDate;
+
+    public Peak(String name, int height, String region, String about, String mountainRange) {
+        this.name = name;
+        this.height = height;
+        this.region = region;
+        this.about = about;
+        this.mountainRange = mountainRange;
+    }
 
     @PrePersist
     protected void onCreate() {

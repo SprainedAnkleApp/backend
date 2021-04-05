@@ -27,19 +27,22 @@ public class Peak {
     private Long id;
 
     @Column(name="name", unique = true, nullable = false)
-    String name;
+    private String name;
 
     @Column(name="height", nullable = false)
-    int height;
+    private int height;
 
     @Column(name="region", nullable = false)
-    String region;
+    private String region;
 
-    @Column(name="about")
-    String about;
+    @Column(name="about", length = 1023)
+    private String about;
 
     @Column(name="mountainRange", nullable = false)
-    String mountainRange;
+    private String mountainRange;
+
+    @Column(name = "photo", length = 1023, nullable = false)
+    private String photo;
 
     @OneToMany(mappedBy = "peak")
     Set<PeakCompletion> peakCompletions = new HashSet<>();
@@ -52,12 +55,13 @@ public class Peak {
     @Column(name = "update_date", nullable = false)
     private Date updateDate;
 
-    public Peak(String name, int height, String region, String about, String mountainRange) {
+    public Peak(String name, int height, String region, String about, String mountainRange, String photo) {
         this.name = name;
         this.height = height;
         this.region = region;
         this.about = about;
         this.mountainRange = mountainRange;
+        this.photo = photo;
     }
 
     @PrePersist

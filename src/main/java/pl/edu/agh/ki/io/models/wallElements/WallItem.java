@@ -21,7 +21,7 @@ public abstract class WallItem {
     @ManyToOne
     private User user;
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false, length = 2047)
     private String content;
 
     @OneToMany

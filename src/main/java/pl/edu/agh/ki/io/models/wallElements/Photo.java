@@ -11,4 +11,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "photos")
 public class Photo extends WallItem {
+    @Column(name = "photo_path", nullable = false, length = 1023)
+    private String photoPath;
 }

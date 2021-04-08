@@ -8,12 +8,15 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import pl.edu.agh.ki.io.models.wallElements.WallItem;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.sql.Date;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -32,6 +35,10 @@ public class User implements UserDetails {
 
     @Column(name = "password", nullable = false)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name="auth_provider", nullable = false)
+    private AuthProvider authProvider = AuthProvider.local;
 
     @Column(name="first_name", nullable = false)
     private String firstName;

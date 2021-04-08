@@ -17,6 +17,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import pl.edu.agh.ki.io.db.UserStorage;
 import pl.edu.agh.ki.io.security.JwtAuthenticationFilter;
 import pl.edu.agh.ki.io.security.JwtAuthorizationFilter;
+import pl.edu.agh.ki.io.security.JwtProperties;
 
 import java.util.List;
 
@@ -25,10 +26,12 @@ import java.util.List;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private UserStorage userStorage;
     private PasswordEncoder passwordEncoder;
+    private JwtProperties jwtProperties;
 
-    public SecurityConfig(UserStorage userStorage, PasswordEncoder passwordEncoder) {
+    public SecurityConfig(UserStorage userStorage, PasswordEncoder passwordEncoder, JwtProperties jwtProperties) {
         this.userStorage = userStorage;
         this.passwordEncoder = passwordEncoder;
+        this.jwtProperties = jwtProperties;
     }
 
     @Override
@@ -45,8 +48,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
-                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userStorage))
+                .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtProperties))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userStorage, jwtProperties))
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/login", "/signup").permitAll()
                 .anyRequest().authenticated();

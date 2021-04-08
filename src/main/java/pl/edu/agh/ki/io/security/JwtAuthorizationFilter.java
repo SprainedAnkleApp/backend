@@ -2,6 +2,8 @@ package pl.edu.agh.ki.io.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,10 +20,12 @@ import java.io.IOException;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     private UserStorage userStorage;
+    private JwtProperties jwtProperties;
 
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserStorage userStorage) {
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserStorage userStorage, JwtProperties jwtProperties) {
         super(authenticationManager);
         this.userStorage = userStorage;
+        this.jwtProperties = jwtProperties;
     }
 
     @Override
@@ -39,7 +43,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private Authentication getUsernamePasswordAuthentication(HttpServletRequest request, String token) {
-        String username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET))
+        String username = JWT.require(Algorithm.HMAC512(jwtProperties.getSecret()))
                 .build()
                 .verify(token.replace(JwtProperties.TOKEN_PREFIX, ""))
                 .getSubject();

@@ -1,8 +1,15 @@
 package pl.edu.agh.ki.io.security;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+@Getter
+@Setter
+@ConfigurationProperties(prefix = "jwt")
 public class JwtProperties  {
-    public static final String SECRET = "super_secret"; //TODO: store somewhere not hear :)
-    public static final int EXPIRATION_TIME = 10 * 24 * 60 * 60 * 1000;
+    private int expirationTime;
+    private String secret;
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String HEADER_STRING = "Authorization";
 }

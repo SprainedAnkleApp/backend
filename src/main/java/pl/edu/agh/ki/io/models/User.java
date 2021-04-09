@@ -33,12 +33,12 @@ public class User implements UserDetails {
     @Column(name = "login", unique = true, nullable = false)
     private String login;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password", nullable = true)
     private String password;
 
     @Enumerated(EnumType.STRING)
     @Column(name="auth_provider", nullable = false)
-    private AuthProvider authProvider = AuthProvider.local;
+    private AuthProvider authProvider;
 
     @Column(name="first_name", nullable = false)
     private String firstName;

@@ -22,9 +22,9 @@ public abstract class OAuth2UserInfo {
         return attributes;
     }
 
-    public abstract String getId();
+    public abstract String getFirstName();
 
-    public abstract String getName();
+    public abstract String getLastName();
 
     public abstract String getEmail();
 
@@ -35,8 +35,8 @@ public abstract class OAuth2UserInfo {
                 getEmail(),
                 null,
                 authProvider,
-                getName(),
-                getName(),
+                getFirstName(),
+                getLastName(),
                 getEmail()
         );
     }

@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import pl.edu.agh.ki.io.models.Gender;
 import pl.edu.agh.ki.io.models.Peak;
 import pl.edu.agh.ki.io.models.User;
+import pl.edu.agh.ki.io.models.wallElements.Photo;
+import pl.edu.agh.ki.io.models.wallElements.Post;
 
 import java.sql.Date;
 
@@ -16,16 +18,19 @@ public class DbInit implements CommandLineRunner {
     private GenderRepository genderRepository;
     private PasswordEncoder passwordEncoder;
     private PeakRepository peakRepository;
+    private WallItemRepository wallItemRepository;
 
-    public DbInit(UserRepository userRepository, GenderRepository genderRepository, PasswordEncoder passwordEncoder, PeakRepository peakRepository) {
+    public DbInit(UserRepository userRepository, GenderRepository genderRepository, PasswordEncoder passwordEncoder, PeakRepository peakRepository, WallItemRepository wallItemRepository) {
         this.userRepository = userRepository;
         this.genderRepository = genderRepository;
         this.passwordEncoder = passwordEncoder;
         this.peakRepository = peakRepository;
+        this.wallItemRepository = wallItemRepository;
     }
 
     @Override
     public void run(String... args) {
+        this.wallItemRepository.deleteAll();
         this.userRepository.deleteAll();
         this.genderRepository.deleteAll();
         this.peakRepository.deleteAll();
@@ -47,5 +52,12 @@ public class DbInit implements CommandLineRunner {
 
         Peak testPeak3 = new Peak("Śnieżka", 1603, "dolnośląskie", "Najwyższy szczyt Karkonoszy oraz Sudetów, jak również Czech, województwa dolnośląskiego, a także całego Śląska. Najwybitniejszy szczyt Polski i Czech.", "Karkonosze", "https://images.unsplash.com/photo-1615124977398-08f4b1f678fe?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1650&q=80");
         peakRepository.save(testPeak3);
+
+        Photo photo = new Photo(testUser, "content", "photopath");
+        wallItemRepository.save(photo);
+
+        Post post = new Post(testUser, "content");
+        wallItemRepository.save(post);
+
     }
 }

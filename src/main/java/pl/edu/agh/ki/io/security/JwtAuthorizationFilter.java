@@ -48,7 +48,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                 .verify(token.replace(JwtProperties.TOKEN_PREFIX, ""))
                 .getSubject();
 
-        User user = (User) userStorage.loadUserByUsername(username);
+        UserPrincipal user = (UserPrincipal) userStorage.loadUserByUsername(username);
         Authentication auth = new UsernamePasswordAuthenticationToken(username, null, user.getAuthorities());
 
         return auth;

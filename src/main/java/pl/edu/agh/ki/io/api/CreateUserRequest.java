@@ -2,6 +2,7 @@ package pl.edu.agh.ki.io.api;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.edu.agh.ki.io.models.AuthProvider;
 import pl.edu.agh.ki.io.models.User;
 import pl.edu.agh.ki.io.validation.PasswordMatches;
 import pl.edu.agh.ki.io.validation.SimpleSqlProtected;
@@ -54,6 +55,7 @@ public class CreateUserRequest {
         return new User(
                 this.username,
                 this.password,
+                AuthProvider.local,
                 this.firstName,
                 this.lastName,
                 this.email,

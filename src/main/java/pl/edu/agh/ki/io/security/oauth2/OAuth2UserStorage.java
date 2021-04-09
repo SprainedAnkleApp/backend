@@ -1,7 +1,6 @@
-package pl.edu.agh.ki.io.oauth2;
+package pl.edu.agh.ki.io.security.oauth2;
 
 
-import io.opencensus.internal.StringUtil;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -10,14 +9,13 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 import pl.edu.agh.ki.io.db.UserRepository;
 import pl.edu.agh.ki.io.models.AuthProvider;
 import pl.edu.agh.ki.io.models.User;
-import pl.edu.agh.ki.io.oauth2.userinfo.OAuth2AuthenticationProcessingException;
-import pl.edu.agh.ki.io.oauth2.userinfo.OAuth2UserInfo;
-import pl.edu.agh.ki.io.oauth2.userinfo.OAuth2UserInfoFactory;
-import pl.edu.agh.ki.io.oauth2.userinfo.UserPrincipal;
+import pl.edu.agh.ki.io.security.AuthenticationProcessingException;
+import pl.edu.agh.ki.io.security.oauth2.userinfo.OAuth2UserInfo;
+import pl.edu.agh.ki.io.security.oauth2.userinfo.OAuth2UserInfoFactory;
+import pl.edu.agh.ki.io.security.UserPrincipal;
 
 import java.util.Optional;
 
@@ -49,7 +47,7 @@ public class OAuth2UserStorage extends DefaultOAuth2UserService {
         OAuth2UserInfo userInfo = OAuth2UserInfoFactory.build(registrationId, oAuth2User.getAttributes());
         // StringUtils.isEmpty is deprecated.
         if(ObjectUtils.isEmpty(userInfo.getEmail())) {
-            throw new OAuth2AuthenticationProcessingException("Email from provider is required to continue");
+            throw new AuthenticationProcessingException("Email from provider is required to continue");
         }
 
         Optional<User> userOptional = userRepository.findUserByEmail(userInfo.getEmail());
@@ -57,13 +55,13 @@ public class OAuth2UserStorage extends DefaultOAuth2UserService {
         if (userOptional.isPresent()) {
             user = userOptional.get();
             if (!user.getAuthProvider().equals(AuthProvider.valueOf(registrationId))) {
-                throw new OAuth2AuthenticationProcessingException("User signed up with " + registrationId);
+                throw new AuthenticationProcessingException("User signed up with " + registrationId);
             }
         } else {
             user = userInfo.toUser();
             userRepository.save(user);
         }
 
-        return new UserPrincipal(oAuth2User.getAttributes());
+        return new UserPrincipal(user, oAuth2User.getAttributes());
     }
 }

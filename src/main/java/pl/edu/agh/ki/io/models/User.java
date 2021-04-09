@@ -6,17 +6,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import pl.edu.agh.ki.io.models.wallElements.WallItem;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.sql.Date;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -24,7 +18,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "users")
-public class User implements UserDetails {
+public class User {
     @Id
     @GeneratedValue
     @Column(name = "id")
@@ -71,10 +65,11 @@ public class User implements UserDetails {
     private  Set<WallItem> wallItems = new HashSet<>();
 
 
-    public User(String login, String password, String firstName, String lastName, String email, String profilePhoto,
+    public User(String login, String password, AuthProvider authProvider, String firstName, String lastName, String email, String profilePhoto,
                   Date birthday, Gender gender, String phoneNumber) {
         this.login = login;
         this.password = password;
+        this.authProvider = authProvider;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -84,19 +79,21 @@ public class User implements UserDetails {
         this.phoneNumber = phoneNumber;
     }
 
-    public User(String login, String password, String firstName, String lastName, String email, Gender gender) {
+    public User(String login, String password, AuthProvider authProvider, String firstName, String lastName, String email, Gender gender) {
         this.login = login;
         this.password = password;
+        this.authProvider = authProvider;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.gender = gender;
     }
 
-    public User(String login, String password, String firstName, String lastName, String email, String profilePhoto,
+    public User(String login, String password, AuthProvider authProvider, String firstName, String lastName, String email, String profilePhoto,
                 Date birthday, String phoneNumber) {
         this.login = login;
         this.password = password;
+        this.authProvider = authProvider;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -105,48 +102,13 @@ public class User implements UserDetails {
         this.phoneNumber = phoneNumber;
     }
 
-    public User(String login, String password, String firstName, String lastName, String email) {
+    public User(String login, String password, AuthProvider authProvider, String firstName, String lastName, String email) {
         this.login = login;
         this.password = password;
+        this.authProvider = authProvider;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return new HashSet<>();
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return login;
-    }
-
-    //TODO: probably add this flags to model
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
     }
 
     @CreationTimestamp

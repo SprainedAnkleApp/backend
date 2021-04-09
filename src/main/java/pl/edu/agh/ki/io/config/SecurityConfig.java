@@ -15,13 +15,13 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import pl.edu.agh.ki.io.db.UserStorage;
-import pl.edu.agh.ki.io.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
-import pl.edu.agh.ki.io.oauth2.OAuth2AuthenticationFailureHandler;
-import pl.edu.agh.ki.io.oauth2.OAuth2AuthenticationSuccessHandler;
-import pl.edu.agh.ki.io.oauth2.OAuth2UserStorage;
 import pl.edu.agh.ki.io.security.JwtAuthenticationFilter;
 import pl.edu.agh.ki.io.security.JwtAuthorizationFilter;
 import pl.edu.agh.ki.io.security.JwtProperties;
+import pl.edu.agh.ki.io.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
+import pl.edu.agh.ki.io.security.oauth2.OAuth2AuthenticationFailureHandler;
+import pl.edu.agh.ki.io.security.oauth2.OAuth2AuthenticationSuccessHandler;
+import pl.edu.agh.ki.io.security.oauth2.OAuth2UserStorage;
 
 import java.util.List;
 
@@ -34,16 +34,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private OAuth2UserStorage oAuth2UserService;
     private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+    private HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository;
 
     public SecurityConfig(UserStorage userStorage, PasswordEncoder passwordEncoder, JwtProperties jwtProperties,
                           OAuth2UserStorage oAuth2UserService, OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler,
-                          OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler) {
+                          OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler,
+                          HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository) {
         this.userStorage = userStorage;
         this.passwordEncoder = passwordEncoder;
         this.jwtProperties = jwtProperties;
         this.oAuth2UserService = oAuth2UserService;
         this.oAuth2AuthenticationSuccessHandler = oAuth2AuthenticationSuccessHandler;
         this.oAuth2AuthenticationFailureHandler = oAuth2AuthenticationFailureHandler;
+        this.cookieAuthorizationRequestRepository = cookieAuthorizationRequestRepository;
     }
 
     @Override
@@ -70,7 +73,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .oauth2Login()
                     .authorizationEndpoint()
                         .baseUri("/oauth2/authorize")
-                        .authorizationRequestRepository(cookieAuthorizationRequestRepository())
+                        .authorizationRequestRepository(cookieAuthorizationRequestRepository)
                         .and()
                     .redirectionEndpoint()
                         .baseUri("/oauth2/callback/*")
@@ -87,11 +90,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         web
                 .ignoring()
                 .antMatchers("/h2-console/**");
-    }
-
-    @Bean
-    public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
-        return new HttpCookieOAuth2AuthorizationRequestRepository();
     }
 
     @Bean

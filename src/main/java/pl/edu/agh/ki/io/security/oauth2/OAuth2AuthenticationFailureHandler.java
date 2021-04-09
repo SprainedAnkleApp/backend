@@ -1,4 +1,4 @@
-package pl.edu.agh.ki.io.oauth2;
+package pl.edu.agh.ki.io.security.oauth2;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static pl.edu.agh.ki.io.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_NAME;
+import static pl.edu.agh.ki.io.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_NAME;
 
 @Component
 public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {

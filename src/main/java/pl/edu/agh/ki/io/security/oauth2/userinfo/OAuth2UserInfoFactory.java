@@ -1,6 +1,7 @@
-package pl.edu.agh.ki.io.oauth2.userinfo;
+package pl.edu.agh.ki.io.security.oauth2.userinfo;
 
 import pl.edu.agh.ki.io.models.AuthProvider;
+import pl.edu.agh.ki.io.security.AuthenticationProcessingException;
 
 import java.util.Map;
 
@@ -12,6 +13,6 @@ public class OAuth2UserInfoFactory {
         else if(registrationId.equalsIgnoreCase(AuthProvider.facebook.toString()))
             return new FacebookOAuth2UserInfo(attributes);
         else
-            throw new OAuth2AuthenticationProcessingException("Unknown provider " + registrationId);
+            throw new AuthenticationProcessingException("Unknown provider " + registrationId);
     }
 }

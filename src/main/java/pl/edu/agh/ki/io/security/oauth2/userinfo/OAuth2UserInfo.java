@@ -1,13 +1,15 @@
-package pl.edu.agh.ki.io.oauth2.userinfo;
+package pl.edu.agh.ki.io.security.oauth2.userinfo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.edu.agh.ki.io.models.AuthProvider;
 import pl.edu.agh.ki.io.models.User;
 
 import java.util.Map;
 
 public abstract class OAuth2UserInfo {
     protected Map<String, Object> attributes;
+    protected AuthProvider authProvider;
 
     Logger logger = LoggerFactory.getLogger(OAuth2UserInfo.class);
 
@@ -32,6 +34,7 @@ public abstract class OAuth2UserInfo {
         return new User(
                 getEmail(),
                 null,
+                authProvider,
                 getName(),
                 getName(),
                 getEmail()

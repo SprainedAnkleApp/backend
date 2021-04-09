@@ -1,4 +1,4 @@
-package pl.edu.agh.ki.io.oauth2;
+package pl.edu.agh.ki.io.security.oauth2;
 
 import com.nimbusds.oauth2.sdk.util.StringUtils;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;

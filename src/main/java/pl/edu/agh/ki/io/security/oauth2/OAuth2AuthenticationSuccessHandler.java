@@ -1,4 +1,4 @@
-package pl.edu.agh.ki.io.oauth2;
+package pl.edu.agh.ki.io.security.oauth2;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;

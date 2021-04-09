@@ -6,6 +6,7 @@ import pl.edu.agh.ki.io.db.GenderStorage;
 import pl.edu.agh.ki.io.db.UserStorage;
 import pl.edu.agh.ki.io.models.Gender;
 import pl.edu.agh.ki.io.models.User;
+import pl.edu.agh.ki.io.security.UserPrincipal;
 
 import javax.validation.Valid;
 
@@ -30,8 +31,8 @@ public class UserApiController {
         Gender userGender = genderStorage.findGenderByLabel(request.getGender());
         newUser.setGender(userGender);
 
-        newUser = userStorage.createOrUpdateUser(newUser);
+        UserPrincipal userPrincipal = (UserPrincipal) userStorage.createUser(newUser);
 
-        return UserResponse.fromUser(newUser);
+        return UserResponse.fromUser(userPrincipal.getUser());
     }
 }

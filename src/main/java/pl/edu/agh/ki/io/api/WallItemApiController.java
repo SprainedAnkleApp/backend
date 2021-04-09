@@ -2,8 +2,6 @@ package pl.edu.agh.ki.io.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import pl.edu.agh.ki.io.config.SecurityConfig;
-import pl.edu.agh.ki.io.db.UserStorage;
 import pl.edu.agh.ki.io.db.WallItemStorage;
 import pl.edu.agh.ki.io.models.wallElements.Photo;
 import pl.edu.agh.ki.io.models.wallElements.Post;
@@ -16,12 +14,9 @@ import java.util.Optional;
 @RequestMapping("api/public/wallitems")
 public class WallItemApiController {
     private WallItemStorage wallItemStorage;
-    private SecurityConfig securityConfig;
-    private UserStorage userStorage;
-    public WallItemApiController(WallItemStorage wallItemStorage, SecurityConfig securityConfig, UserStorage userStorage){
+
+    public WallItemApiController(WallItemStorage wallItemStorage){
         this.wallItemStorage = wallItemStorage;
-        this.securityConfig = securityConfig;
-        this.userStorage = userStorage;
     }
 
     @GetMapping()

@@ -27,11 +27,6 @@ public class UserPrincipal implements UserDetails, OAuth2User {
     }
 
     @Override
-    public Map<String, Object> getAttributes() {
-        return this.attributes;
-    }
-
-    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return new HashSet<>();
     }

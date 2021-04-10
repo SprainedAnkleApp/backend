@@ -27,7 +27,7 @@ public class User {
     @Column(name = "login", unique = true, nullable = false)
     private String login;
 
-    @Column(name = "password", nullable = true)
+    @Column(name = "password")
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -65,38 +65,20 @@ public class User {
     private  Set<WallItem> wallItems = new HashSet<>();
 
 
-    public User(String login, String password, AuthProvider authProvider, String firstName, String lastName, String email, String profilePhoto,
-                  Date birthday, Gender gender, String phoneNumber) {
-        this.login = login;
-        this.password = password;
-        this.authProvider = authProvider;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.profilePhoto = profilePhoto;
-        this.birthday = birthday;
+    public User(String login, String password, AuthProvider authProvider, String firstName, String lastName, String email, Gender gender, String profilePhoto,
+                  Date birthday, String phoneNumber) {
+        this(login, password, authProvider, firstName, lastName, email, profilePhoto, birthday, phoneNumber);
         this.gender = gender;
-        this.phoneNumber = phoneNumber;
     }
 
     public User(String login, String password, AuthProvider authProvider, String firstName, String lastName, String email, Gender gender) {
-        this.login = login;
-        this.password = password;
-        this.authProvider = authProvider;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
+        this(login, password, authProvider, firstName, lastName, email);
         this.gender = gender;
     }
 
     public User(String login, String password, AuthProvider authProvider, String firstName, String lastName, String email, String profilePhoto,
                 Date birthday, String phoneNumber) {
-        this.login = login;
-        this.password = password;
-        this.authProvider = authProvider;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
+        this(login, password, authProvider, firstName, lastName, email);
         this.profilePhoto = profilePhoto;
         this.birthday = birthday;
         this.phoneNumber = phoneNumber;

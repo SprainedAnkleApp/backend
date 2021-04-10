@@ -25,8 +25,7 @@ public class UserStorage implements UserDetailsService {
     public UserDetails createUser(User user) {
         Optional<User> optionalUser = userRepository.findUserByEmail(user.getEmail());
         if (optionalUser.isPresent()){
-            User storedUser = optionalUser.get();
-            throw new AuthenticationProcessingException("User already registered with " + storedUser.getAuthProvider());
+            throw new AuthenticationProcessingException("User already registered with " + optionalUser.get().getAuthProvider());
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return new UserPrincipal(userRepository.save(user));

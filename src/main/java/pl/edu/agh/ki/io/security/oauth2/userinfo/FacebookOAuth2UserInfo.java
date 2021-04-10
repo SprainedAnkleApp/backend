@@ -11,6 +11,11 @@ public class FacebookOAuth2UserInfo extends OAuth2UserInfo {
     }
 
     @Override
+    public String getId() {
+        return (String) attributes.get("id");
+    }
+
+    @Override
     public String getFirstName() {
         return ((String) attributes.get("name")).split(" ")[0];
     }

@@ -22,6 +22,8 @@ public abstract class OAuth2UserInfo {
         return attributes;
     }
 
+    public abstract String getId();
+
     public abstract String getFirstName();
 
     public abstract String getLastName();

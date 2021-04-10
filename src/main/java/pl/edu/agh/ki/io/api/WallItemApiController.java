@@ -1,8 +1,11 @@
 package pl.edu.agh.ki.io.api;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.agh.ki.io.db.WallItemStorage;
+import pl.edu.agh.ki.io.models.User;
 import pl.edu.agh.ki.io.models.wallElements.Photo;
 import pl.edu.agh.ki.io.models.wallElements.Post;
 import pl.edu.agh.ki.io.models.wallElements.WallItem;
@@ -29,10 +32,10 @@ public class WallItemApiController {
         return this.wallItemStorage.getWallItemById(wallItemId);
     }
 
-    //TODO find logged in user and assign post/photo to him
     @PostMapping("/post")
     @ResponseStatus(HttpStatus.CREATED)
-    public Long createPost(@RequestBody Post post){
+    public Long createPost(@RequestBody Post post, @AuthenticationPrincipal User user){
+        post.setUser(user);
         wallItemStorage.createPost(post);
         return post.getId();
     }

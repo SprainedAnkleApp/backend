@@ -46,7 +46,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                 .getSubject();
 
         UserPrincipal user = (UserPrincipal) userStorage.loadUserByUsername(username);
-        Authentication auth = new UsernamePasswordAuthenticationToken(username, null, user.getAuthorities());
+        Authentication auth = new UsernamePasswordAuthenticationToken(user.getUser(), null, user.getAuthorities());
 
         return auth;
     }

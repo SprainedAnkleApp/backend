@@ -10,8 +10,6 @@ public class UserResponse {
     private Long id;
 
     static public UserResponse fromUser(User user) {
-        return UserResponse.builder()
-                .id(user.getId())
-                .build();
+        return UserResponse.builder().id(user.getId()).build();
     }
 }

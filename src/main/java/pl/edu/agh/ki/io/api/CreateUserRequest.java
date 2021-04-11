@@ -51,7 +51,6 @@ public class CreateUserRequest {
     private String gender;
 
     public User toUser() {
-
         return new User(
                 this.username,
                 this.password,

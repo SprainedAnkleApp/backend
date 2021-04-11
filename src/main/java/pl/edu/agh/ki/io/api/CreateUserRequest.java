@@ -51,15 +51,7 @@ public class CreateUserRequest {
 
     public User toUser() {
 
-        return new User(
-                this.username,
-                this.password,
-                this.firstName,
-                this.lastName,
-                this.email,
-                this.profilePhoto,
-                this.birthday,
-                this.phoneNumber
-        );
+        return new User(this.username, this.password, this.firstName, this.lastName, this.email, this.profilePhoto,
+                this.birthday, this.phoneNumber);
     }
 }

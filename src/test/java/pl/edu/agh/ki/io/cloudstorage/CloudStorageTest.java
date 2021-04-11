@@ -56,12 +56,12 @@ public class CloudStorageTest {
             MultipartFile multipartFile = new MockMultipartFile("dog.jpeg",
                     new FileInputStream(new File("src/test/java/pl/edu/agh/ki/io/fixtures/dog.jpeg")));
 
-            fileService.upload(multipartFile);
+            fileService.upload(multipartFile, "dog.jpeg");
 
-            fileService.download("dog.jpeg", path.toString()+"/dog.jpeg");
+            fileService.download("dog.jpeg", path.toString() + "/dog.jpeg");
 
             MultipartFile resultFile = new MockMultipartFile("dog.jpeg",
-                    new FileInputStream(new File(path.toString()+"/dog.jpeg")));
+                    new FileInputStream(new File(path.toString() + "/dog.jpeg")));
 
             assertArrayEquals(multipartFile.getBytes(), resultFile.getBytes());
         }

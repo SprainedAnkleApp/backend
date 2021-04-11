@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import pl.edu.agh.ki.io.api.models.PhotoRequest;
 import pl.edu.agh.ki.io.api.models.PhotoResponse;
@@ -69,6 +70,7 @@ public class WallItemApiController {
         }
 
         return ResponseEntity.notFound().build();
+      
     }
 
     @PostMapping("/post")
@@ -78,7 +80,7 @@ public class WallItemApiController {
         wallItemStorage.createPost(post);
         return post.getId();
     }
-
+  
     @PostMapping(value = "/photo", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.CREATED)
@@ -89,6 +91,7 @@ public class WallItemApiController {
         fileService.upload(photo.getFile(), GoogleCloudFileService.generateFileName());
 
         return photoDbEntry.getId();
+  
     }
 
 }

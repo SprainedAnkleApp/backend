@@ -13,15 +13,14 @@ import pl.edu.agh.ki.io.db.UserRepository;
 import pl.edu.agh.ki.io.models.AuthProvider;
 import pl.edu.agh.ki.io.models.User;
 import pl.edu.agh.ki.io.security.AuthenticationProcessingException;
+import pl.edu.agh.ki.io.security.UserPrincipal;
 import pl.edu.agh.ki.io.security.oauth2.userinfo.OAuth2UserInfo;
 import pl.edu.agh.ki.io.security.oauth2.userinfo.OAuth2UserInfoFactory;
-import pl.edu.agh.ki.io.security.UserPrincipal;
 
 import java.util.Optional;
 
 @Service
 public class OAuth2UserStorage extends DefaultOAuth2UserService {
-
     private UserRepository userRepository;
 
     public OAuth2UserStorage(UserRepository userRepository) {

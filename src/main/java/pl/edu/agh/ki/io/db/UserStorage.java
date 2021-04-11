@@ -5,7 +5,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.edu.agh.ki.io.models.AuthProvider;
 import pl.edu.agh.ki.io.models.User;
+import pl.edu.agh.ki.io.security.AuthenticationProcessingException;
+import pl.edu.agh.ki.io.security.UserPrincipal;
+
+import java.util.Optional;
 
 @Service
 public class UserStorage implements UserDetailsService {
@@ -17,13 +22,18 @@ public class UserStorage implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User createOrUpdateUser(User user) {
+    public UserDetails createUser(User user) {
+        Optional<User> optionalUser = userRepository.findUserByEmail(user.getEmail());
+        if (optionalUser.isPresent()){
+            throw new AuthenticationProcessingException("User already registered with " + optionalUser.get().getAuthProvider());
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        return new UserPrincipal(userRepository.save(user));
     }
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return this.userRepository.findUserByLogin(s).orElseThrow(() -> new UsernameNotFoundException(String.format("User %s not found", s)));
+        User user = this.userRepository.findUserByLogin(s).orElseThrow(() -> new UsernameNotFoundException(String.format("User %s not found", s)));
+        return new UserPrincipal(user);
     }
 }

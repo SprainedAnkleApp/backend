@@ -8,7 +8,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import pl.edu.agh.ki.io.db.UserStorage;
-import pl.edu.agh.ki.io.models.User;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -18,10 +17,12 @@ import java.io.IOException;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     private UserStorage userStorage;
+    private JwtProperties jwtProperties;
 
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserStorage userStorage) {
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserStorage userStorage, JwtProperties jwtProperties) {
         super(authenticationManager);
         this.userStorage = userStorage;
+        this.jwtProperties = jwtProperties;
     }
 
     @Override
@@ -39,13 +40,13 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private Authentication getUsernamePasswordAuthentication(HttpServletRequest request, String token) {
-        String username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET))
+        String username = JWT.require(Algorithm.HMAC512(jwtProperties.getSecret()))
                 .build()
                 .verify(token.replace(JwtProperties.TOKEN_PREFIX, ""))
                 .getSubject();
 
-        User user = (User) userStorage.loadUserByUsername(username);
-        Authentication auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        UserPrincipal user = (UserPrincipal) userStorage.loadUserByUsername(username);
+        Authentication auth = new UsernamePasswordAuthenticationToken(user.getUser(), null, user.getAuthorities());
 
         return auth;
     }

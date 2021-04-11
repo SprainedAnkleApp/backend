@@ -3,6 +3,7 @@ package pl.edu.agh.ki.io.db;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.edu.agh.ki.io.models.AuthProvider;
 import pl.edu.agh.ki.io.models.Gender;
 import pl.edu.agh.ki.io.models.Peak;
 import pl.edu.agh.ki.io.models.User;
@@ -39,8 +40,8 @@ public class DbInit implements CommandLineRunner {
         this.genderRepository.save(male);
 
         Date birthday = Date.valueOf("2000-12-1");
-        User testUser = new User("admin", passwordEncoder.encode("admin"), "Test",
-                "Testowski", "test1@mail.com", "https://i.imgur.com/VNNp6zWb.jpg", birthday, male, "+48880053535");
+        User testUser = new User("admin", passwordEncoder.encode("admin"), AuthProvider.local, "Test",
+                "Testowski", "test1@mail.com", male, "https://i.imgur.com/VNNp6zWb.jpg", birthday, "+48880053535");
 
         userRepository.save(testUser);
 

@@ -41,9 +41,17 @@ public class WallItemApiController {
         return this.wallItemStorage.findAll();
     }
 
-    @GetMapping("/{wallitemid}")
-    public Optional<WallItem> getWallItem(@PathVariable("wallitemid") Long wallItemId) {
-        return this.wallItemStorage.getWallItemById(wallItemId);
+    @GetMapping("post/{postid}")
+    public ResponseEntity<Post> getPost(@PathVariable("postid") Long postId) {
+        Optional<WallItem> wallitem = this.wallItemStorage.getWallItemById(postId);
+        if (wallitem.isPresent()) {
+            if (wallitem.get() instanceof Post) {
+                Post post = (Post) wallitem.get();
+                return ResponseEntity.ok(post);
+            }
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/photo/{photoid}")
@@ -74,7 +82,7 @@ public class WallItemApiController {
     @PostMapping(value = "/photo", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.CREATED)
-    public Long createPost(@ModelAttribute PhotoRequest photo, @AuthenticationPrincipal User user) throws IOException {
+    public Long createPhoto(@ModelAttribute PhotoRequest photo, @AuthenticationPrincipal User user) throws IOException {
         Photo photoDbEntry = new Photo(user, photo.getContent(), photo.getPhotoPath());
         wallItemStorage.createPhoto(photoDbEntry);
 

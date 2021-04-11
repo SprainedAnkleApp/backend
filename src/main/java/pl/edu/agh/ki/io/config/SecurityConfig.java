@@ -66,10 +66,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtProperties))
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), userStorage, jwtProperties))
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/login", "/signup").permitAll()
-                .antMatchers("/oauth2/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
+                    .antMatchers(HttpMethod.POST, "/login", "/signup").permitAll()
+                    .antMatchers("/oauth2/**").permitAll()
+                    .anyRequest().authenticated()
+                    .and()
                 .oauth2Login()
                     .authorizationEndpoint()
                         .baseUri("/oauth2/authorize")
@@ -95,7 +95,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "https://accounts.google.com"));
+        //configuration.setAllowedOrigins(List.of("*"));
         configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

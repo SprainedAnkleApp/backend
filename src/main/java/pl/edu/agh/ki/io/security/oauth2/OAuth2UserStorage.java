@@ -55,7 +55,7 @@ public class OAuth2UserStorage extends DefaultOAuth2UserService {
         if (userOptional.isPresent()) {
             user = userOptional.get();
             if (!user.getAuthProvider().equals(AuthProvider.valueOf(registrationId))) {
-                throw new AuthenticationProcessingException("User signed up with " + registrationId);
+                throw new AuthenticationProcessingException("User signed up with " + user.getAuthProvider());
             }
         } else {
             user = userInfo.toUser();

@@ -1,5 +1,7 @@
 package pl.edu.agh.ki.io.security.oauth2;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -20,9 +22,11 @@ import static pl.edu.agh.ki.io.security.oauth2.HttpCookieOAuth2AuthorizationRequ
 @Component
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private JwtProperties jwtProperties;
+    private HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository;
 
-    public OAuth2AuthenticationSuccessHandler(JwtProperties jwtProperties) {
+    public OAuth2AuthenticationSuccessHandler(JwtProperties jwtProperties, HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository) {
         this.jwtProperties = jwtProperties;
+        this.cookieAuthorizationRequestRepository = cookieAuthorizationRequestRepository;
     }
 
     @Override
@@ -33,7 +37,11 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         /*if (redirectUrl.isPresent() && !isAllowedRedirect(redirectUrl.get())){throw}*/
 
         String token = JwtUtils.generateToken(authentication.getName(), jwtProperties);
-        String target = UriComponentsBuilder.fromUriString(redirectUrl.orElse("/")).build().toUriString();
+        String target = UriComponentsBuilder.fromUriString(redirectUrl.orElse("http://localhost:3000/"))
+                .queryParam("token", token).toUriString();
+
+        cookieAuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
+
         response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + token);
         response.addHeader(ACCESS_CONTROL_HEADER, JwtProperties.HEADER_STRING);
 

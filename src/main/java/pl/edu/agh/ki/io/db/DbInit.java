@@ -36,7 +36,7 @@ public class DbInit implements CommandLineRunner {
 
         Date birthday = Date.valueOf("2000-12-1");
         User testUser = new User("admin", passwordEncoder.encode("admin"), AuthProvider.local, "Test",
-                "Testowski", "test1@mail.com", "https://i.imgur.com/VNNp6zWb.jpg", birthday, male, "+48880053535");
+                "Testowski", "test1@mail.com", male, "https://i.imgur.com/VNNp6zWb.jpg", birthday, "+48880053535");
 
         userRepository.save(testUser);
 

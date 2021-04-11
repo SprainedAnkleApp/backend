@@ -18,8 +18,6 @@ public class WallItemStorage {
     WallItemRepository wallItemRepository;
     PhotoRepository photoRepository;
     PostRepository postRepository;
-    @Autowired
-    GoogleCloudFileService fileService;
 
     public WallItemStorage(WallItemRepository wallItemRepository, PostRepository postRepository,
             PhotoRepository photoRepository) {
@@ -36,8 +34,7 @@ public class WallItemStorage {
         return this.wallItemRepository.findById(wallItemId);
     }
 
-    public void createPhoto(Photo photo, MultipartFile file) throws IOException {
-        this.fileService.upload(file, photo.getPhotoPath());
+    public void createPhoto(Photo photo) {
         this.photoRepository.save(photo);
     }
 

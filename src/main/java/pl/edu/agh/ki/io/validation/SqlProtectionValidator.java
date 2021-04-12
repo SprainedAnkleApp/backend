@@ -19,6 +19,7 @@ public class SqlProtectionValidator implements ConstraintValidator<SimpleSqlProt
     }
 
     private boolean validateString(String s){
+        if (s == null) return true;
         Pattern pattern = Pattern.compile(MALICIOUS_PATTERN, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(s);
         return !matcher.matches();

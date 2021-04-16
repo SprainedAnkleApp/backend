@@ -49,6 +49,9 @@ public class User {
     @Column(name="birthday")
     private Date birthday;
 
+    @Column(name="about", length = 1023)
+    private String about;
+
     @ManyToOne
     private Gender gender;
 

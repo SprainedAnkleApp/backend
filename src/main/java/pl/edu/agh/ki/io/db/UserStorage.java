@@ -5,17 +5,17 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.edu.agh.ki.io.models.AuthProvider;
 import pl.edu.agh.ki.io.models.User;
 import pl.edu.agh.ki.io.security.AuthenticationProcessingException;
 import pl.edu.agh.ki.io.security.UserPrincipal;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserStorage implements UserDetailsService {
-    private UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UserStorage(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -29,6 +29,10 @@ public class UserStorage implements UserDetailsService {
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return new UserPrincipal(userRepository.save(user));
+    }
+
+    public List<User> findAll() {
+        return this.userRepository.findAll();
     }
 
     @Override

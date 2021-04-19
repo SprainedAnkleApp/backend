@@ -17,14 +17,10 @@ import java.util.Optional;
 
 @Service
 public class WallItemStorage {
-    WallItemRepository wallItemRepository;
-    PhotoRepository photoRepository;
-    PostRepository postRepository;
+    private final WallItemRepository wallItemRepository;
 
     public WallItemStorage(WallItemRepository wallItemRepository, PostRepository postRepository, PhotoRepository photoRepository){
         this.wallItemRepository = wallItemRepository;
-        this.photoRepository = photoRepository;
-        this.postRepository = postRepository;
     }
 
     public List<WallItem> findAll() {
@@ -35,11 +31,4 @@ public class WallItemStorage {
         return this.wallItemRepository.findById(wallItemId);
     }
 
-    public void createPhoto(Photo photo) {
-        this.photoRepository.save(photo);
-    }
-
-    public void createPost(Post post) {
-        this.postRepository.save(post);
-    }
 }

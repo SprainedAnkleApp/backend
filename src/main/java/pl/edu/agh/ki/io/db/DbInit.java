@@ -250,7 +250,7 @@ public class DbInit implements CommandLineRunner {
                 new Peak(
                         "Skalnik",
                         945,
-                        "",
+                        "dolnośląskie",
                         "Szczyt w południowo-zachodniej Polsce, w Sudetach Zachodnich, w Rudawach Janowickich. Jest to wzniesienie o kopulastym kształcie, na którym znajdują się ruiny dawnej wieży widokowej (cztery betonowe bloki na których wieża była zakotwiczona), oraz na drzewie drewniana tabliczka z napisem Skalnik 945 m n.p.m.",
                         "Rudawy Janowickie",
                         "https://media.villagreta.pl/m/2018/08/skalnik-rudawy-janowickie-1.jpg"
@@ -294,7 +294,7 @@ public class DbInit implements CommandLineRunner {
                 new Peak(
                         "Lubomir",
                         904,
-                        "",
+                        "małopolskie",
                         "Szczyt w Paśmie Lubomira i Łysiny. Nazwa szczytu pochodzi od nazwiska księcia Kazimierza Lubomirskiego. Nadano ją w 1932 r. w uznaniu jego zasług. Wierzchołek Lubomira jest całkowicie zalesiony, więc pozbawiony widoków.",
                         "Beskid Makowski",
                         "https://mynaszlaku.pl/wp-content/gallery/lubomir-27-08-2019/lubomir-korona-gor-polski0009.jpg"

@@ -1,5 +1,6 @@
 package pl.edu.agh.ki.io.config;
 
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -27,6 +28,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@AllArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private UserStorage userStorage;
     private PasswordEncoder passwordEncoder;
@@ -35,19 +37,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
     private HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository;
-
-    public SecurityConfig(UserStorage userStorage, PasswordEncoder passwordEncoder, JwtProperties jwtProperties,
-                          OAuth2UserStorage oAuth2UserService, OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler,
-                          OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler,
-                          HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository) {
-        this.userStorage = userStorage;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtProperties = jwtProperties;
-        this.oAuth2UserService = oAuth2UserService;
-        this.oAuth2AuthenticationSuccessHandler = oAuth2AuthenticationSuccessHandler;
-        this.oAuth2AuthenticationFailureHandler = oAuth2AuthenticationFailureHandler;
-        this.cookieAuthorizationRequestRepository = cookieAuthorizationRequestRepository;
-    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {

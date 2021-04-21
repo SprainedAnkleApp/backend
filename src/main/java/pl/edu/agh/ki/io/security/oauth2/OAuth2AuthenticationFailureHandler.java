@@ -1,5 +1,6 @@
 package pl.edu.agh.ki.io.security.oauth2;
 
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -14,13 +15,10 @@ import java.io.IOException;
 import static pl.edu.agh.ki.io.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_NAME;
 
 @Component
+@AllArgsConstructor
 public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
     HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository;
-
-    public OAuth2AuthenticationFailureHandler(HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository) {
-        this.cookieAuthorizationRequestRepository = cookieAuthorizationRequestRepository;
-    }
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {

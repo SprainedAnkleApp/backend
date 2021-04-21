@@ -1,5 +1,6 @@
 package pl.edu.agh.ki.io.security;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,15 +13,11 @@ import java.util.HashSet;
 import java.util.Map;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 public class UserPrincipal implements UserDetails, OAuth2User {
     private User user;
     private Map<String, Object> attributes;
-
-    public UserPrincipal(User user, Map<String, Object> attributes) {
-        this.user = user;
-        this.attributes = attributes;
-    }
 
     public UserPrincipal(User user) {
         this.user = user;

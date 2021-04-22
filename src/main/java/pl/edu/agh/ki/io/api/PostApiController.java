@@ -1,6 +1,7 @@
 package pl.edu.agh.ki.io.api;
 
 import io.swagger.annotations.Api;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,14 +13,11 @@ import pl.edu.agh.ki.io.models.wallElements.Post;
 import java.util.Optional;
 
 @RestController
+@RequiredArgsConstructor
 @Api(tags = "Posts")
 @RequestMapping("api/public/posts")
 public class PostApiController {
     private final PostStorage postStorage;
-
-    public PostApiController(PostStorage postStorage) {
-        this.postStorage = postStorage;
-    }
 
     @GetMapping("{postid}")
     public ResponseEntity<Post> getPost(@PathVariable("postid") Long postId) {

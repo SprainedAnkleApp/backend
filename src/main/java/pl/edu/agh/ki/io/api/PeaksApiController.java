@@ -1,6 +1,7 @@
 package pl.edu.agh.ki.io.api;
 
 import io.swagger.annotations.Api;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,14 +14,11 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequiredArgsConstructor
 @Api(tags = "Peaks")
 @RequestMapping("api/public/peaks")
 public class PeaksApiController {
     private final PeakStorage peakStorage;
-
-    public PeaksApiController(PeakStorage peakStorage) {
-        this.peakStorage = peakStorage;
-    }
 
     @GetMapping()
     public List<Peak> peaks() {

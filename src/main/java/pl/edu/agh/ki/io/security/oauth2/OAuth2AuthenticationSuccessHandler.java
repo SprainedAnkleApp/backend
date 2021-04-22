@@ -1,5 +1,6 @@
 package pl.edu.agh.ki.io.security.oauth2;
 
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -18,14 +19,10 @@ import static pl.edu.agh.ki.io.security.JwtAuthenticationFilter.ACCESS_CONTROL_H
 import static pl.edu.agh.ki.io.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_NAME;
 
 @Component
+@AllArgsConstructor
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private JwtProperties jwtProperties;
     private HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository;
-
-    public OAuth2AuthenticationSuccessHandler(JwtProperties jwtProperties, HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository) {
-        this.jwtProperties = jwtProperties;
-        this.cookieAuthorizationRequestRepository = cookieAuthorizationRequestRepository;
-    }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {

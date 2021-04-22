@@ -1,39 +1,30 @@
 package pl.edu.agh.ki.io.db;
 
+import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.edu.agh.ki.io.models.AuthProvider;
-import pl.edu.agh.ki.io.models.Gender;
-import pl.edu.agh.ki.io.models.Peak;
-import pl.edu.agh.ki.io.models.User;
+import pl.edu.agh.ki.io.models.*;
 import pl.edu.agh.ki.io.models.wallElements.Photo;
 import pl.edu.agh.ki.io.models.wallElements.Post;
 
 import java.sql.Date;
+import java.sql.Time;
 
 
 @Service
+@AllArgsConstructor
 public class DbInit implements CommandLineRunner {
-    private UserRepository userRepository;
-    private GenderRepository genderRepository;
-    private PasswordEncoder passwordEncoder;
-    private PeakRepository peakRepository;
-    private WallItemRepository wallItemRepository;
-
-    public DbInit(UserRepository userRepository, GenderRepository genderRepository, PasswordEncoder passwordEncoder, PeakRepository peakRepository, WallItemRepository wallItemRepository) {
-        this.userRepository = userRepository;
-        this.genderRepository = genderRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.peakRepository = peakRepository;
-        this.wallItemRepository = wallItemRepository;
-    }
+    private final UserRepository userRepository;
+    private final GenderRepository genderRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final PeakRepository peakRepository;
+    private final WallItemRepository wallItemRepository;
+    private final PeakCompletionsRepository peakCompletionsRepository;
 
     @Override
     public void run(String... args) {
-        this.wallItemRepository.deleteAll();
-        this.userRepository.deleteAll();
-        this.genderRepository.deleteAll();
+        clearRepositories();
 
         Gender male = new Gender("Male");
         this.genderRepository.save(male);
@@ -46,6 +37,11 @@ public class DbInit implements CommandLineRunner {
 
         addPeaks();
 
+        peakRepository.findPeakByName("Rysy").ifPresent((peak) -> {
+            PeakCompletion peakCompletion = new PeakCompletion(new PeakCompletionKey(testUser.getId(), peak.getId()), testUser, peak, new Time(7200000));
+            this.peakCompletionsRepository.save(peakCompletion);
+        });
+
         Photo photo = new Photo(testUser, "content", "photopath");
         wallItemRepository.save(photo);
 
@@ -54,9 +50,15 @@ public class DbInit implements CommandLineRunner {
 
     }
 
-    private void addPeaks(){
+    private void clearRepositories() {
+        this.wallItemRepository.deleteAll();
+        this.peakCompletionsRepository.deleteAll();
+        this.userRepository.deleteAll();
+        this.genderRepository.deleteAll();
         this.peakRepository.deleteAll();
+    }
 
+    private void addPeaks() {
         peakRepository.save(
                 new Peak(
                         "Rysy",

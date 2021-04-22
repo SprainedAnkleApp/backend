@@ -1,6 +1,7 @@
 package pl.edu.agh.ki.io.api;
 
 import io.swagger.annotations.Api;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -15,17 +16,13 @@ import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
+@RequiredArgsConstructor
 @Api(tags = "Users")
 @RequestMapping("/")
 public class UserApiController {
 
     private final UserStorage userStorage;
     private final GenderStorage genderStorage;
-
-    public UserApiController(UserStorage userStorage, GenderStorage genderStorage) {
-        this.userStorage = userStorage;
-        this.genderStorage = genderStorage;
-    }
 
     @GetMapping("/me")
     public  User user(@AuthenticationPrincipal User user) {

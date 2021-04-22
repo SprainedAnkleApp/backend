@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor
-public class ConquerPeakRequest {
+public class PeakCompletionRequest {
 
     @NotNull
     @SimpleSqlProtected

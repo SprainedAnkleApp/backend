@@ -31,9 +31,9 @@ public class PeakCompletionsApiController {
     }
 
 
-    @PostMapping("/conquer")
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public PeakCompletion conquerPeak(@RequestBody ConquerPeakRequest request, @AuthenticationPrincipal User user) {
+    public PeakCompletion completePeak(@RequestBody PeakCompletionRequest request, @AuthenticationPrincipal User user) {
         Optional<Peak> peakOptional = peakStorage.findPeakById(request.getPeakId());
         PeakCompletion peakCompletion = null;
 

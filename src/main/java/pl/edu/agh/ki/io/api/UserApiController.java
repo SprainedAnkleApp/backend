@@ -3,6 +3,7 @@ package pl.edu.agh.ki.io.api;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.agh.ki.io.db.GenderStorage;
@@ -13,6 +14,7 @@ import pl.edu.agh.ki.io.security.UserPrincipal;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -46,5 +48,11 @@ public class UserApiController {
         UserPrincipal userPrincipal = (UserPrincipal) userStorage.createUser(newUser);
 
         return UserResponse.fromUser(userPrincipal.getUser());
+    }
+
+    @GetMapping("/api/public/users/{userid}")
+    public ResponseEntity<User> peak(@PathVariable("userid") Long userid) {
+        Optional<User> user = this.userStorage.findUserById(userid);
+        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

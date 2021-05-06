@@ -51,7 +51,7 @@ public class UserApiController {
     }
 
     @GetMapping("/api/public/users/{userid}")
-    public ResponseEntity<User> peak(@PathVariable("userid") Long userid) {
+    public ResponseEntity<User> getUser(@PathVariable("userid") Long userid) {
         Optional<User> user = this.userStorage.findUserById(userid);
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }

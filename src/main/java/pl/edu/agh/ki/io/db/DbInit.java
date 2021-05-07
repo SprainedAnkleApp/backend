@@ -5,6 +5,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.edu.agh.ki.io.models.*;
+import pl.edu.agh.ki.io.models.wallElements.PeakPost;
 import pl.edu.agh.ki.io.models.wallElements.Photo;
 import pl.edu.agh.ki.io.models.wallElements.Post;
 
@@ -21,6 +22,7 @@ public class DbInit implements CommandLineRunner {
     private final PeakRepository peakRepository;
     private final WallItemRepository wallItemRepository;
     private final PeakCompletionsRepository peakCompletionsRepository;
+    private final PeakPostsRepository peakPostsRepository;
 
     @Override
     public void run(String... args) {
@@ -48,6 +50,8 @@ public class DbInit implements CommandLineRunner {
         Post post = new Post(testUser, "content");
         wallItemRepository.save(post);
 
+        PeakPost peakPost = new PeakPost(testUser, "content", peakRepository.findPeakByName("Rysy").get());
+        peakPostsRepository.save(peakPost);
     }
 
     private void clearRepositories() {

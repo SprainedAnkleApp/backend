@@ -8,6 +8,8 @@ import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import pl.edu.agh.ki.io.models.wallElements.PeakPost;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
@@ -46,6 +48,9 @@ public class Peak {
 
     @OneToMany(mappedBy = "peak")
     Set<PeakCompletion> peakCompletions = new HashSet<>();
+
+    @OneToMany
+    private Set<PeakPost> peakPosts = new HashSet<>();
 
     @CreationTimestamp
     @Column(name = "create_date", nullable = false)

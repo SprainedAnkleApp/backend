@@ -37,11 +37,19 @@ public class DbInit implements CommandLineRunner {
 
         userRepository.save(testUser);
 
+        User testUser2 = new User("anowak", passwordEncoder.encode("anowak"), AuthProvider.local, "Adam",
+                "Nowak", "anowak@mail.com", male, "https://i.imgur.com/VNNp6zWb.jpg", birthday, "+48880053535");
+
+        userRepository.save(testUser2);
+
         addPeaks();
 
         peakRepository.findPeakByName("Rysy").ifPresent((peak) -> {
             PeakCompletion peakCompletion = new PeakCompletion(new PeakCompletionKey(testUser.getId(), peak.getId()), testUser, peak, new Time(7200000));
             this.peakCompletionsRepository.save(peakCompletion);
+
+            PeakCompletion peakCompletion2 = new PeakCompletion(new PeakCompletionKey(testUser2.getId(), peak.getId()), testUser2, peak, new Time(6200000));
+            this.peakCompletionsRepository.save(peakCompletion2);
         });
 
         Photo photo = new Photo(testUser, "content", "photopath");
@@ -175,7 +183,7 @@ public class DbInit implements CommandLineRunner {
 
         peakRepository.save(
                 new Peak(
-                        "Rudawiec (wierzchołek graniczny)",
+                        "Rudawiec",
                         1106,
                         "podkarpackie",
                         "Masyw Rudawca wydzielają: dolina potoku Bielawka, dolina Czarnego Potoku i głęboka dolina Kunčického potoka, położona po czeskiej stronie Gór Bialskich. Zbudowany jest w całości z łupków metamorficznych i gnejsów gierałtowskich i porośnięty w większości przez lasy regla dolnego, a w partiach szczytowych rzadkim lasem regla górnego",
@@ -186,7 +194,7 @@ public class DbInit implements CommandLineRunner {
 
         peakRepository.save(
                 new Peak(
-                        "Orlica (wierzchołek graniczny)",
+                        "Orlica",
                         1084,
                         "dolnośląskie",
                         "Leży na europejskim dziale wodnym pomiędzy zlewiskami Morza Bałtyckiego i Morza Północnego. Dawniej nazywana była Międzywierchem. Orlica zbudowana jest z łupków łyszczykowych z wkładkami wapieni krystalicznych należących do metamorfiku bystrzycko-orlickiego.",
@@ -199,7 +207,7 @@ public class DbInit implements CommandLineRunner {
 
         peakRepository.save(
                 new Peak(
-                        "Wysoka (Wysokie Skałki) (wierzchołek graniczny)",
+                        "Wysoka",
                         1050,
                         "małopolskie",
                         "Szczyt w Małych Pieninach, położony na granicy polsko-słowackiej i będący najwyższym szczytem całych Pienin i Pienińskiego Pasa Skałkowego. Zbudowany jest z czerwonych wapieni krynoidowych. Cała góra porośnięta jest lasem, jedynie sam wierzchołek ma charakter kopuły skalnej wystającej ponad linię świerkowego lasu. ",
@@ -221,7 +229,7 @@ public class DbInit implements CommandLineRunner {
 
         peakRepository.save(
                 new Peak(
-                        "Lackowa (wierzchołek graniczny)",
+                        "Lackowa",
                         997,
                         "małopolskie",
                         "Najwyższy szczyt po polskiej stronie Beskidu Niskiego, położony między Krynicą-Zdrój a Wysową, na granicy ze Słowacją. Zachodni stok góry, którym biegnie czerwony szlak turystyczny, jest najbardziej stromym w Beskidzie Niskim i jednym z najbardziej stromych w polskich górach (poza Tatrami) odcinkiem znakowanego szlaku.",
@@ -232,7 +240,7 @@ public class DbInit implements CommandLineRunner {
 
         peakRepository.save(
                 new Peak(
-                        "Kowadło (wierzchołek graniczny)",
+                        "Kowadło",
                         989,
                         "dolnośląskie",
                         "Ze szczytu można podziwiać widoki na Góry Złote i północną część Wysokiego Jesionika oraz pogórze sudeckie aż po Nysę a nawet Opole. Kopulasty wierzchołek porastają młode świerki, gdzieniegdzie występują gnejsowe skałki.",
@@ -309,7 +317,7 @@ public class DbInit implements CommandLineRunner {
 
         peakRepository.save(
                 new Peak(
-                        "Biskupia Kopa (wierzchołek graniczny)",
+                        "Biskupia Kopa",
                         889,
                         "opolskie",
                         "Przyjmuje się, że Biskupia Kopa jest najwyższym szczytem w polskiej części Gór Opawskich oraz najwyższym wzniesieniem województwa opolskiego, chociaż najwyższy jej punkt, wraz z zabytkową wieżą widokową, znajduje się po czeskiej stronie. Pod koniec XIX wieku wyznaczono pierwsze szlaki prowadzące na szczyt oraz wybudowano czynną do dziś wieżę widokową.",

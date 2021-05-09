@@ -40,4 +40,9 @@ public class UserStorage implements UserDetailsService {
         User user = this.userRepository.findUserByLogin(s).orElseThrow(() -> new UsernameNotFoundException(String.format("User %s not found", s)));
         return new UserPrincipal(user);
     }
+
+    public Optional<User> findUserById(Long userId) {
+        return this.userRepository.findById(userId);
+    }
+
 }

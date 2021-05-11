@@ -6,12 +6,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import pl.edu.agh.ki.io.api.UserResponse;
+import pl.edu.agh.ki.io.models.User;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;
@@ -43,5 +46,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + token);
         response.addHeader(ACCESS_CONTROL_HEADER, JwtProperties.HEADER_STRING);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        PrintWriter responseWriter =  response.getWriter();
+        UserPrincipal userPrincipal = (UserPrincipal) authResult.getPrincipal();
+        String serializedUserResponse = objectMapper.writeValueAsString(UserResponse.fromUser(userPrincipal.getUser()));
+        responseWriter.print(serializedUserResponse);
+        responseWriter.flush();
     }
 }

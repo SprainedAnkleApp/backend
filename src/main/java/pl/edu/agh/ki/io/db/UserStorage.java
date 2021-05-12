@@ -41,6 +41,10 @@ public class UserStorage implements UserDetailsService {
         return new UserPrincipal(user);
     }
 
+    public Optional<User> findUserByFacebookId(String facebookId) {
+        return this.userRepository.findUserByFacebookUserId(facebookId);
+    }
+
     public Optional<User> findUserById(Long userId) {
         return this.userRepository.findById(userId);
     }

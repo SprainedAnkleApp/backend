@@ -1,4 +1,4 @@
-package pl.edu.agh.ki.io.api;
+package pl.edu.agh.ki.io.api.models;
 
 import lombok.Builder;
 import lombok.Data;

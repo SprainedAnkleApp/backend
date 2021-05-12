@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import pl.edu.agh.ki.io.api.models.PeakCompletionRequest;
 import pl.edu.agh.ki.io.db.PeakCompletionsStorage;
 import pl.edu.agh.ki.io.db.PeakStorage;
 import pl.edu.agh.ki.io.models.Peak;

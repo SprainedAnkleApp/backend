@@ -1,35 +1,84 @@
 package pl.edu.agh.ki.io.api;
 
 import io.swagger.annotations.Api;
-import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.client.WebClient;
+import pl.edu.agh.ki.io.api.models.CreateUserRequest;
+import pl.edu.agh.ki.io.api.models.FacebookFriend;
+import pl.edu.agh.ki.io.api.models.FacebookFriendList;
+import pl.edu.agh.ki.io.api.models.UserResponse;
 import pl.edu.agh.ki.io.db.GenderStorage;
 import pl.edu.agh.ki.io.db.UserStorage;
+import pl.edu.agh.ki.io.models.AuthProvider;
 import pl.edu.agh.ki.io.models.Gender;
 import pl.edu.agh.ki.io.models.User;
 import pl.edu.agh.ki.io.security.UserPrincipal;
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequiredArgsConstructor
+
 @Api(tags = "Users")
 @RequestMapping("/")
 public class UserApiController {
-
     private final UserStorage userStorage;
     private final GenderStorage genderStorage;
+    private final OAuth2AuthorizedClientService clientService;
+    private final WebClient facebookGraphApiClient;
+
+    Logger logger = LoggerFactory.getLogger(UserApiController.class);
+
+    public UserApiController(UserStorage userStorage, GenderStorage genderStorage,
+                             OAuth2AuthorizedClientService clientService, WebClient facebookGraphApiClient) {
+        this.userStorage = userStorage;
+        this.genderStorage = genderStorage;
+        this.clientService = clientService;
+        this.facebookGraphApiClient = facebookGraphApiClient;
+    }
 
     @GetMapping("/me")
-    public  User user(@AuthenticationPrincipal User user) {
+    public User user(@AuthenticationPrincipal User user) {
         UserPrincipal currentUser = (UserPrincipal) this.userStorage.loadUserByUsername(user.getLogin());
         return currentUser.getUser();
+    }
+
+    @GetMapping("/fb_friends")
+    public List<User> fbFriends(@AuthenticationPrincipal User user) {
+        OAuth2AuthorizedClient client =
+                clientService.loadAuthorizedClient(
+                        AuthProvider.facebook.name(),
+                        user.getEmail());
+        String accessToken = client.getAccessToken().getTokenValue();
+        String fbUserId = user.getFacebookUserId();
+
+        WebClient.ResponseSpec responseSpec = facebookGraphApiClient.get()
+            .uri(uriBuilder ->
+                uriBuilder.path(fbUserId +"/friends")
+                .queryParam("access_token", accessToken)
+                .build()
+            )
+        .retrieve();
+
+        List<FacebookFriend> fbUsers = Objects.requireNonNull(
+                responseSpec.bodyToMono(FacebookFriendList.class).block()
+        ).getData();
+
+        logger.info(fbUsers.toString());
+
+        return fbUsers.stream()
+                .map(friend -> userStorage.findUserByFacebookId(friend.getId()).orElse(null))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("api/public/users")

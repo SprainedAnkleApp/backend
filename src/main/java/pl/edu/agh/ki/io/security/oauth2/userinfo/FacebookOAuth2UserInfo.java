@@ -1,6 +1,7 @@
 package pl.edu.agh.ki.io.security.oauth2.userinfo;
 
 import pl.edu.agh.ki.io.models.AuthProvider;
+import pl.edu.agh.ki.io.models.User;
 
 import java.util.Map;
 
@@ -42,5 +43,12 @@ public class FacebookOAuth2UserInfo extends OAuth2UserInfo {
             }
         }
         return null;
+    }
+
+    @Override
+    public User toUser() {
+        User user = super.toUser();
+        user.setFacebookUserId(getId());
+        return user;
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.servlet.resource.HttpResource;
 import pl.edu.agh.ki.io.api.models.CreateUserRequest;
 import pl.edu.agh.ki.io.api.models.FacebookFriend;
 import pl.edu.agh.ki.io.api.models.FacebookFriendList;
@@ -21,6 +22,7 @@ import pl.edu.agh.ki.io.models.Gender;
 import pl.edu.agh.ki.io.models.User;
 import pl.edu.agh.ki.io.security.UserPrincipal;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -53,11 +55,17 @@ public class UserApiController {
     }
 
     @GetMapping("/fb_friends")
-    public List<User> fbFriends(@AuthenticationPrincipal User user) {
+    public List<User> fbFriends(@AuthenticationPrincipal User user, HttpServletResponse response) {
         OAuth2AuthorizedClient client =
                 clientService.loadAuthorizedClient(
                         AuthProvider.facebook.name(),
                         user.getEmail());
+
+        if(client == null){
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            return null;
+        }
+
         String accessToken = client.getAccessToken().getTokenValue();
         String fbUserId = user.getFacebookUserId();
 

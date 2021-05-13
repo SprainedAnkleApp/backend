@@ -5,7 +5,7 @@ import org.springframework.data.domain.Sort;
 public class PeakPostPage {
     private int pageNumber = 0;
     private int pageSize = 10;
-    private Sort.Direction sortDirection = Sort.Direction.ASC;
+    private Sort.Direction sortDirection = Sort.Direction.DESC;
     private String sortBy = "createDate";
 
     public int getPageNumber() {

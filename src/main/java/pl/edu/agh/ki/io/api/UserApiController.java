@@ -55,15 +55,14 @@ public class UserApiController {
     }
 
     @GetMapping("/fb_friends")
-    public List<User> fbFriends(@AuthenticationPrincipal User user, HttpServletResponse response) {
+    public ResponseEntity<List<User>> fbFriends(@AuthenticationPrincipal User user) {
         OAuth2AuthorizedClient client =
                 clientService.loadAuthorizedClient(
                         AuthProvider.facebook.name(),
                         user.getEmail());
 
         if(client == null){
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-            return null;
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
         String accessToken = client.getAccessToken().getTokenValue();
@@ -83,10 +82,10 @@ public class UserApiController {
 
         logger.info(fbUsers.toString());
 
-        return fbUsers.stream()
+        return new ResponseEntity<>(fbUsers.stream()
                 .map(friend -> userStorage.findUserByFacebookId(friend.getId()).orElse(null))
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()), HttpStatus.OK);
     }
 
     @GetMapping("api/public/users")

@@ -76,13 +76,25 @@ public class UserApiController {
             )
         .retrieve();
 
-        List<FacebookFriend> fbUsers = Objects.requireNonNull(
+        FacebookFriendList fbUsers = Objects.requireNonNull(
                 responseSpec.bodyToMono(FacebookFriendList.class).block()
-        ).getData();
+        );
+        List<FacebookFriend> allFriends = new LinkedList<>(fbUsers.getData());
+
+        while (fbUsers.getNext() != null) {
+            fbUsers = Objects.requireNonNull(
+                    WebClient.create(fbUsers.getNext()).get()
+                            .retrieve()
+                            .bodyToMono(FacebookFriendList.class)
+                            .block()
+            );
+            allFriends.addAll(fbUsers.getData());
+        }
+
 
         logger.info(fbUsers.toString());
 
-        return new ResponseEntity<>(fbUsers.stream()
+        return new ResponseEntity<>(allFriends.stream()
                 .map(friend -> userStorage.findUserByFacebookId(friend.getId()).orElse(null))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList()), HttpStatus.OK);

@@ -10,4 +10,5 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FacebookFriendList {
     public List<FacebookFriend> data;
+    public String next; // next page address
 }

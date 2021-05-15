@@ -32,7 +32,7 @@ public class UserApiController {
         return currentUser.getUser();
     }
 
-    @GetMapping("api/public/users")
+    @GetMapping("/api/public/users")
     public List<User> users() {
         return this.userStorage.findAll();
     }

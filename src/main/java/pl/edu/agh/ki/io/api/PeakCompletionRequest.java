@@ -16,5 +16,5 @@ public class PeakCompletionRequest {
 
     @NotNull
     @SimpleSqlProtected
-    private int time;
+    private Long time;
 }

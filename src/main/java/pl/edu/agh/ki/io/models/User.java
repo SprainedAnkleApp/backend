@@ -24,6 +24,9 @@ public class User {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "facebook_user_id")
+    private String facebookUserId;
+
     @Column(name = "login", unique = true, nullable = false)
     private String login;
 

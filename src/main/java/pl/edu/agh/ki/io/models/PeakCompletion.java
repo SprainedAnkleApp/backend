@@ -2,9 +2,10 @@ package pl.edu.agh.ki.io.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.sql.Time;
 import java.time.Duration;

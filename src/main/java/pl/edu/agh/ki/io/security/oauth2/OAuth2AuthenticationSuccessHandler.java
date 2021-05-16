@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
-import static pl.edu.agh.ki.io.security.JwtAuthenticationFilter.ACCESS_CONTROL_HEADER;
 import static pl.edu.agh.ki.io.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_NAME;
 
 @Component
@@ -30,7 +29,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private OAuth2AuthorizedClientService clientService;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         Optional<String> redirectUrl = CookieUtils.getCookie(request, REDIRECT_URI_NAME).map(Cookie::getValue);
 
         // TODO: add validation to redirect only to allowed redirect uri's

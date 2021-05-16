@@ -26,7 +26,9 @@ public class PeakPostsApiController {
 
     @GetMapping("{peakid}/posts")
     public ResponseEntity<Page<PeakPost>> getPeakPostsByPeakId(@PathVariable("peakid") Long peakId, PeakPostPage peakPostPage) {
-        return new ResponseEntity<>(this.peakPostsStorage.findPeakPostsByPeakId(peakId, peakPostPage), HttpStatus.OK);
+        if (this.peakStorage.findPeakById(peakId).isPresent())
+            return new ResponseEntity<>(this.peakPostsStorage.findPeakPostsByPeakId(peakId, peakPostPage), HttpStatus.OK);
+        else return ResponseEntity.notFound().build();
     }
 
     @PostMapping("/{peakid}/posts")

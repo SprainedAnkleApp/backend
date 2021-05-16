@@ -11,6 +11,7 @@ import pl.edu.agh.ki.io.models.wallElements.Post;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.time.Duration;
 
 
 @Service
@@ -45,10 +46,10 @@ public class DbInit implements CommandLineRunner {
         addPeaks();
 
         peakRepository.findPeakByName("Rysy").ifPresent((peak) -> {
-            PeakCompletion peakCompletion = new PeakCompletion(new PeakCompletionKey(testUser.getId(), peak.getId()), testUser, peak, new Time(7200000));
+            PeakCompletion peakCompletion = new PeakCompletion(new PeakCompletionKey(testUser.getId(), peak.getId()), testUser, peak, Duration.ofMinutes(8*60));
             this.peakCompletionsRepository.save(peakCompletion);
 
-            PeakCompletion peakCompletion2 = new PeakCompletion(new PeakCompletionKey(testUser2.getId(), peak.getId()), testUser2, peak, new Time(6200000));
+            PeakCompletion peakCompletion2 = new PeakCompletion(new PeakCompletionKey(testUser2.getId(), peak.getId()), testUser2, peak, Duration.ofMinutes(10*60));
             this.peakCompletionsRepository.save(peakCompletion2);
         });
 

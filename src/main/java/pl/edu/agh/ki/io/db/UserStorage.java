@@ -22,13 +22,20 @@ public class UserStorage implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public UserDetails createUser(User user) {
+    public UserDetails createUser(User user) throws AuthenticationProcessingException {
         Optional<User> optionalUser = userRepository.findUserByEmail(user.getEmail());
         if (optionalUser.isPresent()){
             throw new AuthenticationProcessingException("User already registered with " + optionalUser.get().getAuthProvider());
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return new UserPrincipal(userRepository.save(user));
+
+        try {
+            user = userRepository.save(user);
+        } catch (Exception e) {
+            throw new AuthenticationProcessingException("Conflicting login or email");
+        }
+        
+        return new UserPrincipal(user);
     }
 
     public List<User> findAll() {

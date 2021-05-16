@@ -19,21 +19,22 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Optional;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @Api(tags = "Photos")
 @RequestMapping("api/public/photos")
 public class PhotoApiController {
     private final PhotoStorage photoStorage;
-    @Autowired
-    GoogleCloudFileService fileService;
+    private final GoogleCloudFileService fileService;
 
-    public PhotoApiController(PhotoStorage photoStorage) {
+    public PhotoApiController(PhotoStorage photoStorage, GoogleCloudFileService fileService) {
         this.photoStorage = photoStorage;
+        this.fileService = fileService;
     }
 
-    @GetMapping("{photoid}")
-    public ResponseEntity<PhotoResponse> getPhoto(@PathVariable("photoid") Long photoid) throws StorageException, FileNotFoundException, IOException {
-        Optional<Photo> photo = this.photoStorage.findPhotoById(photoid);
+    @GetMapping("/{photoid}")
+    public ResponseEntity<PhotoResponse> getPhoto(@PathVariable("photoid") Long photoId) throws StorageException, FileNotFoundException, IOException {
+        Optional<Photo> photo = this.photoStorage.findPhotoById(photoId);
         if (photo.isPresent()) {
             String content = photo.get().getContent();
             String signedUrl = GoogleCloudFileService.generateV4GetObjectSignedUrl(photo.get().getPhotoPath());

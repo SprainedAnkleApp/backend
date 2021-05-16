@@ -1,4 +1,4 @@
-package pl.edu.agh.ki.io.api;
+package pl.edu.agh.ki.io.api.models;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,10 +11,8 @@ import javax.validation.constraints.NotNull;
 public class PeakCompletionRequest {
 
     @NotNull
-    @SimpleSqlProtected
     private Long peakId;
 
     @NotNull
-    @SimpleSqlProtected
-    private int time;
+    private Long time;
 }

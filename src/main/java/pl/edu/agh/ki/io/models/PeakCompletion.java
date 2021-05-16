@@ -8,6 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Time;
+import java.time.Duration;
 import java.util.Date;
 
 @NoArgsConstructor
@@ -31,7 +32,7 @@ public class PeakCompletion {
     private Peak peak;
 
     @Column(name = "completion_time", nullable = false)
-    private Time completionTime;
+    private Duration completionTime;
 
     @CreationTimestamp
     @Column(name = "create_date", nullable = false)
@@ -41,7 +42,7 @@ public class PeakCompletion {
     @Column(name = "update_date", nullable = false)
     private Date updateDate;
 
-    public PeakCompletion(PeakCompletionKey id, User user, Peak peak, Time completionTime){
+    public PeakCompletion(PeakCompletionKey id, User user, Peak peak, Duration completionTime){
         this.id = id;
         this.user = user;
         this.peak = peak;

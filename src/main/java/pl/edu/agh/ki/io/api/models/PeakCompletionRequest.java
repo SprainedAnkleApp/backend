@@ -11,10 +11,8 @@ import javax.validation.constraints.NotNull;
 public class PeakCompletionRequest {
 
     @NotNull
-    @SimpleSqlProtected
     private Long peakId;
 
     @NotNull
-    @SimpleSqlProtected
-    private int time;
+    private Long time;
 }

@@ -4,12 +4,35 @@ import lombok.Builder;
 import lombok.Data;
 import pl.edu.agh.ki.io.models.User;
 
+import java.sql.Date;
+
 @Data
 @Builder
 public class UserResponse {
     private Long id;
+    private String login;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String profilePhoto;
+    private Date birthday;
+    private String about;
+    private String gender;
+    private String phoneNumber;
+
 
     static public UserResponse fromUser(User user) {
-        return UserResponse.builder().id(user.getId()).build();
+        return UserResponse.builder()
+                .id(user.getId())
+                .login(user.getLogin())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .profilePhoto(user.getProfilePhoto())
+                .birthday(user.getBirthday())
+                .about(user.getAbout())
+                .gender(user.getGender().getLabel())
+                .phoneNumber(user.getPhoneNumber())
+                .build();
     }
 }

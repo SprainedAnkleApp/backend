@@ -15,6 +15,28 @@ public class PasswordValidator  implements ConstraintValidator<ValidPassword, St
     }
 
     private boolean validatePassword(String password) {
-        return password.length() >= 8; //TODO: more sophisticated checks
+        boolean hasNumeric = false;
+        boolean hasSpecialCharacter = false;
+        boolean hasCapitalLetter = false;
+        for(char character : password.toCharArray()) {
+            if(isNumeric(character)) hasNumeric = true;
+            if(isSpecialCharacter(character)) hasSpecialCharacter = true;
+            if(isCapitalLetter(character)) hasCapitalLetter = true;
+        }
+
+        return hasNumeric && hasCapitalLetter && hasSpecialCharacter;
+    }
+
+    public static boolean isNumeric(char ch) {
+        return (ch >= '0' && ch <= '9');
+    }
+
+    public static boolean isSpecialCharacter(char ch) {
+        return (ch >= '!' && ch <= '/') || (ch >= ':' && ch <= '@')
+                || (ch >= '[' && ch <= '`') || (ch >= '{' && ch <= '~');
+    }
+
+    public static boolean isCapitalLetter(char ch) {
+        return (ch >= 'A' && ch <= 'Z');
     }
 }

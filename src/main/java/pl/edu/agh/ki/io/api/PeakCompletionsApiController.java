@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.agh.ki.io.api.models.PeakCompletionRequest;
 import pl.edu.agh.ki.io.api.models.PeakCompletionResponse;
+import pl.edu.agh.ki.io.api.models.UserResponse;
 import pl.edu.agh.ki.io.db.PeakCompletionsStorage;
 import pl.edu.agh.ki.io.db.PeakStorage;
 import pl.edu.agh.ki.io.models.Peak;
@@ -29,12 +30,34 @@ public class PeakCompletionsApiController {
     private final PeakCompletionsStorage peakCompletionsStorage;
     private final PeakStorage peakStorage;
 
+    private boolean peakExists(Long peakId) {
+        Optional<Peak> peakOptional = this.peakStorage.findPeakById(peakId);
+        return peakOptional.isPresent();
+    }
 
     @GetMapping()
     public List<PeakCompletionResponse> peakCompletions() {
         return this.peakCompletionsStorage.findAll().stream()
                 .map(PeakCompletionResponse::fromPeakCompletion)
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/{peakid}/first")
+    public ResponseEntity<UserResponse> peakFirstConqueror(@PathVariable("peakid") Long peakId) {
+        if (!peakExists(peakId)) return ResponseEntity.notFound().build();
+
+        Optional<PeakCompletion> first = this.peakCompletionsStorage.findFirstByPeakId(peakId);
+
+        return first
+                .map(peakCompletion -> new ResponseEntity<>(UserResponse.fromUser(peakCompletion.getUser()), HttpStatus.OK))
+                .orElse(ResponseEntity.noContent().build());
+    }
+
+    @GetMapping("/{peakid}/totalCompletions")
+    public ResponseEntity<Long> peakTotalCompletions(@PathVariable("peakid") Long peakId) {
+        if (!peakExists(peakId)) return ResponseEntity.notFound().build();
+
+        return new ResponseEntity<>((long) this.peakCompletionsStorage.findByPeakId(peakId).size(), HttpStatus.OK);
     }
 
 

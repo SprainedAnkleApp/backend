@@ -1,6 +1,7 @@
 package pl.edu.agh.ki.io.security.oauth2;
 
 
+import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -20,12 +21,9 @@ import pl.edu.agh.ki.io.security.oauth2.userinfo.OAuth2UserInfoFactory;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class OAuth2UserStorage extends DefaultOAuth2UserService {
     private UserRepository userRepository;
-
-    public OAuth2UserStorage(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -54,7 +52,11 @@ public class OAuth2UserStorage extends DefaultOAuth2UserService {
         if (userOptional.isPresent()) {
             user = userOptional.get();
             if (!user.getAuthProvider().equals(AuthProvider.valueOf(registrationId))) {
-                throw new AuthenticationProcessingException("User signed up with " + user.getAuthProvider());
+                if (!registrationId.equals(AuthProvider.facebook.toString())) {
+                    throw new AuthenticationProcessingException("User signed up with " + user.getAuthProvider());
+                } else {
+                    user.setFacebookUserId(userInfo.getId());
+                }
             }
         } else {
             user = userInfo.toUser();

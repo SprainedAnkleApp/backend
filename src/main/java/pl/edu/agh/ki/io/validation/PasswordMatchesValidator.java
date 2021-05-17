@@ -1,6 +1,6 @@
 package pl.edu.agh.ki.io.validation;
 
-import pl.edu.agh.ki.io.api.CreateUserRequest;
+import pl.edu.agh.ki.io.api.models.CreateUserRequest;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

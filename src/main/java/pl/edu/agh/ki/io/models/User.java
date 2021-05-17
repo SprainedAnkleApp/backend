@@ -24,6 +24,9 @@ public class User {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "facebook_user_id")
+    private String facebookUserId;
+
     @Column(name = "login", unique = true, nullable = false)
     private String login;
 
@@ -48,6 +51,9 @@ public class User {
 
     @Column(name="birthday")
     private Date birthday;
+
+    @Column(name="about", length = 1023)
+    private String about;
 
     @ManyToOne
     private Gender gender;

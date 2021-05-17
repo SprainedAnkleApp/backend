@@ -8,6 +8,8 @@ import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import pl.edu.agh.ki.io.models.wallElements.PeakPost;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
@@ -41,11 +43,20 @@ public class Peak {
     @Column(name="mountainRange", nullable = false)
     private String mountainRange;
 
+    @Column(name="latitude", nullable = false)
+    private double latitude;
+
+    @Column(name="longitude", nullable = false)
+    private double longitude;
+
     @Column(name = "photo", length = 1023, nullable = false)
     private String photo;
 
     @OneToMany(mappedBy = "peak")
     Set<PeakCompletion> peakCompletions = new HashSet<>();
+
+    @OneToMany
+    private Set<PeakPost> peakPosts = new HashSet<>();
 
     @CreationTimestamp
     @Column(name = "create_date", nullable = false)
@@ -55,13 +66,15 @@ public class Peak {
     @Column(name = "update_date", nullable = false)
     private Date updateDate;
 
-    public Peak(String name, int height, String region, String about, String mountainRange, String photo) {
+    public Peak(String name, int height, String region, String about, String mountainRange, String photo, double latitude, double longitude) {
         this.name = name;
         this.height = height;
         this.region = region;
         this.about = about;
         this.mountainRange = mountainRange;
         this.photo = photo;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     @PrePersist

@@ -26,9 +26,10 @@ public class FriendshipsApiController {
     private final FriendshipStorage friendshipStorage;
 
 
-    @PostMapping("/api/users/{userid}/add")
-    public ResponseEntity<Friendship> addFriend(@AuthenticationPrincipal User user, @PathVariable("userid") Long addresseeId) {
+    @PostMapping("/api/users/{userid}/add") //TODO change response to one with less info
+    public ResponseEntity<?> addFriend(@AuthenticationPrincipal User user, @PathVariable("userid") Long addresseeId) {
         User requester = ((UserPrincipal) this.userStorage.loadUserByUsername(user.getLogin())).getUser();
+        if(requester.getId().equals(addresseeId)) return ResponseEntity.badRequest().body("You can't add yourself to friends");
         Optional<User> addressee = this.userStorage.findUserById(addresseeId);
 
         if(addressee.isPresent()) {
@@ -44,7 +45,7 @@ public class FriendshipsApiController {
     }
 
     @PostMapping("/api/users/{userid}/accept")
-    public ResponseEntity<Friendship> acceptFriend(@AuthenticationPrincipal User user, @PathVariable("userid") Long requesterId) {
+    public ResponseEntity<?> acceptFriend(@AuthenticationPrincipal User user, @PathVariable("userid") Long requesterId) {
         Optional<User> requester = this.userStorage.findUserById(requesterId);
         if(requester.isPresent()) {
             User addressee = ((UserPrincipal) this.userStorage.loadUserByUsername(user.getLogin())).getUser();
@@ -64,15 +65,34 @@ public class FriendshipsApiController {
         return ResponseEntity.notFound().build();
     }
 
+    @PostMapping("/api/users/{userid}/reject")
+    public ResponseEntity<?> rejectFriend(@AuthenticationPrincipal User user, @PathVariable("userid") Long requesterId) {
+        Optional<User> requester = this.userStorage.findUserById(requesterId);
+        if(requester.isPresent()) {
+            User addressee = ((UserPrincipal) this.userStorage.loadUserByUsername(user.getLogin())).getUser();
+            if(this.friendshipStorage.findByRequesterAndAddressee(requester.get(), addressee) != null){
+                this.friendshipStorage.deleteByRequesterAndAddressee(requester.get(), addressee);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+            else return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @PostMapping("/api/users/{userid}/remove")
     public ResponseEntity<Friendship> removeFriend(@AuthenticationPrincipal User user, @PathVariable("userid") Long userId) {
         Optional<User> requester = this.userStorage.findUserById(userId);
         if(requester.isPresent()) {
             User addressee = ((UserPrincipal) this.userStorage.loadUserByUsername(user.getLogin())).getUser();
-            this.friendshipStorage.deleteByRequesterAndAddressee(requester.get(), addressee);
-            this.friendshipStorage.deleteByRequesterAndAddressee(addressee, requester.get());
+            if(this.friendshipStorage.findByRequesterAndAddressee(requester.get(), addressee) != null &&
+                    this.friendshipStorage.findByRequesterAndAddressee(addressee, requester.get()) != null) {
 
-            return new ResponseEntity<>(HttpStatus.OK);
+                this.friendshipStorage.deleteByRequesterAndAddressee(requester.get(), addressee);
+                this.friendshipStorage.deleteByRequesterAndAddressee(addressee, requester.get());
+
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.notFound().build();
     }

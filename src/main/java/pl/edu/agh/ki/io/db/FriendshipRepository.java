@@ -11,4 +11,5 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Long> {
     Friendship findByRequesterAndAddressee(User requester, User addressee);
 
     void deleteByRequesterAndAddressee(User requester, User addressee);
+
 }

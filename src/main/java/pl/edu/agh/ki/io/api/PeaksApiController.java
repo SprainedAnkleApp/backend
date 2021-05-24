@@ -15,6 +15,7 @@ import pl.edu.agh.ki.io.models.User;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -24,9 +25,13 @@ import java.util.Optional;
 public class PeaksApiController {
     private final PeakStorage peakStorage;
     private final PeakCompletionsStorage peakCompletionsStorage;
+
     @GetMapping()
-    public List<Peak> peaks() {
-        return this.peakStorage.findAll();
+    public List<PeakResponse> peaks(@AuthenticationPrincipal User user) {
+        return this.peakStorage.findAll()
+                .stream()
+                .map(peak -> PeakResponse.fromPeakWithCompletion(peak, peakCompletionsStorage.findByPeakIdAndUserId(peak.getId(), user.getId()).isPresent()))
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{peakid}")

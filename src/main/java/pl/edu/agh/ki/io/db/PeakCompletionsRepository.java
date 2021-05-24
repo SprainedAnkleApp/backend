@@ -15,4 +15,6 @@ public interface PeakCompletionsRepository extends JpaRepository<PeakCompletion,
     List<PeakCompletion> findByIdUserId(Long userId);
 
     Optional<PeakCompletion> findFirstByPeakIdOrderByCreateDate(Long peakId);
+
+    Optional<PeakCompletion> findByPeakIdAndUserId(Long peakId, Long userId);
 }

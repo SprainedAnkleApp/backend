@@ -60,6 +60,13 @@ public class PeakCompletionsApiController {
         return new ResponseEntity<>((long) this.peakCompletionsStorage.findByPeakId(peakId).size(), HttpStatus.OK);
     }
 
+    @GetMapping("/{peakid}/averageTime")
+    public ResponseEntity<Double> peakAverageTimeCompletion(@PathVariable("peakid") Long peakId) {
+        if (!peakExists(peakId)) return ResponseEntity.notFound().build();
+        List<PeakCompletion> peakCompletions = this.peakCompletionsStorage.findByPeakId(peakId);
+        return peakCompletions.size() == 0 ? new ResponseEntity<>(0.0, HttpStatus.OK) : new ResponseEntity<>(peakCompletions.stream().map(peakCompletion -> peakCompletion.getCompletionTime().toMinutes()).reduce((long) 0, Long::sum).doubleValue() / peakCompletions.size(), HttpStatus.OK);
+    }
+
 
     @PostMapping()
     public ResponseEntity<PeakCompletionResponse> completePeak(@RequestBody PeakCompletionRequest request, @AuthenticationPrincipal User user) {

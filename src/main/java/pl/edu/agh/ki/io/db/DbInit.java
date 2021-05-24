@@ -46,11 +46,24 @@ public class DbInit implements CommandLineRunner {
         addPeaks();
 
         peakRepository.findPeakByName("Rysy").ifPresent((peak) -> {
-            PeakCompletion peakCompletion = new PeakCompletion(new PeakCompletionKey(testUser.getId(), peak.getId()), testUser, peak, Duration.ofMinutes(8*60));
+            PeakCompletion peakCompletion = new PeakCompletion(new PeakCompletionKey(testUser.getId(), peak.getId()), testUser, peak, Duration.ofMinutes(60));
             this.peakCompletionsRepository.save(peakCompletion);
 
-            PeakCompletion peakCompletion2 = new PeakCompletion(new PeakCompletionKey(testUser2.getId(), peak.getId()), testUser2, peak, Duration.ofMinutes(10*60));
+            PeakCompletion peakCompletion2 = new PeakCompletion(new PeakCompletionKey(testUser2.getId(), peak.getId()), testUser2, peak, Duration.ofMinutes(120));
             this.peakCompletionsRepository.save(peakCompletion2);
+        });
+
+        peakRepository.findPeakByName("Śnieżka").ifPresent((peak) -> {
+            PeakCompletion peakCompletion = new PeakCompletion(new PeakCompletionKey(testUser.getId(), peak.getId()), testUser, peak, Duration.ofMinutes(100));
+            this.peakCompletionsRepository.save(peakCompletion);
+
+            PeakCompletion peakCompletion2 = new PeakCompletion(new PeakCompletionKey(testUser2.getId(), peak.getId()), testUser2, peak, Duration.ofMinutes(140));
+            this.peakCompletionsRepository.save(peakCompletion2);
+        });
+
+        peakRepository.findPeakByName("Babia Góra").ifPresent((peak) -> {
+            PeakCompletion peakCompletion = new PeakCompletion(new PeakCompletionKey(testUser2.getId(), peak.getId()), testUser2, peak, Duration.ofMinutes(110));
+            this.peakCompletionsRepository.save(peakCompletion);
         });
 
         Photo photo = new Photo(testUser, "content", "photopath");

@@ -33,7 +33,7 @@ public class FriendshipsApiController {
         Optional<User> addressee = this.userStorage.findUserById(addresseeId);
 
         if(addressee.isPresent()) {
-            if (this.friendshipStorage.findByRequesterAndAddressee(addressee.get(), requester) != null){
+            if (this.friendshipStorage.findByRequesterAndAddressee(addressee.get(), requester).isPresent()){
                 return acceptFriend(requester, addresseeId);
             }
 
@@ -49,18 +49,16 @@ public class FriendshipsApiController {
         Optional<User> requester = this.userStorage.findUserById(requesterId);
         if(requester.isPresent()) {
             User addressee = ((UserPrincipal) this.userStorage.loadUserByUsername(user.getLogin())).getUser();
-            Friendship pendingFriendship = this.friendshipStorage.findByRequesterAndAddressee(requester.get(), addressee);
+            Optional<Friendship> pendingFriendship = this.friendshipStorage.findByRequesterAndAddressee(requester.get(), addressee);
 
-            if(pendingFriendship != null) {
-                pendingFriendship.setStatus(1);
-                this.friendshipStorage.saveFriendship(pendingFriendship);
+            if(pendingFriendship.isPresent()) {
+                pendingFriendship.get().setStatus(1);
+                this.friendshipStorage.saveFriendship(pendingFriendship.get());
 
                 Friendship friendship = new Friendship(1, addressee, requester.get());
                 this.friendshipStorage.saveFriendship(friendship);
                 return new ResponseEntity<>(friendship, HttpStatus.OK);
             }
-            return ResponseEntity.notFound().build();
-
         }
         return ResponseEntity.notFound().build();
     }
@@ -70,11 +68,10 @@ public class FriendshipsApiController {
         Optional<User> requester = this.userStorage.findUserById(requesterId);
         if(requester.isPresent()) {
             User addressee = ((UserPrincipal) this.userStorage.loadUserByUsername(user.getLogin())).getUser();
-            if(this.friendshipStorage.findByRequesterAndAddressee(requester.get(), addressee) != null){
+            if(this.friendshipStorage.findByRequesterAndAddressee(requester.get(), addressee).isPresent()){
                 this.friendshipStorage.deleteByRequesterAndAddressee(requester.get(), addressee);
                 return new ResponseEntity<>(HttpStatus.OK);
             }
-            else return ResponseEntity.notFound().build();
         }
         return ResponseEntity.notFound().build();
     }
@@ -84,15 +81,14 @@ public class FriendshipsApiController {
         Optional<User> requester = this.userStorage.findUserById(userId);
         if(requester.isPresent()) {
             User addressee = ((UserPrincipal) this.userStorage.loadUserByUsername(user.getLogin())).getUser();
-            if(this.friendshipStorage.findByRequesterAndAddressee(requester.get(), addressee) != null &&
-                    this.friendshipStorage.findByRequesterAndAddressee(addressee, requester.get()) != null) {
+            if(this.friendshipStorage.findByRequesterAndAddressee(requester.get(), addressee).isPresent() &&
+                    this.friendshipStorage.findByRequesterAndAddressee(addressee, requester.get()).isPresent()) {
 
                 this.friendshipStorage.deleteByRequesterAndAddressee(requester.get(), addressee);
                 this.friendshipStorage.deleteByRequesterAndAddressee(addressee, requester.get());
 
                 return new ResponseEntity<>(HttpStatus.OK);
             }
-            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.notFound().build();
     }

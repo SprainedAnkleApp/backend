@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import pl.edu.agh.ki.io.models.Friendship;
 import pl.edu.agh.ki.io.models.User;
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -18,7 +19,7 @@ public class FriendshipStorage {
         this.friendshipRepository.save(friendship);
     }
 
-    public Friendship findByRequesterAndAddressee(User requester, User addressee){
+    public Optional<Friendship> findByRequesterAndAddressee(User requester, User addressee){
         return this.friendshipRepository.findByRequesterAndAddressee(requester, addressee);
     }
 

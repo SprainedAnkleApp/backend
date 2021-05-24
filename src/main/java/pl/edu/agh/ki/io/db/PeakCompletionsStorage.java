@@ -28,4 +28,9 @@ public class PeakCompletionsStorage {
     public List<PeakCompletion> findByPeakId(Long peakId) {
         return this.peakCompletionsRepository.findByPeakId(peakId);
     }
+
+    public Optional<PeakCompletion> findByPeakIdAndUserId (Long peakId, Long userId) {
+        return this.peakCompletionsRepository.findByPeakIdAndUserId(peakId, userId);
+
+    }
 }

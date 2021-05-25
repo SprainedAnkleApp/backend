@@ -19,7 +19,7 @@ public class Friendship {
     @Column(name = "id")
     private Long id;
 
-    //0 - pending, 1 - accepted, 2 - declined, 3 - blocked
+    //0 - pending, 1 - accepted, 2 - blocked
     @Column(name = "status", nullable = false)
     private int status;
 
@@ -28,6 +28,16 @@ public class Friendship {
 
     @ManyToOne
     private User addressee;
+
+    public Friendship(int status, User requester, User addressee) {
+        this.status = status;
+        this.requester = requester;
+        this.addressee = addressee;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
     @CreationTimestamp
     @Column(name = "create_date", nullable = false)

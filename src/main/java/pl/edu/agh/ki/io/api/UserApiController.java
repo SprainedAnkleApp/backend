@@ -128,8 +128,8 @@ public class UserApiController {
     }
 
     @GetMapping("/api/public/users/{userid}")
-    public ResponseEntity<UserResponse> getUser(@PathVariable("userid") Long userid) {
-        Optional<User> optionalUser = this.userStorage.findUserById(userid);
+    public ResponseEntity<UserResponse> getUser(@PathVariable("userid") Long userId) {
+        Optional<User> optionalUser = this.userStorage.findUserById(userId);
         return optionalUser
                 .map(user -> new ResponseEntity<>(UserResponse.fromUser(user), HttpStatus.OK))
                 .orElseGet(() -> ResponseEntity.notFound().build());

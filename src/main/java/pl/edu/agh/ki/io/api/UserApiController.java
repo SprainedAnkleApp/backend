@@ -3,6 +3,7 @@ package pl.edu.agh.ki.io.api;
 import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,6 +22,7 @@ import pl.edu.agh.ki.io.db.UserStorage;
 import pl.edu.agh.ki.io.models.AuthProvider;
 import pl.edu.agh.ki.io.models.Gender;
 import pl.edu.agh.ki.io.models.User;
+import pl.edu.agh.ki.io.models.UserPage;
 import pl.edu.agh.ki.io.security.AuthenticationProcessingException;
 import pl.edu.agh.ki.io.security.UserPrincipal;
 
@@ -106,10 +108,16 @@ public class UserApiController {
     }
 
     @GetMapping("/api/public/users")
-    public List<UserResponse> users() {
-        return this.userStorage.findAll().stream()
-                .map(UserResponse::fromUser)
-                .collect(Collectors.toList());
+    public ResponseEntity<Page<UserResponse>> users(UserPage userPage) {
+        Page<User> users = this.userStorage.findAll(userPage);
+        Sort sort = Sort.by(userPage.getSortDirection(), userPage.getSortBy());
+        Pageable pageable = PageRequest.of(userPage.getPageNumber(),
+                userPage.getPageSize(), sort);
+
+        return new ResponseEntity<>(new PageImpl<>(
+                    users.stream()
+                        .map(UserResponse::fromUser)
+                        .collect(Collectors.toList()), pageable, users.getTotalElements()), HttpStatus.OK);
     }
 
     // TODO: add email verification

@@ -33,4 +33,4 @@ build/
 .vscode/
 
 ### Google Cloud credentails ###
-gcloud-credentials/
+src/main/gcloud-credentials/

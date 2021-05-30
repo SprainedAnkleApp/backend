@@ -20,8 +20,4 @@ public class Photo extends WallItem {
         super(user, content);
         this.photoPath = photoPath;
     }
-
-    public String getPhotoPath() {
-        return this.photoPath;
-    }
 }

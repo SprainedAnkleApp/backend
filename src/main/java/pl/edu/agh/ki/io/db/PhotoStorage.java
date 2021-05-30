@@ -13,8 +13,8 @@ public class PhotoStorage {
         this.photoRepository = photoRepository;
     }
 
-    public void createPhoto(Photo photo) {
-        this.photoRepository.save(photo);
+    public Photo createPhoto(Photo photo) {
+        return this.photoRepository.save(photo);
     }
 
 

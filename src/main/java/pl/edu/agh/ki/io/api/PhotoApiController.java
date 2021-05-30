@@ -49,11 +49,11 @@ public class PhotoApiController {
             MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.CREATED)
     public Long createPhoto(@ModelAttribute PhotoRequest photo, @AuthenticationPrincipal User user) throws IOException {
-        Photo photoDbEntry = new Photo(user, photo.getContent(), photo.getPhotoPath());
-        this.photoStorage.createPhoto(photoDbEntry);
+        String photoPath =  GoogleCloudFileService.generateFileName();
+        fileService.upload(photo.getFile(), photoPath);
 
-        fileService.upload(photo.getFile(), GoogleCloudFileService.generateFileName());
-
+        Photo photoDbEntry = new Photo(user, photo.getContent(), photoPath);
+        photoDbEntry = this.photoStorage.createPhoto(photoDbEntry);
         return photoDbEntry.getId();
     }
 

@@ -7,6 +7,5 @@ import org.springframework.web.multipart.MultipartFile;
 @Getter @Setter 
 public class PhotoRequest {
     private MultipartFile file;
-    private String photoPath;
     private String content;
 }

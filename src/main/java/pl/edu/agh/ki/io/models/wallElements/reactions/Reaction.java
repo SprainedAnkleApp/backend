@@ -17,6 +17,19 @@ public class Reaction {
     @Column(name = "type", nullable = false)
     private ReactionType type;
 
+    public Reaction(ReactionKey id, ReactionType type) {
+        this.id = id;
+        this.type = type;
+    }
+
+    public ReactionType getType() {
+        return type;
+    }
+
+    public ReactionKey getId() {
+        return id;
+    }
+
     @CreationTimestamp
     @Column(name = "create_date", nullable = false)
     private Date createDate;

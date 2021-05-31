@@ -1,11 +1,18 @@
 package pl.edu.agh.ki.io.db;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.edu.agh.ki.io.models.User;
+import pl.edu.agh.ki.io.models.UserPage;
+import pl.edu.agh.ki.io.models.wallElements.WallItem;
+import pl.edu.agh.ki.io.models.wallElements.WallItemPage;
 import pl.edu.agh.ki.io.security.AuthenticationProcessingException;
 import pl.edu.agh.ki.io.security.UserPrincipal;
 
@@ -40,6 +47,14 @@ public class UserStorage implements UserDetailsService {
 
     public List<User> findAll() {
         return this.userRepository.findAll();
+    }
+
+    public Page<User> findAll(UserPage userPage) {
+        Sort sort = Sort.by(userPage.getSortDirection(), userPage.getSortBy());
+
+        Pageable pageable = PageRequest.of(userPage.getPageNumber(),
+                userPage.getPageSize(), sort);
+        return this.userRepository.findAll(pageable);
     }
 
     @Override

@@ -5,6 +5,10 @@ import org.springframework.stereotype.Repository;
 import pl.edu.agh.ki.io.models.wallElements.reactions.Reaction;
 import pl.edu.agh.ki.io.models.wallElements.reactions.ReactionKey;
 
+import java.util.List;
+
 @Repository
 public interface ReactionsRepository extends JpaRepository<Reaction, ReactionKey> {
+
+    List<Reaction> findByIdWallElementID(Long wallElementId);
 }

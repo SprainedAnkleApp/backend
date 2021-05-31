@@ -8,6 +8,9 @@ import pl.edu.agh.ki.io.models.*;
 import pl.edu.agh.ki.io.models.wallElements.PeakPost;
 import pl.edu.agh.ki.io.models.wallElements.Photo;
 import pl.edu.agh.ki.io.models.wallElements.Post;
+import pl.edu.agh.ki.io.models.wallElements.reactions.Reaction;
+import pl.edu.agh.ki.io.models.wallElements.reactions.ReactionKey;
+import pl.edu.agh.ki.io.models.wallElements.reactions.ReactionType;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -24,6 +27,7 @@ public class DbInit implements CommandLineRunner {
     private final WallItemRepository wallItemRepository;
     private final PeakCompletionsRepository peakCompletionsRepository;
     private final PeakPostsRepository peakPostsRepository;
+    private final ReactionsRepository reactionsRepository;
 
     @Override
     public void run(String... args) {
@@ -68,15 +72,20 @@ public class DbInit implements CommandLineRunner {
 
         Photo photo = new Photo(testUser, "content", "photopath");
         wallItemRepository.save(photo);
-
         Post post = new Post(testUser, "content");
         wallItemRepository.save(post);
+
+        Reaction reaction = new Reaction(new ReactionKey(testUser.getId(), post.getId()), ReactionType.LIKE);
+        Reaction reaction2 = new Reaction(new ReactionKey(testUser2.getId(), post.getId()), ReactionType.LIKE);
+        reactionsRepository.save(reaction);
+        reactionsRepository.save(reaction2);
 
         PeakPost peakPost = new PeakPost(testUser, "content", peakRepository.findPeakByName("Rysy").get());
         peakPostsRepository.save(peakPost);
     }
 
     private void clearRepositories() {
+        this.reactionsRepository.deleteAll();
         this.wallItemRepository.deleteAll();
         this.peakCompletionsRepository.deleteAll();
         this.userRepository.deleteAll();

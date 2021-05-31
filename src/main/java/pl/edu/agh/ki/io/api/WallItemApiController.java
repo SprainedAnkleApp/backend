@@ -5,11 +5,11 @@ import io.swagger.annotations.Api;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+import pl.edu.agh.ki.io.api.models.WallItemResponse;
 import pl.edu.agh.ki.io.db.WallItemStorage;
+import pl.edu.agh.ki.io.models.User;
 import pl.edu.agh.ki.io.models.wallElements.WallItem;
 import pl.edu.agh.ki.io.models.wallElements.WallItemPage;
 
@@ -25,8 +25,9 @@ public class WallItemApiController {
         this.wallItemStorage = wallItemStorage;
     }
 
+
     @GetMapping()
-    public ResponseEntity<Page<WallItem>> getWallItems(WallItemPage wallItemPage) {
+    public ResponseEntity<Page<WallItemResponse>> getWallItems(WallItemPage wallItemPage) {
         return new ResponseEntity<>(this.wallItemStorage.findAll(wallItemPage), HttpStatus.OK);
     }
 }

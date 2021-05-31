@@ -17,7 +17,12 @@ public class ReactionsStorage {
     }
 
     public void createReaction(Reaction reaction) {
-        this.reactionsRepository.save(reaction);
+        Optional<Reaction> optionalReaction = this.reactionsRepository.findById(reaction.getId());
+        if (optionalReaction.isPresent()) {
+            optionalReaction.get().setType(reaction.getType());
+            this.reactionsRepository.save(optionalReaction.get());
+        }
+        else this.reactionsRepository.save(reaction);
     }
 
     public void deleteReaction(Reaction reaction) {

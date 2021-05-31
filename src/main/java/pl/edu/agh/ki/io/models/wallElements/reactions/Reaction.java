@@ -2,6 +2,7 @@ package pl.edu.agh.ki.io.models.wallElements.reactions;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -17,6 +18,7 @@ public class Reaction {
     private ReactionKey id;
 
     @Column(name = "type", nullable = false)
+    @Setter
     private ReactionType type;
 
     public Reaction(ReactionKey id, ReactionType type) {

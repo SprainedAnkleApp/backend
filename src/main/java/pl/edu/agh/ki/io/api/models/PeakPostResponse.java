@@ -12,12 +12,14 @@ import java.util.stream.Collectors;
 @Data
 @Builder
 public class PeakPostResponse extends WallItemResponse {
+    private Long id;
     private String content;
     private Peak peak;
     private List<ReactionResponse> reactions;
 
     public static PeakPostResponse fromPeakPostAndReactions(PeakPost peakPost, List<Reaction> reactions) {
         return PeakPostResponse.builder()
+                .id(peakPost.getId())
                 .content(peakPost.getContent())
                 .peak(peakPost.getPeak())
                 .reactions(reactions.stream().map(ReactionResponse::fromReaction).collect(Collectors.toList())).build();

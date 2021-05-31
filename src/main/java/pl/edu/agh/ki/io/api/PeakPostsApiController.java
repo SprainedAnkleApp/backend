@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.agh.ki.io.api.models.CreatePostRequest;
-import pl.edu.agh.ki.io.api.models.CreatePostResponse;
+import pl.edu.agh.ki.io.api.models.PostResponse;
 import pl.edu.agh.ki.io.db.PeakPostsStorage;
 import pl.edu.agh.ki.io.db.PeakStorage;
 import pl.edu.agh.ki.io.models.Peak;
@@ -35,13 +35,13 @@ public class PeakPostsApiController {
     }
 
     @PostMapping("/{peakid}/posts")
-    public ResponseEntity<CreatePostResponse> createPost(@RequestBody CreatePostRequest postRequest, @AuthenticationPrincipal User user, @PathVariable("peakid") Long peakId) {
+    public ResponseEntity<PostResponse> createPost(@RequestBody CreatePostRequest postRequest, @AuthenticationPrincipal User user, @PathVariable("peakid") Long peakId) {
         Optional<Peak> optionalPeak = this.peakStorage.findPeakById(peakId);
         return optionalPeak
                 .map(peak -> {
                     PeakPost peakPost = new PeakPost(user, postRequest.getContent(), peak);
                     peakPostsStorage.createPeakPost(peakPost);
-                    return new ResponseEntity<>(CreatePostResponse.fromPost(peakPost), HttpStatus.CREATED);
+                    return new ResponseEntity<>(PostResponse.fromPost(peakPost), HttpStatus.CREATED); //todo zmienic postresponse na peakpostresponse
                 }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }

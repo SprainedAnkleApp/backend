@@ -1,5 +1,6 @@
 package pl.edu.agh.ki.io.models.wallElements.reactions;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -8,6 +9,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @NoArgsConstructor
+@Getter
 @Entity
 @Table(name = "reactions")
 public class Reaction {
@@ -20,14 +22,6 @@ public class Reaction {
     public Reaction(ReactionKey id, ReactionType type) {
         this.id = id;
         this.type = type;
-    }
-
-    public ReactionType getType() {
-        return type;
-    }
-
-    public ReactionKey getId() {
-        return id;
     }
 
     @CreationTimestamp

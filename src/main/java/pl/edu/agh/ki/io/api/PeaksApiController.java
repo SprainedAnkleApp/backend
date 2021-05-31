@@ -50,7 +50,7 @@ public class PeaksApiController {
     public List<PeakResponse> peaks(@AuthenticationPrincipal User user) {
         return this.peakStorage.findAll()
                 .stream()
-                .map(peak -> PeakResponse.fromPeakWithCompletion(peak, peakCompletionsStorage.findByPeakIdAndUserId(peak.getId(), user.getId()).isPresent(), getPeakStats(peak.getId())))
+                .map(peak -> PeakResponse.fromPeakWithCompletion(peak, peakCompletionsStorage.findByPeakIdAndUserId(peak.getId(), user.getId()).isPresent()))
                 .collect(Collectors.toList());
     }
 
@@ -59,7 +59,7 @@ public class PeaksApiController {
         Optional<Peak> peak = this.peakStorage.findPeakById(peakId);
         if (peak.isPresent()) {
             Optional<PeakCompletion> peakCompletion = peakCompletionsStorage.findByPeakIdAndUserId(peakId, user.getId());
-            return new ResponseEntity<>(PeakResponse.fromPeakWithCompletion(peak.get(), peakCompletion.isPresent(), getPeakStats(peakId)), HttpStatus.OK);
+            return new ResponseEntity<>(PeakResponse.fromPeakWithCompletionAndStatistics(peak.get(), peakCompletion.isPresent(), getPeakStats(peakId)), HttpStatus.OK);
         }
         return ResponseEntity.notFound().build();
     }

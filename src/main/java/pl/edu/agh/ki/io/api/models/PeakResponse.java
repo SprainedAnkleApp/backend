@@ -36,7 +36,22 @@ public class PeakResponse {
                 .build();
     }
 
-    public static PeakResponse fromPeakWithCompletion(Peak peak, boolean completed, Map<String, Object> statistics) {
+    public static PeakResponse fromPeakWithCompletion(Peak peak, boolean completed) {
+        return PeakResponse.builder()
+                .id(peak.getId())
+                .name(peak.getName())
+                .height(peak.getHeight())
+                .region(peak.getRegion())
+                .about(peak.getAbout())
+                .mountainRange(peak.getMountainRange())
+                .latitude(peak.getLatitude())
+                .longitude(peak.getLongitude())
+                .photo(peak.getPhoto())
+                .completed(completed)
+                .build();
+    }
+
+    public static PeakResponse fromPeakWithCompletionAndStatistics(Peak peak, boolean completed, Map<String, Object> statistics) {
         return PeakResponse.builder()
                 .id(peak.getId())
                 .name(peak.getName())

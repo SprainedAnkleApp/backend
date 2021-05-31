@@ -58,9 +58,6 @@ public class User {
     @Column(name="about", length = 1023)
     private String about;
 
-    @ManyToOne
-    private Gender gender;
-
     @Column(name="phone_number")
     private String phoneNumber;
 
@@ -76,17 +73,6 @@ public class User {
     @OneToMany
     private  Set<WallItem> wallItems = new HashSet<>();
 
-
-    public User(String login, String password, AuthProvider authProvider, String firstName, String lastName, String email, Gender gender, String profilePhoto,
-                  Date birthday, String phoneNumber) {
-        this(login, password, authProvider, firstName, lastName, email, profilePhoto, birthday, phoneNumber);
-        this.gender = gender;
-    }
-
-    public User(String login, String password, AuthProvider authProvider, String firstName, String lastName, String email, Gender gender) {
-        this(login, password, authProvider, firstName, lastName, email);
-        this.gender = gender;
-    }
 
     public User(String login, String password, AuthProvider authProvider, String firstName, String lastName, String email, String profilePhoto,
                 Date birthday, String phoneNumber) {

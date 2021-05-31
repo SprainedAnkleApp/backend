@@ -17,7 +17,6 @@ public class UserResponse {
     private String profilePhoto;
     private Date birthday;
     private String about;
-    private String gender;
     private String phoneNumber;
 
 
@@ -31,7 +30,6 @@ public class UserResponse {
                 .profilePhoto(user.getProfilePhoto())
                 .birthday(user.getBirthday())
                 .about(user.getAbout())
-                .gender(user.getGender().getLabel())
                 .phoneNumber(user.getPhoneNumber())
                 .build();
     }

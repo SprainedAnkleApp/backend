@@ -19,7 +19,7 @@ public class PostStorage {
         this.postRepository.save(post);
     }
 
-    public PostResponse getPostbyId(Long postId) {
+    public PostResponse findPostById(Long postId) {
         Optional<Post> post = this.postRepository.findById(postId);
         if(post.isEmpty()) return null;
         return PostResponse.fromPostAndReactions(post.get(), reactionsRepository.findByIdWallElementID(postId));

@@ -25,7 +25,7 @@ public class PostApiController {
 
     @GetMapping("/{postid}")
     public ResponseEntity<PostResponse> getPost(@PathVariable("postid") Long postId) {
-        PostResponse response = this.postStorage.getPostbyId(postId);
+        PostResponse response = this.postStorage.findPostById(postId);
         if (response == null) return ResponseEntity.notFound().build();
         return new ResponseEntity<>(response, HttpStatus.OK);
 
@@ -36,7 +36,7 @@ public class PostApiController {
         Post post = new Post(user, postRequest.getContent());
         postStorage.createPost(post);
 
-        PostResponse response = this.postStorage.getPostbyId(post.getId());
+        PostResponse response = this.postStorage.findPostById(post.getId());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }

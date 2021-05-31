@@ -5,16 +5,20 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import pl.edu.agh.ki.io.api.models.PeakPostResponse;
 import pl.edu.agh.ki.io.models.wallElements.PeakPost;
 import pl.edu.agh.ki.io.models.wallElements.PeakPostPage;
+
+import java.util.Optional;
 
 
 @Service
 public class PeakPostsStorage {
     private final PeakPostsRepository peakPostsRepository;
-
-    public PeakPostsStorage(PeakPostsRepository peakPostsRepository) {
+    private final ReactionsRepository reactionsRepository;
+    public PeakPostsStorage(PeakPostsRepository peakPostsRepository, ReactionsRepository reactionsRepository) {
          this.peakPostsRepository = peakPostsRepository;
+         this.reactionsRepository = reactionsRepository;
     }
 
     public Page<PeakPost> findPeakPostsByPeakId(Long peakId, PeakPostPage peakPostPage){
@@ -23,6 +27,12 @@ public class PeakPostsStorage {
                 peakPostPage.getPageSize(), sort);
 
         return this.peakPostsRepository.findPeakPostsByPeakId(peakId, pageable);
+    }
+
+    public PeakPostResponse findPeakPostById(Long peakPostId){
+        Optional<PeakPost> peakPost = this.peakPostsRepository.findById(peakPostId);
+        if(peakPost.isEmpty()) return null;
+        return PeakPostResponse.fromPeakPostAndReactions(peakPost.get(), reactionsRepository.findByIdWallElementID(peakPostId));
     }
 
     public void createPeakPost(PeakPost peakPost) {

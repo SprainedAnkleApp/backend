@@ -5,12 +5,9 @@ import io.swagger.annotations.Api;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.agh.ki.io.api.models.WallItemResponse;
 import pl.edu.agh.ki.io.db.WallItemStorage;
-import pl.edu.agh.ki.io.models.User;
-import pl.edu.agh.ki.io.models.wallElements.WallItem;
 import pl.edu.agh.ki.io.models.wallElements.WallItemPage;
 
 

@@ -17,7 +17,6 @@ public class ReactionsStorage {
     }
 
     public void createReaction(Reaction reaction) {
-        if(this.reactionsRepository.findById(reaction.getId()).isPresent()) return;
         this.reactionsRepository.save(reaction);
     }
 

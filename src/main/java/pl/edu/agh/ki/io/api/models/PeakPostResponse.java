@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Data;
 import pl.edu.agh.ki.io.models.Peak;
 import pl.edu.agh.ki.io.models.wallElements.PeakPost;
-import pl.edu.agh.ki.io.models.wallElements.Photo;
 import pl.edu.agh.ki.io.models.wallElements.reactions.Reaction;
 
 import java.util.List;

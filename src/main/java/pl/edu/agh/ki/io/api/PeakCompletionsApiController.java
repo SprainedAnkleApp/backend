@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.edu.agh.ki.io.api.models.PeakCompletionRequest;
 import pl.edu.agh.ki.io.api.models.PeakCompletionResponse;
 import pl.edu.agh.ki.io.api.models.UserResponse;
+import pl.edu.agh.ki.io.api.providers.PeakStatisticsProvider;
 import pl.edu.agh.ki.io.db.PeakCompletionsStorage;
 import pl.edu.agh.ki.io.db.PeakStorage;
 import pl.edu.agh.ki.io.models.Peak;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 public class PeakCompletionsApiController {
     private final PeakCompletionsStorage peakCompletionsStorage;
     private final PeakStorage peakStorage;
+    private final PeakStatisticsProvider peakStatisticsProvider;
 
     private boolean peakExists(Long peakId) {
         Optional<Peak> peakOptional = this.peakStorage.findPeakById(peakId);
@@ -43,12 +45,9 @@ public class PeakCompletionsApiController {
     }
 
     @GetMapping("/{peakid}/first")
-    public ResponseEntity<UserResponse> peakFirstConqueror(@PathVariable("peakid") Long peakId) {
+    public ResponseEntity<UserResponse> peakFirstCompletion(@PathVariable("peakid") Long peakId) {
         if (!peakExists(peakId)) return ResponseEntity.notFound().build();
-
-        Optional<PeakCompletion> first = this.peakCompletionsStorage.findFirstByPeakId(peakId);
-
-        return first
+        return this.peakStatisticsProvider.getFirstCompletionForId(peakId)
                 .map(peakCompletion -> new ResponseEntity<>(UserResponse.fromUser(peakCompletion.getUser()), HttpStatus.OK))
                 .orElse(ResponseEntity.noContent().build());
     }
@@ -57,16 +56,37 @@ public class PeakCompletionsApiController {
     public ResponseEntity<Long> peakTotalCompletions(@PathVariable("peakid") Long peakId) {
         if (!peakExists(peakId)) return ResponseEntity.notFound().build();
 
-        return new ResponseEntity<>((long) this.peakCompletionsStorage.findByPeakId(peakId).size(), HttpStatus.OK);
+        return new ResponseEntity<>(this.peakStatisticsProvider.getTotalCompletionForId(peakId), HttpStatus.OK);
     }
 
     @GetMapping("/{peakid}/averageTime")
     public ResponseEntity<Double> peakAverageTimeCompletion(@PathVariable("peakid") Long peakId) {
         if (!peakExists(peakId)) return ResponseEntity.notFound().build();
-        List<PeakCompletion> peakCompletions = this.peakCompletionsStorage.findByPeakId(peakId);
-        return peakCompletions.size() == 0 ? new ResponseEntity<>(0.0, HttpStatus.OK) : new ResponseEntity<>(peakCompletions.stream().map(peakCompletion -> peakCompletion.getCompletionTime().toMinutes()).reduce((long) 0, Long::sum).doubleValue() / peakCompletions.size(), HttpStatus.OK);
+        return new ResponseEntity<>(this.peakStatisticsProvider.getAverageTimeCompletionForId(peakId), HttpStatus.OK);
     }
 
+    @GetMapping("/{peakid}/fastest")
+    public ResponseEntity<PeakCompletionResponse> peakFastestCompletionBy(@PathVariable("peakid") Long peakId) {
+        if (!peakExists(peakId)) return ResponseEntity.notFound().build();
+        return this.peakStatisticsProvider.getFastestCompletionForId(peakId)
+                .map(completion -> new ResponseEntity<>(PeakCompletionResponse.fromPeakCompletion(completion), HttpStatus.OK))
+                .orElse(ResponseEntity.noContent().build());
+    }
+
+    @GetMapping("/{peakid}/latest")
+    public ResponseEntity<List<UserResponse>> peakLatestCompletions(@PathVariable("peakid") Long peakId) {
+        if (!peakExists(peakId)) return ResponseEntity.notFound().build();
+
+        List<PeakCompletion> latestCompletions = this.peakStatisticsProvider.getLatestCompletionsForId(peakId);
+        if (latestCompletions.isEmpty()) return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(
+                latestCompletions.stream()
+                        .map(PeakCompletion::getUser)
+                        .map(UserResponse::fromUser)
+                        .collect(Collectors.toList()),
+                HttpStatus.OK
+        );
+    }
 
     @PostMapping()
     public ResponseEntity<PeakCompletionResponse> completePeak(@RequestBody PeakCompletionRequest request, @AuthenticationPrincipal User user) {
@@ -81,6 +101,6 @@ public class PeakCompletionsApiController {
                     );
                     peakCompletionsStorage.createPeakCompletion(peakCompletion);
                     return new ResponseEntity<>(PeakCompletionResponse.fromPeakCompletion(peakCompletion), HttpStatus.CREATED);
-                }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                }).orElse(ResponseEntity.notFound().build());
     }
 }

@@ -1,5 +1,6 @@
 package pl.edu.agh.ki.io.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -25,10 +26,12 @@ public class Gender {
         this.label = label;
     }
 
+    @JsonIgnore
     @CreationTimestamp
     @Column(name = "create_date", nullable = false)
     private Date createDate;
 
+    @JsonIgnore
     @UpdateTimestamp
     @Column(name = "update_date", nullable = false)
     private Date updateDate;

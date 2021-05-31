@@ -1,6 +1,7 @@
 package pl.edu.agh.ki.io.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -52,16 +53,20 @@ public class Peak {
     @Column(name = "photo", length = 1023, nullable = false)
     private String photo;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "peak")
     Set<PeakCompletion> peakCompletions = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany
     private Set<PeakPost> peakPosts = new HashSet<>();
 
+    @JsonIgnore
     @CreationTimestamp
     @Column(name = "create_date", nullable = false)
     private Date createDate;
 
+    @JsonIgnore
     @UpdateTimestamp
     @Column(name = "update_date", nullable = false)
     private Date updateDate;

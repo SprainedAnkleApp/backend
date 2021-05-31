@@ -1,6 +1,7 @@
 package pl.edu.agh.ki.io.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,12 +25,14 @@ public class User {
     @Column(name = "id")
     private Long id;
 
+    @JsonIgnore
     @Column(name = "facebook_user_id")
     private String facebookUserId;
 
     @Column(name = "login", unique = true, nullable = false)
     private String login;
 
+    @JsonIgnore
     @Column(name = "password")
     private String password;
 
@@ -61,12 +64,15 @@ public class User {
     @Column(name="phone_number")
     private String phoneNumber;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private Set<PeakCompletion> peakCompletions = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany()
     private Set<User> friends = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany
     private  Set<WallItem> wallItems = new HashSet<>();
 
@@ -99,10 +105,12 @@ public class User {
         this.email = email;
     }
 
+    @JsonIgnore
     @CreationTimestamp
     @Column(name = "create_date", nullable = false)
     private java.util.Date createDate;
 
+    @JsonIgnore
     @UpdateTimestamp
     @Column(name = "update_date", nullable = false)
     private java.util.Date updateDate;

@@ -34,14 +34,14 @@ public class PeaksApiController {
     private Map<String, Object> getPeakStats(Long peakId) {
         Map<String, Object> stats = new HashMap<>();
         stats.put("time_fastest", this.peakStatisticsProvider.getFastestCompletionForId(peakId)
-                .map(completion -> completion.getCompletionTime().toMinutes()).orElse(-1L));
+                .map(PeakCompletionResponse::fromPeakCompletionWithUser).orElse(null));
         stats.put("time_average", this.peakStatisticsProvider.getAverageTimeCompletionForId(peakId));
 
         stats.put("completion_total", this.peakStatisticsProvider.getTotalCompletionForId(peakId));
         stats.put("completion_first", this.peakStatisticsProvider.getFirstCompletionForId(peakId)
-                .map(PeakCompletionResponse::fromPeakCompletion).orElse(null));
+                .map(PeakCompletionResponse::fromPeakCompletionWithUser).orElse(null));
         stats.put("completion_latest", this.peakStatisticsProvider.getLatestCompletionsForId(peakId).stream()
-                .map(PeakCompletionResponse::fromPeakCompletion).collect(Collectors.toList()));
+                .map(PeakCompletionResponse::fromPeakCompletionWithUser).collect(Collectors.toList()));
 
         return stats;
     }

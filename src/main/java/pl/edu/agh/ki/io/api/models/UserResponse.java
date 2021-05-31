@@ -21,7 +21,7 @@ public class UserResponse {
     private String phoneNumber;
 
 
-    static public UserResponse fromUser(User user) {
+    public static UserResponse fromUser(User user) {
         return UserResponse.builder()
                 .id(user.getId())
                 .login(user.getLogin())

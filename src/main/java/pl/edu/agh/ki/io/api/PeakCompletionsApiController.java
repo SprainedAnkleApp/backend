@@ -45,10 +45,10 @@ public class PeakCompletionsApiController {
     }
 
     @GetMapping("/{peakid}/first")
-    public ResponseEntity<UserResponse> peakFirstCompletion(@PathVariable("peakid") Long peakId) {
+    public ResponseEntity<PeakCompletionResponse> peakFirstCompletion(@PathVariable("peakid") Long peakId) {
         if (!peakExists(peakId)) return ResponseEntity.notFound().build();
         return this.peakStatisticsProvider.getFirstCompletionForId(peakId)
-                .map(peakCompletion -> new ResponseEntity<>(UserResponse.fromUser(peakCompletion.getUser()), HttpStatus.OK))
+                .map(completion -> new ResponseEntity<>(PeakCompletionResponse.fromPeakCompletionWithUser(completion), HttpStatus.OK))
                 .orElse(ResponseEntity.noContent().build());
     }
 
@@ -69,20 +69,19 @@ public class PeakCompletionsApiController {
     public ResponseEntity<PeakCompletionResponse> peakFastestCompletionBy(@PathVariable("peakid") Long peakId) {
         if (!peakExists(peakId)) return ResponseEntity.notFound().build();
         return this.peakStatisticsProvider.getFastestCompletionForId(peakId)
-                .map(completion -> new ResponseEntity<>(PeakCompletionResponse.fromPeakCompletion(completion), HttpStatus.OK))
+                .map(completion -> new ResponseEntity<>(PeakCompletionResponse.fromPeakCompletionWithUser(completion), HttpStatus.OK))
                 .orElse(ResponseEntity.noContent().build());
     }
 
     @GetMapping("/{peakid}/latest")
-    public ResponseEntity<List<UserResponse>> peakLatestCompletions(@PathVariable("peakid") Long peakId) {
+    public ResponseEntity<List<PeakCompletionResponse>> peakLatestCompletions(@PathVariable("peakid") Long peakId) {
         if (!peakExists(peakId)) return ResponseEntity.notFound().build();
 
         List<PeakCompletion> latestCompletions = this.peakStatisticsProvider.getLatestCompletionsForId(peakId);
         if (latestCompletions.isEmpty()) return ResponseEntity.noContent().build();
         return new ResponseEntity<>(
                 latestCompletions.stream()
-                        .map(PeakCompletion::getUser)
-                        .map(UserResponse::fromUser)
+                        .map(PeakCompletionResponse::fromPeakCompletionWithUser)
                         .collect(Collectors.toList()),
                 HttpStatus.OK
         );

@@ -63,6 +63,6 @@ public class GoogleCloudFileService {
     }
 
     public static String generateFileName() {
-        return new SimpleDateFormat("yyyyMMddHHmm'.txt'").format(new Date());
+        return new SimpleDateFormat("yyyyMMddHHmmssSSS'.txt'").format(new Date());
     }
 }

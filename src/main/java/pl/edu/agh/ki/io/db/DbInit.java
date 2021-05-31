@@ -66,7 +66,7 @@ public class DbInit implements CommandLineRunner {
             this.peakCompletionsRepository.save(peakCompletion);
         });
 
-        Photo photo = new Photo(testUser, "content", "photopath");
+        Photo photo = new Photo(testUser, "content", "dog.jpeg");
         wallItemRepository.save(photo);
 
         Post post = new Post(testUser, "content");

@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import pl.edu.agh.ki.io.api.models.PeakCompletionResponse;
 import pl.edu.agh.ki.io.api.models.PeakResponse;
 import pl.edu.agh.ki.io.api.providers.PeakStatisticsProvider;
 import pl.edu.agh.ki.io.db.PeakCompletionsStorage;
@@ -37,8 +38,10 @@ public class PeaksApiController {
         stats.put("time_average", this.peakStatisticsProvider.getAverageTimeCompletionForId(peakId));
 
         stats.put("completion_total", this.peakStatisticsProvider.getTotalCompletionForId(peakId));
-        stats.put("completion_first", this.peakStatisticsProvider.getFirstCompletionForId(peakId).orElse(null));
-        stats.put("completion_latest", this.peakStatisticsProvider.getLatestCompletionsForId(peakId));
+        stats.put("completion_first", this.peakStatisticsProvider.getFirstCompletionForId(peakId)
+                .map(PeakCompletionResponse::fromPeakCompletion).orElse(null));
+        stats.put("completion_latest", this.peakStatisticsProvider.getLatestCompletionsForId(peakId).stream()
+                .map(PeakCompletionResponse::fromPeakCompletion).collect(Collectors.toList()));
 
         return stats;
     }

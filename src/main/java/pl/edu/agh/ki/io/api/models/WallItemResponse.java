@@ -1,7 +1,5 @@
 package pl.edu.agh.ki.io.api.models;
 
-import lombok.Builder;
-import lombok.Data;
 import pl.edu.agh.ki.io.models.wallElements.PeakPost;
 import pl.edu.agh.ki.io.models.wallElements.Photo;
 import pl.edu.agh.ki.io.models.wallElements.WallItem;

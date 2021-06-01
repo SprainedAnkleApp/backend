@@ -22,6 +22,7 @@ public class WallItemApiController {
         this.wallItemStorage = wallItemStorage;
     }
 
+
     @GetMapping()
     public ResponseEntity<Page<WallItemResponse>> getWallItems(WallItemPage wallItemPage) {
         return new ResponseEntity<>(this.wallItemStorage.findAll(wallItemPage), HttpStatus.OK);

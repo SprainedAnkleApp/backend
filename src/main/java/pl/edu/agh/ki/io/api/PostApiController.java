@@ -9,13 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.agh.ki.io.api.models.CreatePostRequest;
-import pl.edu.agh.ki.io.api.models.CreatePostResponse;
+import pl.edu.agh.ki.io.api.models.PostResponse;
 import pl.edu.agh.ki.io.db.PostStorage;
 import pl.edu.agh.ki.io.models.User;
 import pl.edu.agh.ki.io.models.wallElements.Post;
-
-import java.util.Map;
-import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -27,18 +24,19 @@ public class PostApiController {
     Logger logger = LoggerFactory.getLogger(PostApiController.class);
 
     @GetMapping("/{postid}")
-    public ResponseEntity<Post> getPost(@PathVariable("postid") Long postId) {
-        Optional<Post> post = this.postStorage.getPostbyId(postId);
-        return post.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<PostResponse> getPost(@PathVariable("postid") Long postId) {
+        PostResponse response = this.postStorage.findPostById(postId);
+        if (response == null) return ResponseEntity.notFound().build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
 
     @PostMapping("/post")
-    @ResponseStatus(HttpStatus.CREATED)
-    public CreatePostResponse createPost(@RequestBody CreatePostRequest postRequest, @AuthenticationPrincipal User user) {
+    public ResponseEntity<PostResponse> createPost(@RequestBody CreatePostRequest postRequest, @AuthenticationPrincipal User user) {
         Post post = new Post(user, postRequest.getContent());
         postStorage.createPost(post);
 
-        return CreatePostResponse.fromPost(post);
+        PostResponse response = this.postStorage.findPostById(post.getId());
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }

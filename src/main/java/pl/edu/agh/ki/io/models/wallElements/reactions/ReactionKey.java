@@ -1,5 +1,6 @@
 package pl.edu.agh.ki.io.models.wallElements.reactions;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -8,6 +9,7 @@ import javax.persistence.Embeddable;
 import java.io.Serializable;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Embeddable
 @Getter
 public class ReactionKey implements Serializable {

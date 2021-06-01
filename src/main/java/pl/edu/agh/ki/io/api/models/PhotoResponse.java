@@ -2,8 +2,6 @@ package pl.edu.agh.ki.io.api.models;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import pl.edu.agh.ki.io.cloudstorage.GoogleCloudFileService;
 import pl.edu.agh.ki.io.models.wallElements.Photo;
 import pl.edu.agh.ki.io.models.wallElements.reactions.Reaction;

@@ -4,9 +4,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import pl.edu.agh.ki.io.cloudstorage.GoogleCloudFileService;
 import pl.edu.agh.ki.io.models.wallElements.Photo;
 import pl.edu.agh.ki.io.models.wallElements.reactions.Reaction;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,11 +21,11 @@ public class PhotoResponse extends WallItemResponse{
     private String signedUrl;
     private List<ReactionResponse> reactions;
 
-    public static PhotoResponse fromPhotoAndReactions(Photo photo, List<Reaction> reactions) {
+    public static PhotoResponse fromPhotoAndReactions(Photo photo, List<Reaction> reactions) throws IOException {
         return PhotoResponse.builder()
                 .id(photo.getId())
                 .content(photo.getContent())
-                .signedUrl(photo.getPhotoPath())
+                .signedUrl(GoogleCloudFileService.generateV4GetObjectSignedUrl(photo.getPhotoPath()))
                 .reactions(reactions.stream().map(ReactionResponse::fromReaction).collect(Collectors.toList())).build();
     }
 }

@@ -6,6 +6,8 @@ import pl.edu.agh.ki.io.api.models.WallItemResponse;
 import pl.edu.agh.ki.io.models.wallElements.WallItem;
 import pl.edu.agh.ki.io.models.wallElements.WallItemPage;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -25,7 +27,14 @@ public class WallItemStorage {
         Page<WallItem> wallItems = this.wallItemRepository.findAll(pageable);
 
         return new PageImpl<>(wallItems.stream()
-                .map(wallItem -> WallItemResponse.fromWallItemAndReactions(wallItem, this.reactionsRepository.findByIdWallElementID(wallItem.getId())))
+                .map(wallItem -> {
+                    try {
+                        return WallItemResponse.fromWallItemAndReactions(wallItem, this.reactionsRepository.findByIdWallElementID(wallItem.getId()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                })
                 .collect(Collectors.toList()),
                 pageable, wallItems.getTotalElements());
     }

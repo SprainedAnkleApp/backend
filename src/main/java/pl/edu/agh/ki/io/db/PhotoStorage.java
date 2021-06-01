@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import pl.edu.agh.ki.io.api.models.PhotoResponse;
 import pl.edu.agh.ki.io.models.wallElements.Photo;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @Service
@@ -21,7 +22,7 @@ public class PhotoStorage {
     }
 
 
-    public PhotoResponse findPhotoById(Long photoId) {
+    public PhotoResponse findPhotoById(Long photoId) throws IOException {
         Optional<Photo> photo = this.photoRepository.findById(photoId);
         if(photo.isEmpty()) return null;
         return PhotoResponse.fromPhotoAndReactions(photo.get(), this.reactionsRepository.findByIdWallElementID(photoId));

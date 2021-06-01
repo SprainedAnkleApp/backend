@@ -5,10 +5,11 @@ import pl.edu.agh.ki.io.models.wallElements.Photo;
 import pl.edu.agh.ki.io.models.wallElements.WallItem;
 import pl.edu.agh.ki.io.models.wallElements.reactions.Reaction;
 
+import java.io.IOException;
 import java.util.List;
 
 public abstract class WallItemResponse {
-    public static WallItemResponse fromWallItemAndReactions(WallItem wallItem, List<Reaction> reactions) {
+    public static WallItemResponse fromWallItemAndReactions(WallItem wallItem, List<Reaction> reactions) throws IOException {
         switch (wallItem.getClass().getSimpleName()) {
             case "Post":
                 return PostResponse.fromPostAndReactions(wallItem, reactions);

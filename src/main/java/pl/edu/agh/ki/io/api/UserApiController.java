@@ -13,14 +13,10 @@ import org.springframework.web.bind.annotation.*;
 import pl.edu.agh.ki.io.api.models.CreateUserRequest;
 import pl.edu.agh.ki.io.api.models.UserResponse;
 import org.springframework.web.reactive.function.client.WebClient;
-import pl.edu.agh.ki.io.api.models.CreateUserRequest;
 import pl.edu.agh.ki.io.api.models.FacebookFriend;
 import pl.edu.agh.ki.io.api.models.FacebookFriendList;
-import pl.edu.agh.ki.io.api.models.UserResponse;
-import pl.edu.agh.ki.io.db.GenderStorage;
 import pl.edu.agh.ki.io.db.UserStorage;
 import pl.edu.agh.ki.io.models.AuthProvider;
-import pl.edu.agh.ki.io.models.Gender;
 import pl.edu.agh.ki.io.models.User;
 import pl.edu.agh.ki.io.models.UserPage;
 import pl.edu.agh.ki.io.security.AuthenticationProcessingException;
@@ -41,16 +37,13 @@ import java.util.stream.Collectors;
 public class UserApiController {
 
     private final UserStorage userStorage;
-    private final GenderStorage genderStorage;
     private final OAuth2AuthorizedClientService clientService;
     private final WebClient facebookGraphApiClient;
 
     Logger logger = LoggerFactory.getLogger(UserApiController.class);
 
-    public UserApiController(UserStorage userStorage, GenderStorage genderStorage,
-                             OAuth2AuthorizedClientService clientService, WebClient facebookGraphApiClient) {
+    public UserApiController(UserStorage userStorage, OAuth2AuthorizedClientService clientService, WebClient facebookGraphApiClient) {
         this.userStorage = userStorage;
-        this.genderStorage = genderStorage;
         this.clientService = clientService;
         this.facebookGraphApiClient = facebookGraphApiClient;
     }
@@ -68,7 +61,7 @@ public class UserApiController {
                         AuthProvider.facebook.name(),
                         user.getEmail());
 
-        if(client == null){
+        if (client == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
@@ -76,12 +69,12 @@ public class UserApiController {
         String fbUserId = user.getFacebookUserId();
 
         WebClient.ResponseSpec responseSpec = facebookGraphApiClient.get()
-            .uri(uriBuilder ->
-                uriBuilder.path(fbUserId +"/friends")
-                .queryParam("access_token", accessToken)
-                .build()
-            )
-        .retrieve();
+                .uri(uriBuilder ->
+                        uriBuilder.path(fbUserId + "/friends")
+                                .queryParam("access_token", accessToken)
+                                .build()
+                )
+                .retrieve();
 
         FacebookFriendList fbUsers = Objects.requireNonNull(
                 responseSpec.bodyToMono(FacebookFriendList.class).block()
@@ -124,8 +117,6 @@ public class UserApiController {
     @PostMapping("/signup")
     public ResponseEntity<UserResponse> createUser(@RequestBody @Valid CreateUserRequest request) {
         User newUser = request.toUser();
-        Gender userGender = genderStorage.findGenderByLabel(request.getGender());
-        newUser.setGender(userGender);
         UserPrincipal userPrincipal;
         try {
             userPrincipal = (UserPrincipal) userStorage.createUser(newUser);

@@ -21,7 +21,6 @@ import java.time.Duration;
 @AllArgsConstructor
 public class DbInit implements CommandLineRunner {
     private final UserRepository userRepository;
-    private final GenderRepository genderRepository;
     private final PasswordEncoder passwordEncoder;
     private final PeakRepository peakRepository;
     private final WallItemRepository wallItemRepository;
@@ -33,17 +32,14 @@ public class DbInit implements CommandLineRunner {
     public void run(String... args) {
         clearRepositories();
 
-        Gender male = new Gender("Male");
-        this.genderRepository.save(male);
-
         Date birthday = Date.valueOf("2000-12-1");
         User testUser = new User("admin", passwordEncoder.encode("admin"), AuthProvider.local, "Test",
-                "Testowski", "test1@mail.com", male, "https://i.imgur.com/VNNp6zWb.jpg", birthday, "+48880053535");
+                "Testowski", "test1@mail.com", "https://i.imgur.com/VNNp6zWb.jpg", birthday, "+48880053535");
 
         userRepository.save(testUser);
 
         User testUser2 = new User("anowak", passwordEncoder.encode("anowak"), AuthProvider.local, "Adam",
-                "Nowak", "anowak@mail.com", male, "https://i.imgur.com/VNNp6zWb.jpg", birthday, "+48880053535");
+                "Nowak", "anowak@mail.com", "https://i.imgur.com/VNNp6zWb.jpg", birthday, "+48880053535");
 
         userRepository.save(testUser2);
 
@@ -89,7 +85,6 @@ public class DbInit implements CommandLineRunner {
         this.wallItemRepository.deleteAll();
         this.peakCompletionsRepository.deleteAll();
         this.userRepository.deleteAll();
-        this.genderRepository.deleteAll();
         this.peakRepository.deleteAll();
     }
 

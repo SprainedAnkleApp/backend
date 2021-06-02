@@ -1,6 +1,7 @@
 package pl.edu.agh.ki.io.api;
 
 import io.swagger.annotations.Api;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.*;
@@ -15,6 +16,7 @@ import pl.edu.agh.ki.io.api.models.UserResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import pl.edu.agh.ki.io.api.models.FacebookFriend;
 import pl.edu.agh.ki.io.api.models.FacebookFriendList;
+import pl.edu.agh.ki.io.api.providers.AchievementsProvider;
 import pl.edu.agh.ki.io.db.UserStorage;
 import pl.edu.agh.ki.io.models.AuthProvider;
 import pl.edu.agh.ki.io.models.User;
@@ -34,24 +36,20 @@ import java.util.stream.Collectors;
 
 @Api(tags = "Users")
 @RequestMapping("")
+@RequiredArgsConstructor
 public class UserApiController {
 
     private final UserStorage userStorage;
     private final OAuth2AuthorizedClientService clientService;
     private final WebClient facebookGraphApiClient;
+    private final AchievementsProvider achievementsProvider;
 
     Logger logger = LoggerFactory.getLogger(UserApiController.class);
-
-    public UserApiController(UserStorage userStorage, OAuth2AuthorizedClientService clientService, WebClient facebookGraphApiClient) {
-        this.userStorage = userStorage;
-        this.clientService = clientService;
-        this.facebookGraphApiClient = facebookGraphApiClient;
-    }
 
     @GetMapping("/api/public/users/me")
     public UserResponse user(@AuthenticationPrincipal User user) {
         UserPrincipal currentUser = (UserPrincipal) this.userStorage.loadUserByUsername(user.getLogin());
-        return UserResponse.fromUser(currentUser.getUser());
+        return UserResponse.fromUserWithAchievements(currentUser.getUser(), achievementsProvider.getAchievements(user));
     }
 
     @GetMapping("/fb_friends")

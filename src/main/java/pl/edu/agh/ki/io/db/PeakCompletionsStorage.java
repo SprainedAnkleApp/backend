@@ -3,13 +3,11 @@ package pl.edu.agh.ki.io.db;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.edu.agh.ki.io.models.PeakCompletion;
-import pl.edu.agh.ki.io.models.User;
 
 import java.sql.Date;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -49,6 +47,10 @@ public class PeakCompletionsStorage {
         return this.peakCompletionsRepository.findTop5ByPeakIdBetweenOrderedByCompletionTimeDesc(peakId, weekAgo, today);
     }
 
+    public List<PeakWithCompletion> getPeaksWithCompletionIfExist(Long userId){
+        return this.peakCompletionsRepository.findAllPeaksWithCompletionsIfExistByUserId(userId);
+    }
+  
     public List<PeakCompletion> findAtMost5LastCompletions(Long peakId) {
         return this.peakCompletionsRepository.findTop5ByPeakIdOrderByCompletionTimeDesc(peakId);
     }

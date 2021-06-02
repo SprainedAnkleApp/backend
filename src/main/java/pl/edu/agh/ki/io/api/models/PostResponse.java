@@ -2,7 +2,6 @@ package pl.edu.agh.ki.io.api.models;
 
 import lombok.Builder;
 import lombok.Data;
-import pl.edu.agh.ki.io.models.User;
 import pl.edu.agh.ki.io.models.wallElements.WallItem;
 import pl.edu.agh.ki.io.models.wallElements.reactions.Reaction;
 
@@ -17,14 +16,14 @@ public class PostResponse extends WallItemResponse{
     private String content;
     private double latitude;
     private double longitude;
-    private User user;
+    private UserResponse user;
 
     public static PostResponse fromPost(WallItem post) {
         return PostResponse.builder().id(post.getId())
                 .content(post.getContent())
                 .latitude(post.getLatitude())
                 .longitude(post.getLongitude())
-                .user(post.getUser())
+                .user(UserResponse.fromUser(post.getUser()))
                 .build();
     }
 
@@ -33,7 +32,7 @@ public class PostResponse extends WallItemResponse{
                 .content(post.getContent())
                 .latitude(post.getLatitude())
                 .longitude(post.getLongitude())
-                .user(post.getUser())
+                .user(UserResponse.fromUser(post.getUser()))
                 .reactions(reactions.stream().map(ReactionResponse::fromReaction).collect(Collectors.toList())).build();
     }
 }

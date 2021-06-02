@@ -153,10 +153,10 @@ public class UserApiController {
     }
 
     @GetMapping("/api/public/users/search")
-    public ResponseEntity<Page<UserResponse>> searchUser(String searchTerm, UserPage userPage) {
-        Page<User> users = this.userStorage.findBySearchTerm(searchTerm, userPage);
-        Pageable pageable = PageRequest.of(userPage.getPageNumber(),
-                userPage.getPageSize());
+    public ResponseEntity<Page<UserResponse>> searchUser(String searchTerm, PageParameters pageParameters) {
+        Page<User> users = this.userStorage.findBySearchTerm(searchTerm, pageParameters);
+        Pageable pageable = PageRequest.of(pageParameters.getPageNumber(),
+                pageParameters.getPageSize());
         return new ResponseEntity<>(new PageImpl<>(
                 users.stream()
                         .map(UserResponse::fromUser)

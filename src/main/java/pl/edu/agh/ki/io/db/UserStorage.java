@@ -56,9 +56,9 @@ public class UserStorage implements UserDetailsService {
         return this.userRepository.findAll(pageable);
     }
 
-    public Page<User> findBySearchTerm(String searchTerm, UserPage userPage) {
-        Pageable pageable = PageRequest.of(userPage.getPageNumber(),
-                userPage.getPageSize());
+    public Page<User> findBySearchTerm(String searchTerm, PageParameters pageParameters) {
+        Pageable pageable = PageRequest.of(pageParameters.getPageNumber(),
+                pageParameters.getPageSize());
         return this.userRepository.findBySearchTerm(searchTerm, pageable);
     }
 

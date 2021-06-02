@@ -134,7 +134,6 @@ public class AchievementsProvider {
         private int progress;
         private int toComplete;
         private Long peakId;
-        private Long timeLeft;
         private Long completedAt;
 
 

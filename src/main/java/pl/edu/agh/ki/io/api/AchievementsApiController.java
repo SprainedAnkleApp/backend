@@ -25,7 +25,7 @@ public class AchievementsApiController {
     private final AchievementsProvider achievementsProvider;
     private final UserStorage userStorage;
 
-    @GetMapping("/{userId}/achievements")
+    @GetMapping("/{userId}")
     public ResponseEntity<List<AchievementsProvider.Achievement>> getAchievements(@PathVariable("userId") Long userId) {
         Optional<User> user = this.userStorage.findUserById(userId);
 
@@ -33,7 +33,7 @@ public class AchievementsApiController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/achievements/short")
+    @GetMapping("/short")
     public ResponseEntity<List<AchievementsProvider.Achievement>> getAchievements(@AuthenticationPrincipal User user) {
         return new ResponseEntity<>(this.achievementsProvider.getAchievementsShort(user), HttpStatus.OK);
     }

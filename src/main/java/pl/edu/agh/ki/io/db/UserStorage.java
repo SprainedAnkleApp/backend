@@ -17,6 +17,7 @@ import pl.edu.agh.ki.io.security.AuthenticationProcessingException;
 import pl.edu.agh.ki.io.security.UserPrincipal;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -55,6 +56,12 @@ public class UserStorage implements UserDetailsService {
         Pageable pageable = PageRequest.of(userPage.getPageNumber(),
                 userPage.getPageSize(), sort);
         return this.userRepository.findAll(pageable);
+    }
+
+    public Page<User> findBySearchTerm(String searchTerm, UserPage userPage) {
+        Pageable pageable = PageRequest.of(userPage.getPageNumber(),
+                userPage.getPageSize());
+        return this.userRepository.findBySearchTerm(searchTerm, pageable);
     }
 
     @Override

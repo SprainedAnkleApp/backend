@@ -11,12 +11,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.web.bind.annotation.*;
-import pl.edu.agh.ki.io.api.models.CreateUserRequest;
-import pl.edu.agh.ki.io.api.models.UserResponse;
+import pl.edu.agh.ki.io.api.models.*;
 import org.springframework.web.reactive.function.client.WebClient;
-import pl.edu.agh.ki.io.api.models.FacebookFriend;
-import pl.edu.agh.ki.io.api.models.FacebookFriendList;
 import pl.edu.agh.ki.io.api.providers.AchievementsProvider;
+import pl.edu.agh.ki.io.db.FriendshipStorage;
 import pl.edu.agh.ki.io.db.UserStorage;
 import pl.edu.agh.ki.io.models.AuthProvider;
 import pl.edu.agh.ki.io.models.User;
@@ -43,6 +41,7 @@ public class UserApiController {
     private final OAuth2AuthorizedClientService clientService;
     private final WebClient facebookGraphApiClient;
     private final AchievementsProvider achievementsProvider;
+    private final FriendshipStorage friendshipStorage;
 
     Logger logger = LoggerFactory.getLogger(UserApiController.class);
 
@@ -50,6 +49,30 @@ public class UserApiController {
     public UserResponse user(@AuthenticationPrincipal User user) {
         UserPrincipal currentUser = (UserPrincipal) this.userStorage.loadUserByUsername(user.getLogin());
         return UserResponse.fromUserWithAchievements(currentUser.getUser(), achievementsProvider.getAchievements(user));
+    }
+
+    @GetMapping("/api/public/users/me/friends")
+    public ResponseEntity<List<UserResponse>> getFriends(@AuthenticationPrincipal User user) {
+        return new ResponseEntity<>(this.friendshipStorage.findAcceptedForUser(user).stream()
+                .map(friendship -> UserResponse.fromUser(friendship.getAddressee()))
+                .collect(Collectors.toList()), HttpStatus.OK); // TODO: maybe send noContent when no accepter requests are present
+    }
+
+    @GetMapping("/api/public/users/{userId}/friends")
+    public ResponseEntity<List<UserResponse>> getUserFriends(@PathVariable("userId") Long userId) {
+        Optional<User> user = this.userStorage.findUserById(userId);
+
+        return user.map(u -> new ResponseEntity<>(this.friendshipStorage.findAcceptedForUser(u).stream()
+                .map(friendship -> UserResponse.fromUser(friendship.getAddressee()))
+                .collect(Collectors.toList()), HttpStatus.OK))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/api/public/users/me/friends/pending")
+    public ResponseEntity<List<FriendshipRequestResponse>> getPendingFriendships(@AuthenticationPrincipal User user) {
+        return new ResponseEntity<>(this.friendshipStorage.findPendingForUser(user).stream()
+                .map(FriendshipRequestResponse::fromFriendship)
+                .collect(Collectors.toList()), HttpStatus.OK);
     }
 
     @GetMapping("/fb_friends")

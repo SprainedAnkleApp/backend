@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import pl.edu.agh.ki.io.models.Friendship;
 import pl.edu.agh.ki.io.models.User;
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,5 +26,12 @@ public class FriendshipStorage {
 
     public void deleteByRequesterAndAddressee(User requester, User addressee){
         this.friendshipRepository.deleteByRequesterAndAddressee(requester, addressee);
+    }
+
+    public List<Friendship> findAcceptedForUser(User user) {
+        return this.friendshipRepository.findAcceptedByRequesterId(user.getId());
+    }
+    public List<Friendship> findPendingForUser(User user) {
+        return this.friendshipRepository.findPendingByAddresseeId(user.getId());
     }
 }

@@ -27,6 +27,7 @@ public class DbInit implements CommandLineRunner {
     private final PeakCompletionsRepository peakCompletionsRepository;
     private final PeakPostsRepository peakPostsRepository;
     private final ReactionsRepository reactionsRepository;
+    private final FriendshipRepository friendshipRepository;
 
     @Override
     public void run(String... args) {
@@ -42,6 +43,11 @@ public class DbInit implements CommandLineRunner {
                 "Nowak", "anowak@mail.com", "https://i.imgur.com/VNNp6zWb.jpg", birthday, "+48880053535");
 
         userRepository.save(testUser2);
+
+        User testUser3 = new User("anowak_pending", passwordEncoder.encode("anowak_pending"), AuthProvider.local, "Adam",
+                "Pendingowski", "anowak.pending@mail.com", "https://i.imgur.com/VNNp6zWb.jpg", birthday, "+48880053535");
+
+        userRepository.save(testUser3);
 
         addPeaks();
 
@@ -78,6 +84,10 @@ public class DbInit implements CommandLineRunner {
 
         PeakPost peakPost = new PeakPost(testUser, "content", peakRepository.findPeakByName("Rysy").get());
         peakPostsRepository.save(peakPost);
+
+        friendshipRepository.save(new Friendship(1, testUser, testUser2));
+        friendshipRepository.save(new Friendship(1, testUser2, testUser));
+        friendshipRepository.save(new Friendship(0, testUser3, testUser));
     }
 
     private void clearRepositories() {

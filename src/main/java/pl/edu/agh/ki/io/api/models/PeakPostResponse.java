@@ -16,12 +16,18 @@ public class PeakPostResponse extends WallItemResponse {
     private String content;
     private Peak peak;
     private List<ReactionResponse> reactions;
+    private double latitude;
+    private double longitude;
+    private UserResponse user;
 
     public static PeakPostResponse fromPeakPostAndReactions(PeakPost peakPost, List<Reaction> reactions) {
         return PeakPostResponse.builder()
                 .id(peakPost.getId())
                 .content(peakPost.getContent())
                 .peak(peakPost.getPeak())
+                .latitude(peakPost.getLatitude())
+                .longitude(peakPost.getLongitude())
+                .user(UserResponse.fromUser(peakPost.getUser()))
                 .reactions(reactions.stream().map(ReactionResponse::fromReaction).collect(Collectors.toList())).build();
     }
 }

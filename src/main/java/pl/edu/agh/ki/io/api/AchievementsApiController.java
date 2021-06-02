@@ -6,15 +6,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.edu.agh.ki.io.api.providers.AchievementsProvider;
 import pl.edu.agh.ki.io.db.PeakCompletionsStorage;
+import pl.edu.agh.ki.io.db.UserStorage;
 import pl.edu.agh.ki.io.models.User;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -23,11 +22,19 @@ import java.util.List;
 @Api(tags = "Achievements")
 @RequestMapping("api/public/achievements")
 public class AchievementsApiController {
-    private final PeakCompletionsStorage peakCompletionsStorage;
     private final AchievementsProvider achievementsProvider;
+    private final UserStorage userStorage;
 
-    @GetMapping("/achievements")
+    @GetMapping("/{userId}/achievements")
+    public ResponseEntity<List<AchievementsProvider.Achievement>> getAchievements(@PathVariable("userId") Long userId) {
+        Optional<User> user = this.userStorage.findUserById(userId);
+
+        return user.map(currentUser -> new ResponseEntity<>(this.achievementsProvider.getAchievements(currentUser), HttpStatus.OK))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/achievements/short")
     public ResponseEntity<List<AchievementsProvider.Achievement>> getAchievements(@AuthenticationPrincipal User user) {
-        return new ResponseEntity<>(this.achievementsProvider.getAchievements(user), HttpStatus.OK);
+        return new ResponseEntity<>(this.achievementsProvider.getAchievementsShort(user), HttpStatus.OK);
     }
 }

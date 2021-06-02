@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -102,10 +103,32 @@ public class AchievementsProvider {
         return achievements;
     }
 
+    public List<Achievement> getAchievementsShort(User user) {
+        List<Achievement> achievements = getAchievements(user);
+
+        List<Achievement> completed = achievements.stream().filter(Achievement::isCompleted).limit(5).collect(Collectors.toList());
+        List<Achievement> uncompleted = achievements.stream().filter(achievement -> !achievement.isCompleted()).sorted().limit(5).collect(Collectors.toList());
+
+        List<Achievement> shortAchievements = new LinkedList<>();
+        if(completed.size() < 2){
+            shortAchievements.addAll(completed);
+            shortAchievements.addAll(uncompleted.subList(0, 5 - completed.size()));
+        } else {
+            if (uncompleted.size() < 3) {
+                shortAchievements.addAll(completed.subList(0, 5 - uncompleted.size()));
+                shortAchievements.addAll(uncompleted);
+            } else {
+                shortAchievements.addAll(completed.subList(0 ,2));
+                shortAchievements.addAll(uncompleted.subList(0, 3));
+            }
+        }
+        return shortAchievements;
+    }
+
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class Achievement {
+    public static class Achievement implements Comparable<Achievement>{
         private String achievementTitle;
         private boolean completed = false;
         private int progress;
@@ -113,5 +136,11 @@ public class AchievementsProvider {
         private Long peakId;
         private Long timeLeft;
         private Long completedAt;
+
+
+        @Override
+        public int compareTo(Achievement o) {
+            return Integer.compare(o.progress, this.progress);
+        }
     }
 }

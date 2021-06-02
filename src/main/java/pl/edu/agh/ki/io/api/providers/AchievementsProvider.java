@@ -31,22 +31,16 @@ public class AchievementsProvider {
 
         List<Achievement> achievements = new LinkedList<>();
 
-        int all_achievements = 0;
-        int completed = 0;
-
         List<PeakWithCompletion> peakWithCompletions = this.peakCompletionsStorage.getPeaksWithCompletionIfExist(user.getId());
         for (PeakWithCompletion p : peakWithCompletions) {
-            all_achievements++;
             Achievement achievement = new Achievement();
             achievement.setAchievementTitle(peakCompletionTemplate.formatted(p.getPeakName()));
             achievement.setPeakId(p.getPeakId());
             achievement.setToComplete(1);
 
             if (p.getCreateDate() != null) {
-                completed++;
                 achievement.setCompleted(true);
                 achievement.setProgress(1);
-                achievement.setCompletedAt(p.getCreateDate().getTime());
             } else {
                 achievement.setCompleted(false);
                 achievement.setProgress(0);
@@ -58,14 +52,12 @@ public class AchievementsProvider {
         int achievementsCount = achievements.stream().map(achievement -> achievement.isCompleted() ? 1 : 0).reduce(0, Integer::sum);
 
         for (int i : List.of(2, 5, 10)){
-            all_achievements++;
             Achievement achievement = new Achievement();
             achievement.setAchievementTitle(numberPeakCompletionTemplate.formatted(i, i != 2 ? "ów" : "y"));
             achievement.setToComplete(i);
 
             achievement.setProgress(Math.min(i, achievementsCount));
             if (achievementsCount >= i) {
-                completed++;
                 achievement.setCompleted(true);
             }
 
@@ -99,6 +91,14 @@ public class AchievementsProvider {
             }
             achievements.add(achievement);
         }
+
+        Achievement achievement = new Achievement();
+        achievement.setAchievementTitle("Zdobądź wszystkie szczyty");
+        achievement.setToComplete(peakWithCompletions.size());
+        achievement.setProgress(achievementsCount);
+        achievement.setCompleted(achievementsCount == peakWithCompletions.size());
+
+        achievements.add(achievement);
 
         return achievements;
     }
@@ -134,7 +134,6 @@ public class AchievementsProvider {
         private int progress;
         private int toComplete;
         private Long peakId;
-        private Long completedAt;
 
 
         @Override

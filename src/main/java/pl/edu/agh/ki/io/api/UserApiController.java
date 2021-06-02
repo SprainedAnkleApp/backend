@@ -152,6 +152,17 @@ public class UserApiController {
                         .collect(Collectors.toList()), pageable, users.getTotalElements()), HttpStatus.OK);
     }
 
+    @GetMapping("/api/public/users/search")
+    public ResponseEntity<Page<UserResponse>> searchUser(String searchTerm, UserPage userPage) {
+        Page<User> users = this.userStorage.findBySearchTerm(searchTerm, userPage);
+        Pageable pageable = PageRequest.of(userPage.getPageNumber(),
+                userPage.getPageSize());
+        return new ResponseEntity<>(new PageImpl<>(
+                users.stream()
+                        .map(UserResponse::fromUser)
+                        .collect(Collectors.toList()), pageable, users.getTotalElements()), HttpStatus.OK);
+    }
+
     // TODO: add email verification
     @PostMapping("/signup")
     public ResponseEntity<UserResponse> createUser(@RequestBody @Valid CreateUserRequest request) {

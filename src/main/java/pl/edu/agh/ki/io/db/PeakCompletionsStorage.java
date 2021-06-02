@@ -48,4 +48,8 @@ public class PeakCompletionsStorage {
 
         return this.peakCompletionsRepository.findTop5ByPeakIdBetweenOrderedByCompletionTimeDesc(peakId, weekAgo, today);
     }
+
+    public List<PeakCompletion> findAtMost5LastCompletions(Long peakId) {
+        return this.peakCompletionsRepository.findTop5ByPeakIdOrderByCompletionTimeDesc(peakId);
+    }
 }

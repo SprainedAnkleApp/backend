@@ -3,6 +3,7 @@ package pl.edu.agh.ki.io.api.models;
 import lombok.Builder;
 import lombok.Data;
 import pl.edu.agh.ki.io.cloudstorage.GoogleCloudFileService;
+import pl.edu.agh.ki.io.models.User;
 import pl.edu.agh.ki.io.models.wallElements.Photo;
 import pl.edu.agh.ki.io.models.wallElements.reactions.Reaction;
 
@@ -18,12 +19,18 @@ public class PhotoResponse extends WallItemResponse{
     private String content;
     private String signedUrl;
     private List<ReactionResponse> reactions;
+    private double latitude;
+    private double longitude;
+    private User user;
 
     public static PhotoResponse fromPhotoAndReactions(Photo photo, List<Reaction> reactions) throws IOException {
         return PhotoResponse.builder()
                 .id(photo.getId())
                 .content(photo.getContent())
                 .signedUrl(GoogleCloudFileService.generateV4GetObjectSignedUrl(photo.getPhotoPath()))
+                .latitude(photo.getLatitude())
+                .longitude(photo.getLongitude())
+                .user(photo.getUser())
                 .reactions(reactions.stream().map(ReactionResponse::fromReaction).collect(Collectors.toList())).build();
     }
 }

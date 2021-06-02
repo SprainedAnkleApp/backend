@@ -10,9 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.edu.agh.ki.io.models.User;
-import pl.edu.agh.ki.io.models.UserPage;
-import pl.edu.agh.ki.io.models.wallElements.WallItem;
-import pl.edu.agh.ki.io.models.wallElements.WallItemPage;
+import pl.edu.agh.ki.io.models.PageParameters;
 import pl.edu.agh.ki.io.security.AuthenticationProcessingException;
 import pl.edu.agh.ki.io.security.UserPrincipal;
 
@@ -49,11 +47,11 @@ public class UserStorage implements UserDetailsService {
         return this.userRepository.findAll();
     }
 
-    public Page<User> findAll(UserPage userPage) {
-        Sort sort = Sort.by(userPage.getSortDirection(), userPage.getSortBy());
+    public Page<User> findAll(PageParameters pageParameters) {
+        Sort sort = Sort.by(pageParameters.getSortDirection(), pageParameters.getSortBy());
 
-        Pageable pageable = PageRequest.of(userPage.getPageNumber(),
-                userPage.getPageSize(), sort);
+        Pageable pageable = PageRequest.of(pageParameters.getPageNumber(),
+                pageParameters.getPageSize(), sort);
         return this.userRepository.findAll(pageable);
     }
 

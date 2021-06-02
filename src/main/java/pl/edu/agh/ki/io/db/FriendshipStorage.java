@@ -1,7 +1,11 @@
 package pl.edu.agh.ki.io.db;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.edu.agh.ki.io.models.Friendship;
+import pl.edu.agh.ki.io.models.PageParameters;
 import pl.edu.agh.ki.io.models.User;
 import javax.transaction.Transactional;
 import java.util.List;
@@ -28,10 +32,14 @@ public class FriendshipStorage {
         this.friendshipRepository.deleteByRequesterAndAddressee(requester, addressee);
     }
 
-    public List<Friendship> findAcceptedForUser(User user) {
-        return this.friendshipRepository.findAcceptedByRequesterId(user.getId());
+    public Page<Friendship> findAcceptedForUser(User user, PageParameters pageParameters) {
+        Pageable pageable = PageRequest.of(pageParameters.getPageNumber(),
+                pageParameters.getPageSize());
+        return this.friendshipRepository.findAcceptedByRequesterId(user.getId(),pageable);
     }
-    public List<Friendship> findPendingForUser(User user) {
-        return this.friendshipRepository.findPendingByAddresseeId(user.getId());
+    public Page<Friendship> findPendingForUser(User user, PageParameters pageParameters) {
+        Pageable pageable = PageRequest.of(pageParameters.getPageNumber(),
+                pageParameters.getPageSize());
+        return this.friendshipRepository.findPendingByAddresseeId(user.getId(), pageable);
     }
 }

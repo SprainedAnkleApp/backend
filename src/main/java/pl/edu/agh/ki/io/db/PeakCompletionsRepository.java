@@ -30,4 +30,6 @@ public interface PeakCompletionsRepository extends JpaRepository<PeakCompletion,
     List<PeakCompletion> findTop5ByPeakIdBetweenOrderedByCompletionTimeDesc(@Param("peakId") Long peakId,
                                                                             @Param("startDate") Date start,
                                                                             @Param("endDate") Date end);
+
+    List<PeakCompletion> findTop5ByPeakIdOrderByCompletionTimeDesc(Long peakId);
 }

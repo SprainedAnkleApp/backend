@@ -50,7 +50,7 @@ public class PeaksApiController {
     public List<PeakResponse> peaks(@AuthenticationPrincipal User user) {
         return this.peakStorage.findAll()
                 .stream()
-                .map(peak -> PeakResponse.fromPeakWithCompletion(peak, peakCompletionsStorage.findByPeakIdAndUserId(peak.getId(), user.getId()).isPresent()))
+                .map(peak -> PeakResponse.fromPeakWithCompletionAndStatistics(peak, peakCompletionsStorage.findByPeakIdAndUserId(peak.getId(), user.getId()).isPresent(), getPeakStats(peak.getId())))
                 .collect(Collectors.toList());
     }
 

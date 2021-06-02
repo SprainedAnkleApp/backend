@@ -50,4 +50,8 @@ public class PeakCompletionsStorage {
     public List<PeakWithCompletion> getPeaksWithCompletionIfExist(Long userId){
         return this.peakCompletionsRepository.findAllPeaksWithCompletionsIfExistByUserId(userId);
     }
+  
+    public List<PeakCompletion> findAtMost5LastCompletions(Long peakId) {
+        return this.peakCompletionsRepository.findTop5ByPeakIdOrderByCompletionTimeDesc(peakId);
+    }
 }

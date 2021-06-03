@@ -42,4 +42,9 @@ public class FriendshipStorage {
                 pageParameters.getPageSize());
         return this.friendshipRepository.findPendingByAddresseeId(user.getId(), pageable);
     }
+
+    public boolean areFriends(User user1, User user2) {
+        return (this.friendshipRepository.findByRequesterAndAddressee(user1, user2).isPresent() &&
+                this.friendshipRepository.findByRequesterAndAddressee(user2, user1).isPresent());
+    }
 }

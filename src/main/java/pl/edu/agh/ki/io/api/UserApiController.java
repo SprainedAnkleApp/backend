@@ -177,10 +177,12 @@ public class UserApiController {
     }
 
     @GetMapping("/api/public/users/{userid}")
-    public ResponseEntity<UserResponse> getUser(@PathVariable("userid") Long userId) {
+    public ResponseEntity<UserResponse> getUser(@AuthenticationPrincipal User loggedUser, @PathVariable("userid") Long userId) {
         Optional<User> optionalUser = this.userStorage.findUserById(userId);
         return optionalUser
-                .map(user -> new ResponseEntity<>(UserResponse.fromUser(user), HttpStatus.OK))
+                .map(user -> new ResponseEntity<>(
+                        UserResponse.fromUserWithFriendship(user, this.friendshipStorage.areFriends(optionalUser.get(), loggedUser)),
+                        HttpStatus.OK))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

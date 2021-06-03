@@ -77,9 +77,9 @@ public class DbInit implements CommandLineRunner {
         Post post = new Post(testUser, "content");
         wallItemRepository.save(post);
 
-        Reaction reaction = new Reaction(new ReactionKey(testUser.getId(), post.getId()), ReactionType.LIKE);
+        Reaction reaction = new Reaction(new ReactionKey(testUser.getId(), post.getId()), ReactionType.LOVE);
         reactionsRepository.save(reaction);
-        Reaction reaction2 = new Reaction(new ReactionKey(testUser2.getId(), post.getId()), ReactionType.WATCH);
+        Reaction reaction2 = new Reaction(new ReactionKey(testUser2.getId(), post.getId()), ReactionType.LOVE);
         reactionsRepository.save(reaction2);
 
         PeakPost peakPost = new PeakPost(testUser, "content", peakRepository.findPeakByName("Rysy").get());

@@ -48,7 +48,7 @@ public class PhotoApiController {
         String photoPath =  GoogleCloudFileService.generateFileName();
         fileService.upload(photo.getFile(), photoPath);
 
-        Photo photoDbEntry = new Photo(user, photo.getContent(), photoPath);
+        Photo photoDbEntry = new Photo(user, photo.getContent(), photoPath, photo.getLatitude(), photo.getLongitude());
         photoDbEntry = this.photoStorage.createPhoto(photoDbEntry);
         return photoDbEntry.getId();
     }

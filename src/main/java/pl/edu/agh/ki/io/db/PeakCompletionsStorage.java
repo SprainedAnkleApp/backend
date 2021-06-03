@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import pl.edu.agh.ki.io.models.PeakCompletion;
 
 import java.sql.Date;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 

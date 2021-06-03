@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.agh.ki.io.api.providers.AchievementsProvider;
-import pl.edu.agh.ki.io.db.PeakCompletionsStorage;
 import pl.edu.agh.ki.io.db.UserStorage;
 import pl.edu.agh.ki.io.models.User;
 

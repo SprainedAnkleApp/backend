@@ -2,7 +2,6 @@ package pl.edu.agh.ki.io.api;
 
 import com.google.cloud.storage.StorageException;
 import io.swagger.annotations.Api;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +13,9 @@ import pl.edu.agh.ki.io.cloudstorage.GoogleCloudFileService;
 import pl.edu.agh.ki.io.db.PhotoStorage;
 import pl.edu.agh.ki.io.models.User;
 import pl.edu.agh.ki.io.models.wallElements.Photo;
-import pl.edu.agh.ki.io.models.wallElements.reactions.Reaction;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Optional;
-import java.util.Set;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController

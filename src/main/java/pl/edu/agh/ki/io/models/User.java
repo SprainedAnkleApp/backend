@@ -52,6 +52,9 @@ public class User {
     @Column(name = "profile_photo")
     private String profilePhoto;
 
+    @Column(name = "background_photo")
+    private String backgroundPhoto = "https://images.pexels.com/photos/572897/pexels-photo-572897.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260";
+
     @Column(name="birthday")
     private Date birthday;
 

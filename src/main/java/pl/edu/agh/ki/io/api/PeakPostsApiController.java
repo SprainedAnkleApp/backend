@@ -9,13 +9,14 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.agh.ki.io.api.models.CreatePostRequest;
 import pl.edu.agh.ki.io.api.models.PeakPostResponse;
-import pl.edu.agh.ki.io.api.models.PostResponse;
 import pl.edu.agh.ki.io.db.PeakPostsStorage;
 import pl.edu.agh.ki.io.db.PeakStorage;
+import pl.edu.agh.ki.io.db.ReactionsStorage;
 import pl.edu.agh.ki.io.models.Peak;
 import pl.edu.agh.ki.io.models.User;
 import pl.edu.agh.ki.io.models.wallElements.PeakPost;
 import pl.edu.agh.ki.io.models.wallElements.PeakPostPage;
+
 import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -27,6 +28,7 @@ public class PeakPostsApiController {
 
     private final PeakPostsStorage peakPostsStorage;
     private final PeakStorage peakStorage;
+    private final ReactionsStorage reactionsStorage;
 
     @GetMapping("{peakid}/posts")
     public ResponseEntity<Page<PeakPost>> getPeakPostsByPeakId(@PathVariable("peakid") Long peakId, PeakPostPage peakPostPage) {
@@ -41,9 +43,8 @@ public class PeakPostsApiController {
         return optionalPeak
                 .map(peak -> {
                     PeakPost peakPost = new PeakPost(user, postRequest.getContent(), peak);
-                    peakPostsStorage.createPeakPost(peakPost);
-                    PeakPostResponse peakPostResponse= this.peakPostsStorage.findPeakPostById(peakId);
-                    return new ResponseEntity<>(peakPostResponse, HttpStatus.CREATED);
+                    peakPost = peakPostsStorage.createPeakPost(peakPost);
+                    return new ResponseEntity<>(PeakPostResponse.fromPeakPostAndReactions(peakPost, reactionsStorage.findByIdWallElementID(peakPost.getId())), HttpStatus.CREATED);
                 }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }

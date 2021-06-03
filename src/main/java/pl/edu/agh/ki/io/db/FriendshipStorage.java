@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import pl.edu.agh.ki.io.models.Friendship;
 import pl.edu.agh.ki.io.models.PageParameters;
 import pl.edu.agh.ki.io.models.User;
+
 import javax.transaction.Transactional;
-import java.util.List;
 import java.util.Optional;
 
 @Service

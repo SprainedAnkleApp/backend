@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Paths;
@@ -48,12 +47,17 @@ public class GoogleCloudFileService {
         }
     }
 
-    public static String generateV4GetObjectSignedUrl(String photoName)
-            throws StorageException, FileNotFoundException, IOException {
+    public static String generateV4GetObjectSignedUrl(String photoName) {
 
-        StorageOptions storageOptions = StorageOptions.newBuilder().setProjectId("sprainedankle").setCredentials(
-                GoogleCredentials.fromStream(new FileInputStream("gcloud-credentials/sprainedankle-4c6c48239f8b.json")))
-                .build();
+        StorageOptions storageOptions = null;
+        try {
+            storageOptions = StorageOptions.newBuilder().setProjectId("sprainedankle").setCredentials(
+                    GoogleCredentials.fromStream(new FileInputStream("gcloud-credentials/sprainedankle-4c6c48239f8b.json")))
+                    .build();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
         Storage storage = storageOptions.getService();
 
         BlobInfo blobInfo = BlobInfo.newBuilder(BlobId.of("sprained-ankle-photos", photoName)).build();

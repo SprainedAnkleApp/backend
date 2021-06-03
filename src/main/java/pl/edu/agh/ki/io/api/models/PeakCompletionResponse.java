@@ -5,7 +5,6 @@ import lombok.Data;
 import pl.edu.agh.ki.io.models.PeakCompletion;
 import pl.edu.agh.ki.io.models.PeakCompletionKey;
 
-import java.time.Duration;
 import java.util.Date;
 
 @Data

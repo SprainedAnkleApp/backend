@@ -3,8 +3,8 @@ package pl.edu.agh.ki.io.db;
 import org.springframework.stereotype.Service;
 import pl.edu.agh.ki.io.models.wallElements.reactions.Reaction;
 import pl.edu.agh.ki.io.models.wallElements.reactions.ReactionKey;
-import pl.edu.agh.ki.io.models.wallElements.reactions.ReactionType;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,5 +32,9 @@ public class ReactionsStorage {
 
     public Optional<Reaction> findReaction(Long userId, Long wallElementId) {
         return this.reactionsRepository.findById(new ReactionKey(userId, wallElementId));
+    }
+
+    public List<Reaction> findByIdWallElementID(Long id) {
+        return this.reactionsRepository.findByIdWallElementID(id);
     }
 }

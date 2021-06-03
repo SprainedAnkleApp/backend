@@ -7,7 +7,6 @@ import pl.edu.agh.ki.io.models.wallElements.WallItem;
 import pl.edu.agh.ki.io.models.wallElements.WallItemPage;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 

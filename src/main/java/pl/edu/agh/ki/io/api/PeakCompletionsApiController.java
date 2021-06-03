@@ -8,7 +8,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.agh.ki.io.api.models.PeakCompletionRequest;
 import pl.edu.agh.ki.io.api.models.PeakCompletionResponse;
-import pl.edu.agh.ki.io.api.models.UserResponse;
 import pl.edu.agh.ki.io.api.providers.PeakStatisticsProvider;
 import pl.edu.agh.ki.io.db.PeakCompletionsStorage;
 import pl.edu.agh.ki.io.db.PeakStorage;

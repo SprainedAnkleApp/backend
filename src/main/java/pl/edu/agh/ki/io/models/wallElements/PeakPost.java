@@ -22,4 +22,9 @@ public class PeakPost extends WallItem{
         super(user, content);
         this.peak = peak;
     }
+
+    public PeakPost(User user, String content, Peak peak, double latitude, double longitude) {
+        super(user, content, latitude, longitude);
+        this.peak = peak;
+    }
 }

@@ -15,4 +15,7 @@ public class Post extends WallItem {
     public Post(User user, String content){
         super(user, content);
     }
+    public Post(User user, String content, double latitude, double longitude){
+        super(user, content, latitude, longitude);
+    }
 }

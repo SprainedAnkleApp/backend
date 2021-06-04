@@ -40,7 +40,7 @@ public class PeakPostsApiController {
         Optional<Peak> optionalPeak = this.peakStorage.findPeakById(peakId);
         return optionalPeak
                 .map(peak -> {
-                    PeakPost peakPost = new PeakPost(user, postRequest.getContent(), peak);
+                    PeakPost peakPost = new PeakPost(user, postRequest.getContent(), peak, postRequest.getLatitude(), postRequest.getLongitude());
                     peakPostsStorage.createPeakPost(peakPost);
                     PeakPostResponse peakPostResponse= this.peakPostsStorage.findPeakPostById(peakId);
                     return new ResponseEntity<>(peakPostResponse, HttpStatus.CREATED);

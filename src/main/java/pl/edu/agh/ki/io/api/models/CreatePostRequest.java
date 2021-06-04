@@ -7,4 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreatePostRequest {
     private String content;
+    private double latitude;
+    private double longitude;
 }

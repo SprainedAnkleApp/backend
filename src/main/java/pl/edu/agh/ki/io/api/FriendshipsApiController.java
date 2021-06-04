@@ -33,6 +33,9 @@ public class FriendshipsApiController {
         Optional<User> addressee = this.userStorage.findUserById(addresseeId);
 
         if(addressee.isPresent()) {
+            if(this.friendshipStorage.findByRequesterAndAddressee(requester, addressee.get()).isPresent())
+                return ResponseEntity.badRequest().body("You already invited that person, wait for their response");
+
             if (this.friendshipStorage.findByRequesterAndAddressee(addressee.get(), requester).isPresent()){
                 return acceptFriend(requester, request);
             }

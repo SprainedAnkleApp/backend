@@ -9,6 +9,7 @@ import pl.edu.agh.ki.io.api.models.PeakPostResponse;
 import pl.edu.agh.ki.io.models.wallElements.PeakPost;
 import pl.edu.agh.ki.io.models.wallElements.PeakPostPage;
 
+import java.io.IOException;
 import java.util.Optional;
 
 
@@ -29,7 +30,7 @@ public class PeakPostsStorage {
         return this.peakPostsRepository.findPeakPostsByPeakId(peakId, pageable);
     }
 
-    public PeakPostResponse findPeakPostById(Long peakPostId){
+    public PeakPostResponse findPeakPostById(Long peakPostId) throws IOException {
         Optional<PeakPost> peakPost = this.peakPostsRepository.findById(peakPostId);
         if(peakPost.isEmpty()) return null;
         return PeakPostResponse.fromPeakPostAndReactions(peakPost.get(), reactionsRepository.findByIdWallElementID(peakPostId));

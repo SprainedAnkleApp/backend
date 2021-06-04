@@ -4,18 +4,20 @@ import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.agh.ki.io.api.models.CreatePostRequest;
 import pl.edu.agh.ki.io.api.models.PeakPostResponse;
-import pl.edu.agh.ki.io.api.models.PostResponse;
+import pl.edu.agh.ki.io.cloudstorage.GoogleCloudFileService;
 import pl.edu.agh.ki.io.db.PeakPostsStorage;
 import pl.edu.agh.ki.io.db.PeakStorage;
 import pl.edu.agh.ki.io.models.Peak;
 import pl.edu.agh.ki.io.models.User;
 import pl.edu.agh.ki.io.models.wallElements.PeakPost;
 import pl.edu.agh.ki.io.models.wallElements.PeakPostPage;
+import java.io.IOException;
 import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -27,6 +29,7 @@ public class PeakPostsApiController {
 
     private final PeakPostsStorage peakPostsStorage;
     private final PeakStorage peakStorage;
+    private final GoogleCloudFileService fileService;
 
     @GetMapping("{peakid}/posts")
     public ResponseEntity<Page<PeakPost>> getPeakPostsByPeakId(@PathVariable("peakid") Long peakId, PeakPostPage peakPostPage) {
@@ -35,14 +38,27 @@ public class PeakPostsApiController {
         else return ResponseEntity.notFound().build();
     }
 
-    @PostMapping("/{peakid}/posts")
-    public ResponseEntity<PeakPostResponse> createPost(@RequestBody CreatePostRequest postRequest, @AuthenticationPrincipal User user, @PathVariable("peakid") Long peakId) {
+    @PostMapping(value = "/{peakid}/posts", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {
+            MediaType.APPLICATION_JSON_VALUE})
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<PeakPostResponse> createPost(@ModelAttribute CreatePostRequest postRequest, @AuthenticationPrincipal User user, @PathVariable("peakid") Long peakId) throws IOException {
+        String photoPath = "";
+        if (postRequest.getFile() != null) {
+            photoPath = GoogleCloudFileService.generateFileName();
+            fileService.upload(postRequest.getFile(), photoPath);
+        }
         Optional<Peak> optionalPeak = this.peakStorage.findPeakById(peakId);
+        String finalPhotoPath = photoPath;
         return optionalPeak
                 .map(peak -> {
-                    PeakPost peakPost = new PeakPost(user, postRequest.getContent(), peak, postRequest.getLatitude(), postRequest.getLongitude());
+                    PeakPost peakPost = postRequest.getFile() != null ? new PeakPost(user, postRequest.getContent(), peak, postRequest.getLatitude(), postRequest.getLongitude(), finalPhotoPath) : new PeakPost(user, postRequest.getContent(), peak, postRequest.getLatitude(), postRequest.getLongitude());
                     peakPostsStorage.createPeakPost(peakPost);
-                    PeakPostResponse peakPostResponse= this.peakPostsStorage.findPeakPostById(peakId);
+                    PeakPostResponse peakPostResponse = null;
+                    try {
+                        peakPostResponse = this.peakPostsStorage.findPeakPostById(peakId);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     return new ResponseEntity<>(peakPostResponse, HttpStatus.CREATED);
                 }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }

@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.agh.ki.io.api.models.PeakCompletionResponse;
-import pl.edu.agh.ki.io.api.models.PeakNameResponse;
+import pl.edu.agh.ki.io.api.models.PeakShortResponse;
 import pl.edu.agh.ki.io.api.models.PeakResponse;
 import pl.edu.agh.ki.io.api.providers.PeakStatisticsProvider;
 import pl.edu.agh.ki.io.db.PeakCompletionsStorage;
@@ -64,10 +64,10 @@ public class PeaksApiController {
     }
 
     @GetMapping("/names")
-    public List<PeakNameResponse> peaksNames(@AuthenticationPrincipal User user) {
+    public List<PeakShortResponse> peaksNames(@AuthenticationPrincipal User user) {
         return this.peakStorage.findAll()
                 .stream()
-                .map(PeakNameResponse::fromPeak)
+                .map(PeakShortResponse::fromPeak)
                 .collect(Collectors.toList());
     }
 

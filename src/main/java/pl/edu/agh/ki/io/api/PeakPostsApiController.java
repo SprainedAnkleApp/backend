@@ -32,7 +32,7 @@ public class PeakPostsApiController {
     private final GoogleCloudFileService fileService;
 
     @GetMapping("{peakid}/posts")
-    public ResponseEntity<Page<PeakPost>> getPeakPostsByPeakId(@PathVariable("peakid") Long peakId, PeakPostPage peakPostPage) {
+    public ResponseEntity<Page<PeakPostResponse>> getPeakPostsByPeakId(@PathVariable("peakid") Long peakId, PeakPostPage peakPostPage) {
         if (this.peakStorage.findPeakById(peakId).isPresent())
             return new ResponseEntity<>(this.peakPostsStorage.findPeakPostsByPeakId(peakId, peakPostPage), HttpStatus.OK);
         else return ResponseEntity.notFound().build();

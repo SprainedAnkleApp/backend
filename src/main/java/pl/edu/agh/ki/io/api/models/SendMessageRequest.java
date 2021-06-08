@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class SendMessageRequest {
     Long sendTo;
-
+    Long senderId;
 
     @NotEmpty
     @NotNull

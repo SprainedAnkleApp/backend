@@ -30,4 +30,9 @@ public class WallItemApiController {
     public ResponseEntity<Page<WallItemResponse>> getWallItems(WallItemPage wallItemPage) {
         return new ResponseEntity<>(this.wallItemStorage.findAll(wallItemPage), HttpStatus.OK);
     }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<Page<WallItemResponse>> getUserWallItems(@PathVariable("userId") Long userId, WallItemPage wallItemPage) {
+        return new ResponseEntity<>(this.wallItemStorage.findUserWallItems(wallItemPage, userId), HttpStatus.OK);
+    }
 }

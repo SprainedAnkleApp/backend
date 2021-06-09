@@ -22,4 +22,9 @@ public class Photo extends WallItem {
         super(user, content);
         this.photoPath = photoPath;
     }
+
+    public Photo(User user, String content, String photoPath, double latitude, double longitude){
+        super(user, content, latitude, longitude);
+        this.photoPath = photoPath;
+    }
 }

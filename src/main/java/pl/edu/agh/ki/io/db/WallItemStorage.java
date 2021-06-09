@@ -38,6 +38,26 @@ public class WallItemStorage {
                 pageable, wallItems.getTotalElements());
     }
 
+    public Page<WallItemResponse> findUserWallItems(WallItemPage wallItemPage, Long userId) {
+        Sort sort = Sort.by(wallItemPage.getSortDirection(), wallItemPage.getSortBy());
+        Pageable pageable = PageRequest.of(wallItemPage.getPageNumber(),
+                wallItemPage.getPageSize(), sort);
+        Page<WallItem> wallItems = this.wallItemRepository.findAll(pageable);
+
+        return new PageImpl<>(wallItems.stream()
+                .filter(wallItem -> wallItem.getUser().getId().equals(userId))
+                .map(wallItem -> {
+                    try {
+                        return WallItemResponse.fromWallItemAndReactions(wallItem, this.reactionsRepository.findByIdWallElementID(wallItem.getId()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                })
+                .collect(Collectors.toList()),
+                pageable, wallItems.getTotalElements());
+    }
+
     public Optional<WallItem> getWallItemById(Long wallItemId) {
         return this.wallItemRepository.findById(wallItemId);
     }

@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import pl.edu.agh.ki.io.api.models.PeakPostResponse;
 import pl.edu.agh.ki.io.models.wallElements.PeakPost;
 import pl.edu.agh.ki.io.models.wallElements.PeakPostPage;
 
@@ -28,10 +29,9 @@ public class PeakPostsStorage {
         return this.peakPostsRepository.findPeakPostsByPeakId(peakId, pageable);
     }
 
-    public PeakPost findPeakPostById(Long peakPostId) {
+    public Optional<PeakPost> findPeakPostById(Long peakPostId) {
         Optional<PeakPost> peakPost = this.peakPostsRepository.findById(peakPostId);
-        if(peakPost.isEmpty()) return null;
-        return peakPost.get();
+        return peakPost
     }
 
     public PeakPost createPeakPost(PeakPost peakPost) {

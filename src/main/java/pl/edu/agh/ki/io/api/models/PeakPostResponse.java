@@ -23,7 +23,7 @@ public class PeakPostResponse extends WallItemResponse {
     private UserResponse user;
     private String signedUrl;
 
-    public static PeakPostResponse fromPeakPostAndReactions(PeakPost peakPost, List<Reaction> reactions) throws IOException {
+    public static PeakPostResponse fromPeakPostAndReactions(PeakPost peakPost, List<Reaction> reactions) {
         return PeakPostResponse.builder()
                 .id(peakPost.getId())
                 .content(peakPost.getContent())

@@ -31,6 +31,8 @@ public class PeakPostsApiController {
 
     private final PeakPostsStorage peakPostsStorage;
     private final PeakStorage peakStorage;
+    private final GoogleCloudFileService fileService;
+    private final ReactionsStorage reactionsStorage;
 
     @GetMapping("{peakid}/posts")
     public ResponseEntity<Page<PeakPost>> getPeakPostsByPeakId(@PathVariable("peakid") Long peakId, PeakPostPage peakPostPage) {
@@ -52,17 +54,9 @@ public class PeakPostsApiController {
         String finalPhotoPath = photoPath;
         return optionalPeak
                 .map(peak -> {
-                    PeakPost peakPost = new PeakPost(user, postRequest.getContent(), peak);
-                    peakPost = peakPostsStorage.createPeakPost(peakPost);
-                    return new ResponseEntity<>(PeakPostResponse.fromPeakPostAndReactions(peakPost, reactionsStorage.findByIdWallElementID(peakPost.getId())), HttpStatus.CREATED);
                     PeakPost peakPost = postRequest.getFile() != null ? new PeakPost(user, postRequest.getContent(), peak, postRequest.getLatitude(), postRequest.getLongitude(), finalPhotoPath) : new PeakPost(user, postRequest.getContent(), peak, postRequest.getLatitude(), postRequest.getLongitude());
-                    peakPostsStorage.createPeakPost(peakPost);
-                    PeakPostResponse peakPostResponse = null;
-                    try {
-                        peakPostResponse = this.peakPostsStorage.findPeakPostById(peakId);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    peakPost = peakPostsStorage.createPeakPost(peakPost);
+                    PeakPostResponse peakPostResponse = PeakPostResponse.fromPeakPostAndReactions(peakPost, reactionsStorage.findByIdWallElementID(peakPost.getId()));
                     return new ResponseEntity<>(peakPostResponse, HttpStatus.CREATED);
                 }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }

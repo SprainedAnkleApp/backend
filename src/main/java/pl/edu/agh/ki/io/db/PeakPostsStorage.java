@@ -1,5 +1,6 @@
 package pl.edu.agh.ki.io.db;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,13 +14,9 @@ import java.util.Optional;
 
 
 @Service
+@RequiredArgsConstructor
 public class PeakPostsStorage {
     private final PeakPostsRepository peakPostsRepository;
-    private final ReactionsRepository reactionsRepository;
-    public PeakPostsStorage(PeakPostsRepository peakPostsRepository, ReactionsRepository reactionsRepository) {
-         this.peakPostsRepository = peakPostsRepository;
-         this.reactionsRepository = reactionsRepository;
-    }
 
     public Page<PeakPost> findPeakPostsByPeakId(Long peakId, PeakPostPage peakPostPage){
         Sort sort = Sort.by(peakPostPage.getSortDirection(), peakPostPage.getSortBy());
@@ -30,8 +27,7 @@ public class PeakPostsStorage {
     }
 
     public Optional<PeakPost> findPeakPostById(Long peakPostId) {
-        Optional<PeakPost> peakPost = this.peakPostsRepository.findById(peakPostId);
-        return peakPost
+        return this.peakPostsRepository.findById(peakPostId);
     }
 
     public PeakPost createPeakPost(PeakPost peakPost) {

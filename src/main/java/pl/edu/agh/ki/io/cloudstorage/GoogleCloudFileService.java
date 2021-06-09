@@ -22,7 +22,7 @@ public class GoogleCloudFileService {
         try {
             StorageOptions storageOptions = StorageOptions.newBuilder().setProjectId("sprainedankle")
                     .setCredentials(GoogleCredentials
-                            .fromStream(new FileInputStream("/app/google-credentials.json")))
+                            .fromStream(new FileInputStream("app/google-credentials.json")))
                     .build();
             Storage storage = storageOptions.getService();
             storage.create(BlobInfo.newBuilder("sprained-ankle-photos", path).build(), file.getBytes(),
@@ -36,7 +36,7 @@ public class GoogleCloudFileService {
         try {
             StorageOptions storageOptions = StorageOptions.newBuilder().setProjectId("sprainedankle")
                     .setCredentials(GoogleCredentials
-                            .fromStream(new FileInputStream("/app/google-credentials.json")))
+                            .fromStream(new FileInputStream("app/google-credentials.json")))
                     .build();
             Storage storage = storageOptions.getService();
             Blob blob = storage.get(BlobId.of("sprained-ankle-photos", photoName));
@@ -52,7 +52,7 @@ public class GoogleCloudFileService {
         StorageOptions storageOptions = null;
         try {
             storageOptions = StorageOptions.newBuilder().setProjectId("sprainedankle").setCredentials(
-                    GoogleCredentials.fromStream(new FileInputStream("/app/google-credentials.json")))
+                    GoogleCredentials.fromStream(new FileInputStream("app/google-credentials.json")))
                     .build();
         } catch (IOException e) {
             e.printStackTrace();

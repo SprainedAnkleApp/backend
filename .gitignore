@@ -34,3 +34,4 @@ build/
 
 ### Google Cloud credentails ###
 gcloud-credentials/
+app/

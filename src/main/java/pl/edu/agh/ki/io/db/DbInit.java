@@ -28,6 +28,7 @@ public class DbInit implements CommandLineRunner {
     private final PeakPostsRepository peakPostsRepository;
     private final ReactionsRepository reactionsRepository;
     private final FriendshipRepository friendshipRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     public void run(String... args) {
@@ -88,9 +89,16 @@ public class DbInit implements CommandLineRunner {
         friendshipRepository.save(new Friendship(1, testUser, testUser2));
         friendshipRepository.save(new Friendship(1, testUser2, testUser));
         friendshipRepository.save(new Friendship(0, testUser3, testUser));
+
+        for (int i = 0; i < 3; i++) {
+            this.commentRepository.save(new Comment(testUser, peakPost, "costam" + i));
+            this.commentRepository.save(new Comment(testUser, post, i + "post"));
+        }
     }
 
     private void clearRepositories() {
+        this.commentRepository.deleteAll();
+        this.friendshipRepository.deleteAll();
         this.reactionsRepository.deleteAll();
         this.wallItemRepository.deleteAll();
         this.peakCompletionsRepository.deleteAll();

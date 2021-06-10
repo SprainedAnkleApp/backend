@@ -8,6 +8,7 @@ import pl.edu.agh.ki.io.models.Comment;
 import pl.edu.agh.ki.io.models.CommentPage;
 import pl.edu.agh.ki.io.models.wallElements.WallItem;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -27,7 +28,14 @@ public class CommentStorage {
         Page<Comment> comments = this.commentRepository.findAllByWallItem(pageable, wallItem.get());
 
         return new PageImpl<>(comments.stream()
-                .map(CommentResponse::fromComment)
+                .map(comment -> {
+                    try {
+                        return CommentResponse.fromComment(comment);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                })
                 .collect(Collectors.toList()),
                 pageable, comments.getTotalElements());
     }
@@ -36,7 +44,7 @@ public class CommentStorage {
         this.commentRepository.save(comment);
     }
 
-    public CommentResponse findCommentById(Long id) {
+    public CommentResponse findCommentById(Long id) throws IOException {
         Optional<Comment> comment = this.commentRepository.findById(id);
         if (comment.isEmpty()) return null;
         return CommentResponse.fromComment(comment.get());

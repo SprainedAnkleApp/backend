@@ -16,6 +16,7 @@ import pl.edu.agh.ki.io.models.CommentPage;
 import pl.edu.agh.ki.io.models.User;
 import pl.edu.agh.ki.io.models.wallElements.WallItem;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @RestController
@@ -33,7 +34,7 @@ public class CommentsApiController{
     }
 
     @PostMapping("{wallitemid}/comments")
-    public ResponseEntity<CommentResponse> createComment(@PathVariable("wallitemid") Long wallItemId, @RequestBody CreateCommentRequest request, @AuthenticationPrincipal User user){
+    public ResponseEntity<CommentResponse> createComment(@PathVariable("wallitemid") Long wallItemId, @RequestBody CreateCommentRequest request, @AuthenticationPrincipal User user) throws IOException {
         Optional<WallItem> wallItem = this.wallItemStorage.getWallItemById(wallItemId);
         if(wallItem.isEmpty()) return ResponseEntity.notFound().build();
         Comment comment = new Comment(user, wallItem.get(), request.getContent());

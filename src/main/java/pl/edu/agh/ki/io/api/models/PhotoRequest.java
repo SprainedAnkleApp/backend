@@ -8,4 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class PhotoRequest {
     private MultipartFile file;
     private String content;
+    private double latitude;
+    private double longitude;
 }

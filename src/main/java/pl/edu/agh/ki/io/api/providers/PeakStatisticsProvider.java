@@ -32,6 +32,6 @@ public class PeakStatisticsProvider {
     }
 
     public List<PeakCompletion> getLatestCompletionsForId(Long peakId) {
-        return this.peakCompletionsStorage.findAtMost5LastCompletionsLast7Days(peakId);
+        return this.peakCompletionsStorage.findAtMost5LastCompletions(peakId);
     }
 }

@@ -27,8 +27,8 @@ public class DbInit implements CommandLineRunner {
     private final PeakCompletionsRepository peakCompletionsRepository;
     private final PeakPostsRepository peakPostsRepository;
     private final ReactionsRepository reactionsRepository;
-    private final CommentRepository commentRepository;
     private final FriendshipRepository friendshipRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     public void run(String... args) {
@@ -44,6 +44,11 @@ public class DbInit implements CommandLineRunner {
                 "Nowak", "anowak@mail.com", "https://i.imgur.com/VNNp6zWb.jpg", birthday, "+48880053535");
 
         userRepository.save(testUser2);
+
+        User testUser3 = new User("anowak_pending", passwordEncoder.encode("anowak_pending"), AuthProvider.local, "Adam",
+                "Pendingowski", "anowak.pending@mail.com", "https://i.imgur.com/VNNp6zWb.jpg", birthday, "+48880053535");
+
+        userRepository.save(testUser3);
 
         addPeaks();
 
@@ -73,13 +78,17 @@ public class DbInit implements CommandLineRunner {
         Post post = new Post(testUser, "content");
         wallItemRepository.save(post);
 
-        Reaction reaction = new Reaction(new ReactionKey(testUser.getId(), post.getId()), ReactionType.LIKE);
+        Reaction reaction = new Reaction(new ReactionKey(testUser.getId(), post.getId()), ReactionType.LOVE);
         reactionsRepository.save(reaction);
-        Reaction reaction2 = new Reaction(new ReactionKey(testUser2.getId(), post.getId()), ReactionType.WATCH);
+        Reaction reaction2 = new Reaction(new ReactionKey(testUser2.getId(), post.getId()), ReactionType.LOVE);
         reactionsRepository.save(reaction2);
 
         PeakPost peakPost = new PeakPost(testUser, "content", peakRepository.findPeakByName("Rysy").get());
         peakPostsRepository.save(peakPost);
+
+        friendshipRepository.save(new Friendship(1, testUser, testUser2));
+        friendshipRepository.save(new Friendship(1, testUser2, testUser));
+        friendshipRepository.save(new Friendship(0, testUser3, testUser));
 
         for (int i = 0; i < 3; i++) {
             this.commentRepository.save(new Comment(testUser, peakPost, "costam" + i));

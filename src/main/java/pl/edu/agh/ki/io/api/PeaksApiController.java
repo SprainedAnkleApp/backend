@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.agh.ki.io.api.models.PeakCompletionResponse;
+import pl.edu.agh.ki.io.api.models.PeakShortResponse;
 import pl.edu.agh.ki.io.api.models.PeakResponse;
 import pl.edu.agh.ki.io.api.providers.PeakStatisticsProvider;
 import pl.edu.agh.ki.io.db.PeakCompletionsStorage;
@@ -50,7 +51,23 @@ public class PeaksApiController {
     public List<PeakResponse> peaks(@AuthenticationPrincipal User user) {
         return this.peakStorage.findAll()
                 .stream()
-                .map(peak -> PeakResponse.fromPeakWithCompletion(peak, peakCompletionsStorage.findByPeakIdAndUserId(peak.getId(), user.getId()).isPresent()))
+                .map(peak -> {
+                    Optional<PeakCompletion> peakCompletion = peakCompletionsStorage.findByPeakIdAndUserId(peak.getId(), user.getId());
+                    return PeakResponse.fromPeakWithCompletionAndStatistics(
+                            peak,
+                            peakCompletion.isPresent(),
+                            peakCompletion.map(completion -> completion.getCompletionTime().toMinutes()).orElse(0L),
+                            getPeakStats(peak.getId())
+                    );
+                })
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/names")
+    public List<PeakShortResponse> peaksNames(@AuthenticationPrincipal User user) {
+        return this.peakStorage.findAll()
+                .stream()
+                .map(PeakShortResponse::fromPeak)
                 .collect(Collectors.toList());
     }
 
@@ -59,7 +76,12 @@ public class PeaksApiController {
         Optional<Peak> peak = this.peakStorage.findPeakById(peakId);
         if (peak.isPresent()) {
             Optional<PeakCompletion> peakCompletion = peakCompletionsStorage.findByPeakIdAndUserId(peakId, user.getId());
-            return new ResponseEntity<>(PeakResponse.fromPeakWithCompletionAndStatistics(peak.get(), peakCompletion.isPresent(), getPeakStats(peakId)), HttpStatus.OK);
+            return new ResponseEntity<>(PeakResponse.fromPeakWithCompletionAndStatistics(
+                    peak.get(),
+                    peakCompletion.isPresent(),
+                    peakCompletion.map(completion -> completion.getCompletionTime().toMinutes()).orElse(0L),
+                    getPeakStats(peakId)), HttpStatus.OK
+            );
         }
         return ResponseEntity.notFound().build();
     }

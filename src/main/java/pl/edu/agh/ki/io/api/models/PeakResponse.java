@@ -20,6 +20,7 @@ public class PeakResponse {
     private double longitude;
     private String photo;
     private boolean completed;
+    private Long completionTime;
     private Map<String, Object> statistics;
 
     public static PeakResponse fromPeak(Peak peak) {
@@ -36,7 +37,7 @@ public class PeakResponse {
                 .build();
     }
 
-    public static PeakResponse fromPeakWithCompletion(Peak peak, boolean completed) {
+    public static PeakResponse fromPeakWithCompletion(Peak peak, boolean completed, Long completionTime) {
         return PeakResponse.builder()
                 .id(peak.getId())
                 .name(peak.getName())
@@ -48,10 +49,11 @@ public class PeakResponse {
                 .longitude(peak.getLongitude())
                 .photo(peak.getPhoto())
                 .completed(completed)
+                .completionTime(completionTime)
                 .build();
     }
 
-    public static PeakResponse fromPeakWithCompletionAndStatistics(Peak peak, boolean completed, Map<String, Object> statistics) {
+    public static PeakResponse fromPeakWithCompletionAndStatistics(Peak peak, boolean completed, Long completionTime, Map<String, Object> statistics) {
         return PeakResponse.builder()
                 .id(peak.getId())
                 .name(peak.getName())
@@ -63,6 +65,7 @@ public class PeakResponse {
                 .longitude(peak.getLongitude())
                 .photo(peak.getPhoto())
                 .completed(completed)
+                .completionTime(completionTime)
                 .statistics(statistics)
                 .build();
     }

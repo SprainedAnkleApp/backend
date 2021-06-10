@@ -1,6 +1,7 @@
 package pl.edu.agh.ki.io.api;
 
 import io.swagger.annotations.Api;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.*;
@@ -10,15 +11,15 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.web.bind.annotation.*;
-import pl.edu.agh.ki.io.api.models.CreateUserRequest;
-import pl.edu.agh.ki.io.api.models.UserResponse;
+import pl.edu.agh.ki.io.api.models.*;
 import org.springframework.web.reactive.function.client.WebClient;
-import pl.edu.agh.ki.io.api.models.FacebookFriend;
-import pl.edu.agh.ki.io.api.models.FacebookFriendList;
+import pl.edu.agh.ki.io.api.providers.AchievementsProvider;
+import pl.edu.agh.ki.io.db.FriendshipStorage;
 import pl.edu.agh.ki.io.db.UserStorage;
 import pl.edu.agh.ki.io.models.AuthProvider;
+import pl.edu.agh.ki.io.models.Friendship;
 import pl.edu.agh.ki.io.models.User;
-import pl.edu.agh.ki.io.models.UserPage;
+import pl.edu.agh.ki.io.models.PageParameters;
 import pl.edu.agh.ki.io.security.AuthenticationProcessingException;
 import pl.edu.agh.ki.io.security.UserPrincipal;
 
@@ -34,24 +35,62 @@ import java.util.stream.Collectors;
 
 @Api(tags = "Users")
 @RequestMapping("")
+@RequiredArgsConstructor
 public class UserApiController {
 
     private final UserStorage userStorage;
     private final OAuth2AuthorizedClientService clientService;
     private final WebClient facebookGraphApiClient;
+    private final AchievementsProvider achievementsProvider;
+    private final FriendshipStorage friendshipStorage;
 
     Logger logger = LoggerFactory.getLogger(UserApiController.class);
-
-    public UserApiController(UserStorage userStorage, OAuth2AuthorizedClientService clientService, WebClient facebookGraphApiClient) {
-        this.userStorage = userStorage;
-        this.clientService = clientService;
-        this.facebookGraphApiClient = facebookGraphApiClient;
-    }
 
     @GetMapping("/api/public/users/me")
     public UserResponse user(@AuthenticationPrincipal User user) {
         UserPrincipal currentUser = (UserPrincipal) this.userStorage.loadUserByUsername(user.getLogin());
-        return UserResponse.fromUser(currentUser.getUser());
+        return UserResponse.fromUserWithAchievements(currentUser.getUser(), achievementsProvider.getAchievements(user));
+    }
+
+    @GetMapping("/api/public/users/me/friends")
+    public ResponseEntity<Page<UserResponse>> getFriends(@AuthenticationPrincipal User user, PageParameters pageParameters) {
+        Pageable pageable = PageRequest.of(pageParameters.getPageNumber(),
+                pageParameters.getPageSize());
+
+        Page<Friendship> friendships = this.friendshipStorage.findAcceptedForUser(user, pageParameters);
+
+        return new ResponseEntity<>(new PageImpl<>(friendships.stream()
+                .map(friendship -> UserResponse.fromUser(friendship.getAddressee()))
+                .collect(Collectors.toList()), pageable, friendships.getTotalElements()), HttpStatus.OK); // TODO: maybe send noContent when no accepter requests are present
+    }
+
+    @GetMapping("/api/public/users/{userId}/friends")
+    public ResponseEntity<Page<UserResponse>> getUserFriends(@PathVariable("userId") Long userId, PageParameters pageParameters) {
+        Optional<User> user = this.userStorage.findUserById(userId);
+
+        if (user.isPresent()) {
+            Pageable pageable = PageRequest.of(pageParameters.getPageNumber(),
+                    pageParameters.getPageSize());
+
+            Page<Friendship> friendships = this.friendshipStorage.findAcceptedForUser(user.get(), pageParameters);
+
+            return new ResponseEntity<>(new PageImpl<>(friendships.stream()
+                    .map(friendship -> UserResponse.fromUser(friendship.getAddressee()))
+                    .collect(Collectors.toList()), pageable, friendships.getTotalElements()), HttpStatus.OK);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/api/public/users/me/friends/pending")
+    public ResponseEntity<Page<FriendshipRequestResponse>> getPendingFriendships(@AuthenticationPrincipal User user, PageParameters pageParameters) {
+        Pageable pageable = PageRequest.of(pageParameters.getPageNumber(),
+                pageParameters.getPageSize());
+
+        Page<Friendship> friendships = this.friendshipStorage.findPendingForUser(user, pageParameters);
+
+        return new ResponseEntity<>(new PageImpl<>(friendships.stream()
+                .map(FriendshipRequestResponse::fromFriendship)
+                .collect(Collectors.toList()), pageable, friendships.getTotalElements()), HttpStatus.OK);
     }
 
     @GetMapping("/fb_friends")
@@ -101,14 +140,25 @@ public class UserApiController {
     }
 
     @GetMapping("/api/public/users")
-    public ResponseEntity<Page<UserResponse>> users(UserPage userPage) {
-        Page<User> users = this.userStorage.findAll(userPage);
-        Sort sort = Sort.by(userPage.getSortDirection(), userPage.getSortBy());
-        Pageable pageable = PageRequest.of(userPage.getPageNumber(),
-                userPage.getPageSize(), sort);
+    public ResponseEntity<Page<UserResponse>> users(PageParameters pageParameters) {
+        Page<User> users = this.userStorage.findAll(pageParameters);
+        Sort sort = Sort.by(pageParameters.getSortDirection(), pageParameters.getSortBy());
+        Pageable pageable = PageRequest.of(pageParameters.getPageNumber(),
+                pageParameters.getPageSize(), sort);
 
         return new ResponseEntity<>(new PageImpl<>(
                     users.stream()
+                        .map(UserResponse::fromUser)
+                        .collect(Collectors.toList()), pageable, users.getTotalElements()), HttpStatus.OK);
+    }
+
+    @GetMapping("/api/public/users/search")
+    public ResponseEntity<Page<UserResponse>> searchUser(String searchTerm, PageParameters pageParameters) {
+        Page<User> users = this.userStorage.findBySearchTerm(searchTerm, pageParameters);
+        Pageable pageable = PageRequest.of(pageParameters.getPageNumber(),
+                pageParameters.getPageSize());
+        return new ResponseEntity<>(new PageImpl<>(
+                users.stream()
                         .map(UserResponse::fromUser)
                         .collect(Collectors.toList()), pageable, users.getTotalElements()), HttpStatus.OK);
     }
@@ -127,10 +177,12 @@ public class UserApiController {
     }
 
     @GetMapping("/api/public/users/{userid}")
-    public ResponseEntity<UserResponse> getUser(@PathVariable("userid") Long userId) {
+    public ResponseEntity<UserResponse> getUser(@AuthenticationPrincipal User loggedUser, @PathVariable("userid") Long userId) {
         Optional<User> optionalUser = this.userStorage.findUserById(userId);
         return optionalUser
-                .map(user -> new ResponseEntity<>(UserResponse.fromUser(user), HttpStatus.OK))
+                .map(user -> new ResponseEntity<>(
+                        UserResponse.fromUserWithFriendship(user, this.friendshipStorage.areFriends(optionalUser.get(), loggedUser)),
+                        HttpStatus.OK))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

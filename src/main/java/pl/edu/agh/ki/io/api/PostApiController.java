@@ -33,7 +33,7 @@ public class PostApiController {
 
     @PostMapping("/post")
     public ResponseEntity<PostResponse> createPost(@RequestBody CreatePostRequest postRequest, @AuthenticationPrincipal User user) {
-        Post post = new Post(user, postRequest.getContent());
+        Post post = new Post(user, postRequest.getContent(), postRequest.getLatitude(), postRequest.getLongitude());
         postStorage.createPost(post);
 
         PostResponse response = this.postStorage.findPostById(post.getId());

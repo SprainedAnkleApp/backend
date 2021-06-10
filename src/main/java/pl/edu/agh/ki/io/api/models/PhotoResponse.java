@@ -18,12 +18,18 @@ public class PhotoResponse extends WallItemResponse{
     private String content;
     private String signedUrl;
     private List<ReactionResponse> reactions;
+    private double latitude;
+    private double longitude;
+    private UserResponse user;
 
     public static PhotoResponse fromPhotoAndReactions(Photo photo, List<Reaction> reactions) throws IOException {
         return PhotoResponse.builder()
                 .id(photo.getId())
                 .content(photo.getContent())
                 .signedUrl(GoogleCloudFileService.generateV4GetObjectSignedUrl(photo.getPhotoPath()))
+                .latitude(photo.getLatitude())
+                .longitude(photo.getLongitude())
+                .user(UserResponse.fromUser(photo.getUser()))
                 .reactions(reactions.stream().map(ReactionResponse::fromReaction).collect(Collectors.toList())).build();
     }
 }

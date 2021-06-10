@@ -8,6 +8,7 @@ import pl.edu.agh.ki.io.models.PeakCompletion;
 import pl.edu.agh.ki.io.models.PeakCompletionKey;
 
 import java.sql.Date;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,4 +31,12 @@ public interface PeakCompletionsRepository extends JpaRepository<PeakCompletion,
     List<PeakCompletion> findTop5ByPeakIdBetweenOrderedByCompletionTimeDesc(@Param("peakId") Long peakId,
                                                                             @Param("startDate") Date start,
                                                                             @Param("endDate") Date end);
+
+    @Query(value = "select new pl.edu.agh.ki.io.db.PeakWithCompletion(p.id, p.name, c.createDate) from Peak p " + //TODO: more data
+            "left join PeakCompletion c on p.id = c.peak.id and c.user.id = :userId " +
+            "order by c.createDate Desc")
+    List<PeakWithCompletion> findAllPeaksWithCompletionsIfExistByUserId(@Param("userId") Long userId);
+  
+    List<PeakCompletion> findTop5ByPeakIdOrderByCompletionTimeDesc(Long peakId);
+
 }

@@ -1,5 +1,6 @@
 package pl.edu.agh.ki.io.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -40,10 +41,12 @@ public class Friendship {
     }
 
     @CreationTimestamp
+    @JsonIgnore
     @Column(name = "create_date", nullable = false)
     private Date createDate;
 
     @UpdateTimestamp
+    @JsonIgnore
     @Column(name = "update_date", nullable = false)
     private Date updateDate;
 

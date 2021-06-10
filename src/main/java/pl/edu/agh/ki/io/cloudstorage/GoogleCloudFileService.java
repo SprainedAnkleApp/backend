@@ -23,7 +23,7 @@ public class GoogleCloudFileService {
         try {
             StorageOptions storageOptions = StorageOptions.newBuilder().setProjectId("sprainedankle")
                     .setCredentials(GoogleCredentials
-                            .fromStream(new FileInputStream("gcloud-credentials/sprainedankle-4c6c48239f8b.json")))
+                            .fromStream(new FileInputStream("/app/google-credentials.json")))
                     .build();
             Storage storage = storageOptions.getService();
             storage.create(BlobInfo.newBuilder("sprained-ankle-photos", path).build(), file.getBytes(),
@@ -37,7 +37,7 @@ public class GoogleCloudFileService {
         try {
             StorageOptions storageOptions = StorageOptions.newBuilder().setProjectId("sprainedankle")
                     .setCredentials(GoogleCredentials
-                            .fromStream(new FileInputStream("gcloud-credentials/sprainedankle-4c6c48239f8b.json")))
+                            .fromStream(new FileInputStream("/app/google-credentials.json")))
                     .build();
             Storage storage = storageOptions.getService();
             Blob blob = storage.get(BlobId.of("sprained-ankle-photos", photoName));
@@ -52,7 +52,7 @@ public class GoogleCloudFileService {
             throws StorageException, FileNotFoundException, IOException {
 
         StorageOptions storageOptions = StorageOptions.newBuilder().setProjectId("sprainedankle").setCredentials(
-                GoogleCredentials.fromStream(new FileInputStream("gcloud-credentials/sprainedankle-4c6c48239f8b.json")))
+                GoogleCredentials.fromStream(new FileInputStream("/app/google-credentials.json")))
                 .build();
         Storage storage = storageOptions.getService();
 

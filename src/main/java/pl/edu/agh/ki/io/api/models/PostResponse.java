@@ -14,16 +14,25 @@ public class PostResponse extends WallItemResponse{
     private Long id;
     private List<ReactionResponse> reactions;
     private String content;
+    private double latitude;
+    private double longitude;
+    private UserResponse user;
 
     public static PostResponse fromPost(WallItem post) {
         return PostResponse.builder().id(post.getId())
                 .content(post.getContent())
+                .latitude(post.getLatitude())
+                .longitude(post.getLongitude())
+                .user(UserResponse.fromUser(post.getUser()))
                 .build();
     }
 
     public static PostResponse fromPostAndReactions(WallItem post, List<Reaction> reactions) {
         return PostResponse.builder().id(post.getId())
                 .content(post.getContent())
+                .latitude(post.getLatitude())
+                .longitude(post.getLongitude())
+                .user(UserResponse.fromUser(post.getUser()))
                 .reactions(reactions.stream().map(ReactionResponse::fromReaction).collect(Collectors.toList())).build();
     }
 }

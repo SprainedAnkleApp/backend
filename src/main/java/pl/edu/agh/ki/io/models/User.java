@@ -73,6 +73,9 @@ public class User {
     @OneToMany
     private  Set<WallItem> wallItems = new HashSet<>();
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private  Set<Comment> comments = new HashSet<>();
 
     public User(String login, String password, AuthProvider authProvider, String firstName, String lastName, String email, String profilePhoto,
                 Date birthday, String phoneNumber) {

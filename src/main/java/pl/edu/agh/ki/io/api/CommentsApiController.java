@@ -37,10 +37,8 @@ public class CommentsApiController{
     public ResponseEntity<CommentResponse> createComment(@PathVariable("wallitemid") Long wallItemId, @RequestBody CreateCommentRequest request, @AuthenticationPrincipal User user) throws IOException {
         Optional<WallItem> wallItem = this.wallItemStorage.getWallItemById(wallItemId);
         if(wallItem.isEmpty()) return ResponseEntity.notFound().build();
-        Comment comment = new Comment(user, wallItem.get(), request.getContent());
-        this.commentStorage.createComment(comment);
+        Comment comment = this.commentStorage.createComment(new Comment(user, wallItem.get(), request.getContent()));
 
-        CommentResponse response = this.commentStorage.findCommentById(comment.getId());
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(CommentResponse.fromComment(comment), HttpStatus.CREATED);
     }
 }

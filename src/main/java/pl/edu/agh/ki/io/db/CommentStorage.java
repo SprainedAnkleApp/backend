@@ -40,8 +40,8 @@ public class CommentStorage {
                 pageable, comments.getTotalElements());
     }
 
-    public void createComment(Comment comment) {
-        this.commentRepository.save(comment);
+    public Comment createComment(Comment comment) {
+        return this.commentRepository.save(comment);
     }
 
     public CommentResponse findCommentById(Long id) throws IOException {

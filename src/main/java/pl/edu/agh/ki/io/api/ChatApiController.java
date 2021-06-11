@@ -11,11 +11,9 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.edu.agh.ki.io.api.models.SendMessageRequest;
+import pl.edu.agh.ki.io.api.models.SetSeenRequest;
 import pl.edu.agh.ki.io.api.models.UserResponse;
 import pl.edu.agh.ki.io.db.ChatMessageStorage;
 import pl.edu.agh.ki.io.db.UserStorage;
@@ -51,7 +49,32 @@ public class ChatApiController {
         Page<ChatMessage> messages = chatMessageStorage.findChatMessages(sender.getId(), receiverId, pageParameters);
         Pageable pageable = PageRequest.of(pageParameters.getPageNumber(),
                 pageParameters.getPageSize());
+        messages.forEach(message -> {
+            message.setSeen(true);
+            chatMessageStorage.save(message);
+        });
+        return new ResponseEntity<>(new PageImpl<>(messages.stream()
+                .collect(Collectors.toList()), pageable, messages.getTotalElements()), HttpStatus.OK);
+    }
 
+    @PostMapping("/api/chat/seen")
+    public ResponseEntity<?> setSeen(@AuthenticationPrincipal User user, SetSeenRequest request) {
+        Optional<ChatMessage> messageOptional = chatMessageStorage.findMassageById(request.getMessageId());
+        return messageOptional
+                .map(message -> {
+                    if(message.getReceiver().getId().equals(user.getId()))
+                        return ResponseEntity.status(403).build();
+                    message.setSeen(true);
+                    message = chatMessageStorage.save(message);
+                    return new ResponseEntity<>(message, HttpStatus.OK);
+                }).orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/api/chat/unseen")
+    public ResponseEntity<Page<ChatMessage>> getUnseen(@AuthenticationPrincipal User user, PageParameters pageParameters) {
+        Page<ChatMessage> messages = chatMessageStorage.findUnseen(user.getId(), pageParameters);
+        Pageable pageable = PageRequest.of(pageParameters.getPageNumber(),
+                pageParameters.getPageSize());
         return new ResponseEntity<>(new PageImpl<>(messages.stream()
                 .collect(Collectors.toList()), pageable, messages.getTotalElements()), HttpStatus.OK);
     }

@@ -16,4 +16,10 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
     Page<ChatMessage> findChatBySenderIdAndReceiverId(@Param("senderId") Long senderId,
                                                       @Param("receiverId") Long receiverId,
                                                       Pageable pageable);
+
+    @Query(value = "select cm from ChatMessage cm " +
+            "where cm.receiver = :receiverId and cm.seen = false " +
+            "order by cm.createDate DESC")
+    Page<ChatMessage> findUnseenByReceiverId(@Param("receiverId") Long receiverId,
+                                             Pageable pageable);
 }

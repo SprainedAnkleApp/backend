@@ -30,6 +30,8 @@ public class ChatMessage {
     @Column(name = "message", nullable = false, length = 2047)
     private String message;
 
+    private boolean seen;
+
     public ChatMessage(User sender, User receiver, String message) {
         this.sender = sender;
         this.receiver = receiver;
@@ -40,6 +42,7 @@ public class ChatMessage {
     @Column(name = "create_date", nullable = false)
     private Date createDate;
 
+    @JsonIgnore
     @UpdateTimestamp
     @Column(name = "update_date", nullable = false)
     private Date updateDate;
@@ -47,6 +50,7 @@ public class ChatMessage {
     @PrePersist
     protected void onCreate() {
         createDate = updateDate = new Date();
+        seen = false;
     }
 
     @PreUpdate

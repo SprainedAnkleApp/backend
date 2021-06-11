@@ -32,7 +32,7 @@ public interface PeakCompletionsRepository extends JpaRepository<PeakCompletion,
                                                                             @Param("startDate") Date start,
                                                                             @Param("endDate") Date end);
 
-    @Query(value = "select new pl.edu.agh.ki.io.db.PeakWithCompletion(p.id, p.name, c.createDate) from Peak p " + //TODO: more data
+    @Query(value = "select new pl.edu.agh.ki.io.db.PeakWithCompletion(p.id, p.name, p.region, c.createDate) from Peak p " + //TODO: more data
             "left join PeakCompletion c on p.id = c.peak.id and c.user.id = :userId " +
             "order by c.createDate Desc")
     List<PeakWithCompletion> findAllPeaksWithCompletionsIfExistByUserId(@Param("userId") Long userId);

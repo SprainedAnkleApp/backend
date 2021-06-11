@@ -12,11 +12,13 @@ import java.util.Date;
 public class PeakWithCompletion {
     private Long peakId;
     private String peakName;
+    private String region;
     private Date createDate;
 
-    public PeakWithCompletion(Long peakId, String peakName, Date createDate) {
+    public PeakWithCompletion(Long peakId, String peakName, String region, Date createDate) {
         this.peakId = peakId;
         this.peakName = peakName;
+        this.region = region;
         this.createDate = createDate;
     }
 }

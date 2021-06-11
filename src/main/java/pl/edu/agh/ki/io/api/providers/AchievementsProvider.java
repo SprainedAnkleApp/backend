@@ -11,9 +11,7 @@ import pl.edu.agh.ki.io.db.PeakCompletionsStorage;
 import pl.edu.agh.ki.io.db.PeakWithCompletion;
 import pl.edu.agh.ki.io.models.User;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -28,6 +26,7 @@ public class AchievementsProvider {
         String peakCompletionTemplate = "Zdobądź szczyt %s";
         String numberPeakCompletionTemplate = "Zdobądź %d szczyt%s";
         String numberTimeConstrainedPeakCompletionTemplate = "Zdobądź %d szczyt%s w %d dni";
+        String regionPeakCompletionTemplate = "Zdobądź wszystkie szczyty w regionie %s";
 
         List<Achievement> achievements = new LinkedList<>();
 
@@ -91,6 +90,25 @@ public class AchievementsProvider {
             }
             achievements.add(achievement);
         }
+
+        Map<String, Achievement> regionAchievements = new HashMap<>();
+        for (PeakWithCompletion p: peakWithCompletions) {
+            if (regionAchievements.containsKey(p.getRegion())){
+                Achievement achievement = regionAchievements.get(p.getRegion());
+                achievement.setToComplete(achievement.toComplete + 1);
+                if (p.getCreateDate() != null) achievement.setProgress(achievement.progress + 1);
+                achievement.setCompleted(achievement.progress == achievement.toComplete);
+            } else {
+                Achievement achievement = new Achievement();
+                achievement.setAchievementTitle(regionPeakCompletionTemplate.formatted(p.getRegion()));
+                achievement.setToComplete(1);
+                achievement.setProgress(p.getCreateDate() != null ? 1 : 0);
+                achievement.setCompleted(achievement.progress == achievement.toComplete);
+                regionAchievements.put(p.getRegion(), achievement);
+            }
+        }
+
+        achievements.addAll(regionAchievements.values());
 
         Achievement achievement = new Achievement();
         achievement.setAchievementTitle("Zdobądź wszystkie szczyty");

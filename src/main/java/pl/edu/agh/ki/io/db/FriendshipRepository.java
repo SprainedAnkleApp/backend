@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import pl.edu.agh.ki.io.models.Friendship;
 import pl.edu.agh.ki.io.models.User;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository

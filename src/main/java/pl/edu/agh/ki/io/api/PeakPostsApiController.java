@@ -13,11 +13,13 @@ import pl.edu.agh.ki.io.api.models.PeakPostResponse;
 import pl.edu.agh.ki.io.cloudstorage.GoogleCloudFileService;
 import pl.edu.agh.ki.io.db.PeakPostsStorage;
 import pl.edu.agh.ki.io.db.PeakStorage;
+import pl.edu.agh.ki.io.db.ReactionsStorage;
 import pl.edu.agh.ki.io.models.Peak;
 import pl.edu.agh.ki.io.models.User;
 import pl.edu.agh.ki.io.models.wallElements.PeakPost;
 import pl.edu.agh.ki.io.models.wallElements.PeakPostPage;
 import java.io.IOException;
+
 import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -30,11 +32,15 @@ public class PeakPostsApiController {
     private final PeakPostsStorage peakPostsStorage;
     private final PeakStorage peakStorage;
     private final GoogleCloudFileService fileService;
+    private final ReactionsStorage reactionsStorage;
 
     @GetMapping("{peakid}/posts")
     public ResponseEntity<Page<PeakPostResponse>> getPeakPostsByPeakId(@PathVariable("peakid") Long peakId, PeakPostPage peakPostPage) {
         if (this.peakStorage.findPeakById(peakId).isPresent())
-            return new ResponseEntity<>(this.peakPostsStorage.findPeakPostsByPeakId(peakId, peakPostPage), HttpStatus.OK);
+            return new ResponseEntity<>(this.peakPostsStorage.findPeakPostsByPeakId(peakId, peakPostPage)
+                    .map(peakPost ->
+                            PeakPostResponse.fromPeakPostAndReactions(peakPost,
+                                    this.reactionsStorage.findByIdWallElementID(peakPost.getId()))), HttpStatus.OK);
         else return ResponseEntity.notFound().build();
     }
 
@@ -52,13 +58,8 @@ public class PeakPostsApiController {
         return optionalPeak
                 .map(peak -> {
                     PeakPost peakPost = postRequest.getFile() != null ? new PeakPost(user, postRequest.getContent(), peak, postRequest.getLatitude(), postRequest.getLongitude(), finalPhotoPath) : new PeakPost(user, postRequest.getContent(), peak, postRequest.getLatitude(), postRequest.getLongitude());
-                    peakPostsStorage.createPeakPost(peakPost);
-                    PeakPostResponse peakPostResponse = null;
-                    try {
-                        peakPostResponse = this.peakPostsStorage.findPeakPostById(peakId);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    peakPost = peakPostsStorage.createPeakPost(peakPost);
+                    PeakPostResponse peakPostResponse = PeakPostResponse.fromPeakPostAndReactions(peakPost, reactionsStorage.findByIdWallElementID(peakPost.getId()));
                     return new ResponseEntity<>(peakPostResponse, HttpStatus.CREATED);
                 }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }

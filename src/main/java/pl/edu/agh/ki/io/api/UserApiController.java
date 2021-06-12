@@ -11,19 +11,21 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.web.bind.annotation.*;
-import pl.edu.agh.ki.io.api.models.*;
 import org.springframework.web.reactive.function.client.WebClient;
+import pl.edu.agh.ki.io.api.models.*;
 import pl.edu.agh.ki.io.api.providers.AchievementsProvider;
+import pl.edu.agh.ki.io.cloudstorage.GoogleCloudFileService;
 import pl.edu.agh.ki.io.db.FriendshipStorage;
 import pl.edu.agh.ki.io.db.UserStorage;
 import pl.edu.agh.ki.io.models.AuthProvider;
 import pl.edu.agh.ki.io.models.Friendship;
-import pl.edu.agh.ki.io.models.User;
 import pl.edu.agh.ki.io.models.PageParameters;
+import pl.edu.agh.ki.io.models.User;
 import pl.edu.agh.ki.io.security.AuthenticationProcessingException;
 import pl.edu.agh.ki.io.security.UserPrincipal;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -43,13 +45,35 @@ public class UserApiController {
     private final WebClient facebookGraphApiClient;
     private final AchievementsProvider achievementsProvider;
     private final FriendshipStorage friendshipStorage;
+    private final GoogleCloudFileService fileService;
 
     Logger logger = LoggerFactory.getLogger(UserApiController.class);
 
     @GetMapping("/api/public/users/me")
-    public UserResponse user(@AuthenticationPrincipal User user) {
+    public UserResponse user(@AuthenticationPrincipal User user) throws IOException {
         UserPrincipal currentUser = (UserPrincipal) this.userStorage.loadUserByUsername(user.getLogin());
         return UserResponse.fromUserWithAchievements(currentUser.getUser(), achievementsProvider.getAchievements(user));
+    }
+
+    @PostMapping("/api/public/users/me")
+    public ResponseEntity<UserResponse> setProfilePicture(@AuthenticationPrincipal User user, PhotoChangeRequest request) throws IOException {
+        if (request.getProfilePhoto() != null) {
+            String photoPath = GoogleCloudFileService.generateFileName();
+            fileService.upload(request.getProfilePhoto(), photoPath);
+            user.setProfilePhoto(photoPath);
+        }
+
+        if (request.getBackgroundPhoto() != null) {
+            String photoPath = GoogleCloudFileService.generateFileName(); // I guess that 1 millisecond will pass between 2 uploads
+            fileService.upload(request.getBackgroundPhoto(), photoPath);
+            user.setBackgroundPhoto(photoPath);
+        }
+
+        if (request.getProfilePhoto() != null || request.getBackgroundPhoto() != null) {
+            return new ResponseEntity<>(UserResponse.fromUser(this.userStorage.saveUser(user)), HttpStatus.OK);
+        }
+
+        return ResponseEntity.badRequest().build();
     }
 
     @GetMapping("/api/public/users/me/friends")
@@ -177,7 +201,7 @@ public class UserApiController {
     }
 
     @GetMapping("/api/public/users/{userid}")
-    public ResponseEntity<UserResponse> getUser(@AuthenticationPrincipal User loggedUser, @PathVariable("userid") Long userId) {
+    public ResponseEntity<?> getUser(@AuthenticationPrincipal User loggedUser, @PathVariable("userid") Long userId) {
         Optional<User> optionalUser = this.userStorage.findUserById(userId);
         return optionalUser
                 .map(user -> new ResponseEntity<>(

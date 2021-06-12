@@ -8,7 +8,6 @@ import pl.edu.agh.ki.io.models.PeakCompletion;
 import pl.edu.agh.ki.io.models.PeakCompletionKey;
 
 import java.sql.Date;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 

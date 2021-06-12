@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.edu.agh.ki.io.db.PeakCompletionsStorage;
 import pl.edu.agh.ki.io.models.PeakCompletion;
-import pl.edu.agh.ki.io.models.User;
 
 import java.util.List;
 import java.util.Optional;

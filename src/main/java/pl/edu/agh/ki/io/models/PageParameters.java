@@ -1,7 +1,6 @@
 package pl.edu.agh.ki.io.models;
 
 import lombok.Data;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 @Data

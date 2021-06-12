@@ -9,13 +9,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.edu.agh.ki.io.models.User;
 import pl.edu.agh.ki.io.models.PageParameters;
+import pl.edu.agh.ki.io.models.User;
 import pl.edu.agh.ki.io.security.AuthenticationProcessingException;
 import pl.edu.agh.ki.io.security.UserPrincipal;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -42,6 +41,10 @@ public class UserStorage implements UserDetailsService {
         }
         
         return new UserPrincipal(user);
+    }
+
+    public User saveUser(User user) {
+        return this.userRepository.save(user);
     }
 
     public List<User> findAll() {

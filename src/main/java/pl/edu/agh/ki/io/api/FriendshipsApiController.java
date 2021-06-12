@@ -11,7 +11,6 @@ import pl.edu.agh.ki.io.db.FriendshipStorage;
 import pl.edu.agh.ki.io.db.UserStorage;
 import pl.edu.agh.ki.io.models.Friendship;
 import pl.edu.agh.ki.io.models.User;
-import pl.edu.agh.ki.io.security.UserPrincipal;
 
 import java.util.Optional;
 

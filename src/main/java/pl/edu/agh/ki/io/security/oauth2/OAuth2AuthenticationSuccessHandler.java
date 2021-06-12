@@ -12,7 +12,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import pl.edu.agh.ki.io.security.JwtProperties;
 import pl.edu.agh.ki.io.security.JwtUtils;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

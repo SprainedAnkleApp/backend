@@ -30,13 +30,13 @@ import java.util.List;
 @EnableWebSecurity
 @AllArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private UserStorage userStorage;
-    private PasswordEncoder passwordEncoder;
-    private JwtProperties jwtProperties;
-    private OAuth2UserStorage oAuth2UserService;
-    private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
-    private OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
-    private HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository;
+    private final UserStorage userStorage;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtProperties jwtProperties;
+    private final OAuth2UserStorage oAuth2UserService;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+    private final HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -55,11 +55,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtProperties))
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), userStorage, jwtProperties))
                 .authorizeRequests()
-                    .antMatchers(HttpMethod.POST, "/login", "/signup").permitAll()
+                    .antMatchers(HttpMethod.GET, "/login", "/signup", "/", "/index.html").permitAll()
+                    .antMatchers(HttpMethod.POST, "/login", "/signup", "/", "/index.html").permitAll()
+                    .antMatchers(HttpMethod.GET, "/static/**").permitAll()
                     .antMatchers("/oauth2/**").permitAll()
-                    .anyRequest().authenticated()
+                    .anyRequest().permitAll()
                     .and()
                 .oauth2Login()
+                    .loginPage("/oauth_login")
                     .authorizationEndpoint()
                         .baseUri("/oauth2/authorize")
                         .authorizationRequestRepository(cookieAuthorizationRequestRepository)
@@ -90,10 +93,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000", "https://accounts.google.com"));
+        configuration.setAllowedOriginPatterns(List.of("*"));
+        //configuration.setAllowedOrigins(List.of("http://localhost:3000", "https://accounts.google.com"));
         //configuration.setAllowedOrigins(List.of("*"));
         configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

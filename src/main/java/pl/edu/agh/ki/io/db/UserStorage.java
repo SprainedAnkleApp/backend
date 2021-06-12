@@ -1,10 +1,15 @@
 package pl.edu.agh.ki.io.db;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.edu.agh.ki.io.models.PageParameters;
 import pl.edu.agh.ki.io.models.User;
 import pl.edu.agh.ki.io.security.AuthenticationProcessingException;
 import pl.edu.agh.ki.io.security.UserPrincipal;
@@ -38,8 +43,26 @@ public class UserStorage implements UserDetailsService {
         return new UserPrincipal(user);
     }
 
+    public User saveUser(User user) {
+        return this.userRepository.save(user);
+    }
+
     public List<User> findAll() {
         return this.userRepository.findAll();
+    }
+
+    public Page<User> findAll(PageParameters pageParameters) {
+        Sort sort = Sort.by(pageParameters.getSortDirection(), pageParameters.getSortBy());
+
+        Pageable pageable = PageRequest.of(pageParameters.getPageNumber(),
+                pageParameters.getPageSize(), sort);
+        return this.userRepository.findAll(pageable);
+    }
+
+    public Page<User> findBySearchTerm(String searchTerm, PageParameters pageParameters) {
+        Pageable pageable = PageRequest.of(pageParameters.getPageNumber(),
+                pageParameters.getPageSize());
+        return this.userRepository.findBySearchTerm(searchTerm, pageable);
     }
 
     @Override

@@ -4,17 +4,22 @@ import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.agh.ki.io.api.models.CreatePostRequest;
-import pl.edu.agh.ki.io.api.models.CreatePostResponse;
+import pl.edu.agh.ki.io.api.models.PeakPostResponse;
+import pl.edu.agh.ki.io.cloudstorage.GoogleCloudFileService;
 import pl.edu.agh.ki.io.db.PeakPostsStorage;
 import pl.edu.agh.ki.io.db.PeakStorage;
+import pl.edu.agh.ki.io.db.ReactionsStorage;
 import pl.edu.agh.ki.io.models.Peak;
 import pl.edu.agh.ki.io.models.User;
 import pl.edu.agh.ki.io.models.wallElements.PeakPost;
 import pl.edu.agh.ki.io.models.wallElements.PeakPostPage;
+import java.io.IOException;
+
 import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -26,22 +31,36 @@ public class PeakPostsApiController {
 
     private final PeakPostsStorage peakPostsStorage;
     private final PeakStorage peakStorage;
+    private final GoogleCloudFileService fileService;
+    private final ReactionsStorage reactionsStorage;
 
     @GetMapping("{peakid}/posts")
-    public ResponseEntity<Page<PeakPost>> getPeakPostsByPeakId(@PathVariable("peakid") Long peakId, PeakPostPage peakPostPage) {
+    public ResponseEntity<Page<PeakPostResponse>> getPeakPostsByPeakId(@PathVariable("peakid") Long peakId, PeakPostPage peakPostPage) {
         if (this.peakStorage.findPeakById(peakId).isPresent())
-            return new ResponseEntity<>(this.peakPostsStorage.findPeakPostsByPeakId(peakId, peakPostPage), HttpStatus.OK);
+            return new ResponseEntity<>(this.peakPostsStorage.findPeakPostsByPeakId(peakId, peakPostPage)
+                    .map(peakPost ->
+                            PeakPostResponse.fromPeakPostAndReactions(peakPost,
+                                    this.reactionsStorage.findByIdWallElementID(peakPost.getId()))), HttpStatus.OK);
         else return ResponseEntity.notFound().build();
     }
 
-    @PostMapping("/{peakid}/posts")
-    public ResponseEntity<CreatePostResponse> createPost(@RequestBody CreatePostRequest postRequest, @AuthenticationPrincipal User user, @PathVariable("peakid") Long peakId) {
+    @PostMapping(value = "/{peakid}/posts", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {
+            MediaType.APPLICATION_JSON_VALUE})
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<PeakPostResponse> createPost(@ModelAttribute CreatePostRequest postRequest, @AuthenticationPrincipal User user, @PathVariable("peakid") Long peakId) throws IOException {
+        String photoPath = "";
+        if (postRequest.getFile() != null) {
+            photoPath = GoogleCloudFileService.generateFileName();
+            fileService.upload(postRequest.getFile(), photoPath);
+        }
         Optional<Peak> optionalPeak = this.peakStorage.findPeakById(peakId);
+        String finalPhotoPath = photoPath;
         return optionalPeak
                 .map(peak -> {
-                    PeakPost peakPost = new PeakPost(user, postRequest.getContent(), peak);
-                    peakPostsStorage.createPeakPost(peakPost);
-                    return new ResponseEntity<>(CreatePostResponse.fromPost(peakPost), HttpStatus.CREATED);
+                    PeakPost peakPost = postRequest.getFile() != null ? new PeakPost(user, postRequest.getContent(), peak, postRequest.getLatitude(), postRequest.getLongitude(), finalPhotoPath) : new PeakPost(user, postRequest.getContent(), peak, postRequest.getLatitude(), postRequest.getLongitude());
+                    peakPost = peakPostsStorage.createPeakPost(peakPost);
+                    PeakPostResponse peakPostResponse = PeakPostResponse.fromPeakPostAndReactions(peakPost, reactionsStorage.findByIdWallElementID(peakPost.getId()));
+                    return new ResponseEntity<>(peakPostResponse, HttpStatus.CREATED);
                 }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }

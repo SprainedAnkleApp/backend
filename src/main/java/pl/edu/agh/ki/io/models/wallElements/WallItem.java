@@ -29,10 +29,23 @@ public abstract class WallItem {
     @Column(name = "content", nullable = false, length = 2047)
     private String content;
 
-    public WallItem(User user, String content){
+    public WallItem(User user, String content) {
         this.user = user;
         this.content = content;
     }
+
+    public WallItem(User user, String content, double latitude, double longitude) {
+        this.user = user;
+        this.content = content;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    @Column(name="latitude")
+    private double latitude;
+
+    @Column(name="longitude")
+    private double longitude;
 
     @OneToMany
     private Set<Reaction> reactions;

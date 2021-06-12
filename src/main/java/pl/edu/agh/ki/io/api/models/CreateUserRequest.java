@@ -48,10 +48,6 @@ public class CreateUserRequest {
     @SimpleSqlProtected
     private String phoneNumber;
 
-    @NotNull
-    @SimpleSqlProtected
-    private String gender;
-
     public User toUser() {
         return new User(
                 this.username,

@@ -2,7 +2,6 @@ package pl.edu.agh.ki.io.api;
 
 import com.google.cloud.storage.StorageException;
 import io.swagger.annotations.Api;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,6 @@ import pl.edu.agh.ki.io.models.wallElements.Photo;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -34,26 +32,20 @@ public class PhotoApiController {
 
     @GetMapping("/{photoid}")
     public ResponseEntity<PhotoResponse> getPhoto(@PathVariable("photoid") Long photoId) throws StorageException, FileNotFoundException, IOException {
-        Optional<Photo> photo = this.photoStorage.findPhotoById(photoId);
-        if (photo.isPresent()) {
-            String content = photo.get().getContent();
-            String signedUrl = GoogleCloudFileService.generateV4GetObjectSignedUrl(photo.get().getPhotoPath());
-
-            return ResponseEntity.ok(new PhotoResponse(content, signedUrl));
-        }
-
-        return ResponseEntity.notFound().build();
+        PhotoResponse response = this.photoStorage.findPhotoById(photoId);
+        if (response == null) return ResponseEntity.notFound().build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping(value = "/photo", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.CREATED)
     public Long createPhoto(@ModelAttribute PhotoRequest photo, @AuthenticationPrincipal User user) throws IOException {
-        Photo photoDbEntry = new Photo(user, photo.getContent(), photo.getPhotoPath());
-        this.photoStorage.createPhoto(photoDbEntry);
+        String photoPath =  GoogleCloudFileService.generateFileName();
+        fileService.upload(photo.getFile(), photoPath);
 
-        fileService.upload(photo.getFile(), GoogleCloudFileService.generateFileName());
-
+        Photo photoDbEntry = new Photo(user, photo.getContent(), photoPath, photo.getLatitude(), photo.getLongitude());
+        photoDbEntry = this.photoStorage.createPhoto(photoDbEntry);
         return photoDbEntry.getId();
     }
 

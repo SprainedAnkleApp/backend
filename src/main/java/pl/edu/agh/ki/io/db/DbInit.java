@@ -8,9 +8,11 @@ import pl.edu.agh.ki.io.models.*;
 import pl.edu.agh.ki.io.models.wallElements.PeakPost;
 import pl.edu.agh.ki.io.models.wallElements.Photo;
 import pl.edu.agh.ki.io.models.wallElements.Post;
+import pl.edu.agh.ki.io.models.wallElements.reactions.Reaction;
+import pl.edu.agh.ki.io.models.wallElements.reactions.ReactionKey;
+import pl.edu.agh.ki.io.models.wallElements.reactions.ReactionType;
 
 import java.sql.Date;
-import java.sql.Time;
 import java.time.Duration;
 
 
@@ -18,56 +20,87 @@ import java.time.Duration;
 @AllArgsConstructor
 public class DbInit implements CommandLineRunner {
     private final UserRepository userRepository;
-    private final GenderRepository genderRepository;
     private final PasswordEncoder passwordEncoder;
     private final PeakRepository peakRepository;
     private final WallItemRepository wallItemRepository;
     private final PeakCompletionsRepository peakCompletionsRepository;
     private final PeakPostsRepository peakPostsRepository;
+    private final ReactionsRepository reactionsRepository;
+    private final FriendshipRepository friendshipRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     public void run(String... args) {
         clearRepositories();
 
-        Gender male = new Gender("Male");
-        this.genderRepository.save(male);
-
         Date birthday = Date.valueOf("2000-12-1");
-        User testUser = new User("admin", passwordEncoder.encode("admin"), AuthProvider.local, "Test",
-                "Testowski", "test1@mail.com", male, "https://i.imgur.com/VNNp6zWb.jpg", birthday, "+48880053535");
+        User testUser = new User("admin", passwordEncoder.encode("admin"), AuthProvider.local, "Adam",
+                "Admin", "admin@mail.com", "https://i.imgur.com/VNNp6zWb.jpg", birthday, "+48880053535");
 
         userRepository.save(testUser);
 
         User testUser2 = new User("anowak", passwordEncoder.encode("anowak"), AuthProvider.local, "Adam",
-                "Nowak", "anowak@mail.com", male, "https://i.imgur.com/VNNp6zWb.jpg", birthday, "+48880053535");
+                "Nowak", "anowak@mail.com", "https://i.imgur.com/VNNp6zWb.jpg", birthday, "+48880053535");
 
         userRepository.save(testUser2);
+
+        User testUser3 = new User("jkwiatkowski", passwordEncoder.encode("jkwiatkowski"), AuthProvider.local, "Jan",
+                "Kwiatkowski", "jkwiatkowski@mail.com", "https://i.imgur.com/VNNp6zWb.jpg", birthday, "+48880053535");
+
+        userRepository.save(testUser3);
 
         addPeaks();
 
         peakRepository.findPeakByName("Rysy").ifPresent((peak) -> {
-            PeakCompletion peakCompletion = new PeakCompletion(new PeakCompletionKey(testUser.getId(), peak.getId()), testUser, peak, Duration.ofMinutes(8*60));
+            PeakCompletion peakCompletion = new PeakCompletion(new PeakCompletionKey(testUser.getId(), peak.getId()), testUser, peak, Duration.ofMinutes(60));
             this.peakCompletionsRepository.save(peakCompletion);
 
-            PeakCompletion peakCompletion2 = new PeakCompletion(new PeakCompletionKey(testUser2.getId(), peak.getId()), testUser2, peak, Duration.ofMinutes(10*60));
+            PeakCompletion peakCompletion2 = new PeakCompletion(new PeakCompletionKey(testUser2.getId(), peak.getId()), testUser2, peak, Duration.ofMinutes(120));
             this.peakCompletionsRepository.save(peakCompletion2);
         });
 
-        Photo photo = new Photo(testUser, "content", "photopath");
-        wallItemRepository.save(photo);
+        peakRepository.findPeakByName("Śnieżka").ifPresent((peak) -> {
+            PeakCompletion peakCompletion = new PeakCompletion(new PeakCompletionKey(testUser.getId(), peak.getId()), testUser, peak, Duration.ofMinutes(100));
+            this.peakCompletionsRepository.save(peakCompletion);
 
-        Post post = new Post(testUser, "content");
+            PeakCompletion peakCompletion2 = new PeakCompletion(new PeakCompletionKey(testUser2.getId(), peak.getId()), testUser2, peak, Duration.ofMinutes(140));
+            this.peakCompletionsRepository.save(peakCompletion2);
+        });
+
+        peakRepository.findPeakByName("Babia Góra").ifPresent((peak) -> {
+            PeakCompletion peakCompletion = new PeakCompletion(new PeakCompletionKey(testUser2.getId(), peak.getId()), testUser2, peak, Duration.ofMinutes(110));
+            this.peakCompletionsRepository.save(peakCompletion);
+        });
+
+        Photo photo = new Photo(testUser, "Wybrałem się z psem w góry", "dog.jpeg");
+        wallItemRepository.save(photo);
+        Post post = new Post(testUser3, "Jaki szczyt ostatnio zdobyliście?");
         wallItemRepository.save(post);
 
-        PeakPost peakPost = new PeakPost(testUser, "content", peakRepository.findPeakByName("Rysy").get());
+        Reaction reaction = new Reaction(new ReactionKey(testUser.getId(), post.getId()), ReactionType.LOVE);
+        reactionsRepository.save(reaction);
+        Reaction reaction2 = new Reaction(new ReactionKey(testUser2.getId(), post.getId()), ReactionType.LOVE);
+        reactionsRepository.save(reaction2);
+
+        PeakPost peakPost = new PeakPost(testUser, "Cześć wszystkim! Kto chce ze mną zdobyć Rysy?", peakRepository.findPeakByName("Rysy").get());
         peakPostsRepository.save(peakPost);
+
+        friendshipRepository.save(new Friendship(1, testUser, testUser2));
+        friendshipRepository.save(new Friendship(1, testUser2, testUser));
+        friendshipRepository.save(new Friendship(0, testUser3, testUser));
+
+        this.commentRepository.save(new Comment(testUser2, peakPost, "Oczywiście, że ja! Powiedz tylko kiedy :D"));
+        this.commentRepository.save(new Comment(testUser, post, "Śnieżka, w tamtym tygodniu"));
+        this.commentRepository.save(new Comment(testUser2, post, "Babia Góra"));
     }
 
     private void clearRepositories() {
+        this.commentRepository.deleteAll();
+        this.friendshipRepository.deleteAll();
+        this.reactionsRepository.deleteAll();
         this.wallItemRepository.deleteAll();
         this.peakCompletionsRepository.deleteAll();
         this.userRepository.deleteAll();
-        this.genderRepository.deleteAll();
         this.peakRepository.deleteAll();
     }
 

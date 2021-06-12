@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Paths;
@@ -23,7 +22,7 @@ public class GoogleCloudFileService {
         try {
             StorageOptions storageOptions = StorageOptions.newBuilder().setProjectId("sprainedankle")
                     .setCredentials(GoogleCredentials
-                            .fromStream(new FileInputStream("gcloud-credentials/sprainedankle-4c6c48239f8b.json")))
+                            .fromStream(new FileInputStream("app/google-credentials.json")))
                     .build();
             Storage storage = storageOptions.getService();
             storage.create(BlobInfo.newBuilder("sprained-ankle-photos", path).build(), file.getBytes(),
@@ -37,7 +36,7 @@ public class GoogleCloudFileService {
         try {
             StorageOptions storageOptions = StorageOptions.newBuilder().setProjectId("sprainedankle")
                     .setCredentials(GoogleCredentials
-                            .fromStream(new FileInputStream("gcloud-credentials/sprainedankle-4c6c48239f8b.json")))
+                            .fromStream(new FileInputStream("app/google-credentials.json")))
                     .build();
             Storage storage = storageOptions.getService();
             Blob blob = storage.get(BlobId.of("sprained-ankle-photos", photoName));
@@ -48,12 +47,17 @@ public class GoogleCloudFileService {
         }
     }
 
-    public static String generateV4GetObjectSignedUrl(String photoName)
-            throws StorageException, FileNotFoundException, IOException {
+    public static String generateV4GetObjectSignedUrl(String photoName) {
 
-        StorageOptions storageOptions = StorageOptions.newBuilder().setProjectId("sprainedankle").setCredentials(
-                GoogleCredentials.fromStream(new FileInputStream("gcloud-credentials/sprainedankle-4c6c48239f8b.json")))
-                .build();
+        StorageOptions storageOptions = null;
+        try {
+            storageOptions = StorageOptions.newBuilder().setProjectId("sprainedankle").setCredentials(
+                    GoogleCredentials.fromStream(new FileInputStream("app/google-credentials.json")))
+                    .build();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
         Storage storage = storageOptions.getService();
 
         BlobInfo blobInfo = BlobInfo.newBuilder(BlobId.of("sprained-ankle-photos", photoName)).build();
@@ -63,6 +67,6 @@ public class GoogleCloudFileService {
     }
 
     public static String generateFileName() {
-        return new SimpleDateFormat("yyyyMMddHHmm'.txt'").format(new Date());
+        return new SimpleDateFormat("yyyyMMddHHmmssSSS'.txt'").format(new Date());
     }
 }

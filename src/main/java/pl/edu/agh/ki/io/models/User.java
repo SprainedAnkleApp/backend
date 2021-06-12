@@ -1,6 +1,7 @@
 package pl.edu.agh.ki.io.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,12 +25,14 @@ public class User {
     @Column(name = "id")
     private Long id;
 
+    @JsonIgnore
     @Column(name = "facebook_user_id")
     private String facebookUserId;
 
     @Column(name = "login", unique = true, nullable = false)
     private String login;
 
+    @JsonIgnore
     @Column(name = "password")
     private String password;
 
@@ -49,38 +52,33 @@ public class User {
     @Column(name = "profile_photo")
     private String profilePhoto;
 
+    @Column(name = "background_photo")
+    private String backgroundPhoto = "https://images.pexels.com/photos/572897/pexels-photo-572897.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260";
+
     @Column(name="birthday")
     private Date birthday;
 
     @Column(name="about", length = 1023)
     private String about;
 
-    @ManyToOne
-    private Gender gender;
-
     @Column(name="phone_number")
     private String phoneNumber;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private Set<PeakCompletion> peakCompletions = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany()
     private Set<User> friends = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany
     private  Set<WallItem> wallItems = new HashSet<>();
 
-
-    public User(String login, String password, AuthProvider authProvider, String firstName, String lastName, String email, Gender gender, String profilePhoto,
-                  Date birthday, String phoneNumber) {
-        this(login, password, authProvider, firstName, lastName, email, profilePhoto, birthday, phoneNumber);
-        this.gender = gender;
-    }
-
-    public User(String login, String password, AuthProvider authProvider, String firstName, String lastName, String email, Gender gender) {
-        this(login, password, authProvider, firstName, lastName, email);
-        this.gender = gender;
-    }
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private  Set<Comment> comments = new HashSet<>();
 
     public User(String login, String password, AuthProvider authProvider, String firstName, String lastName, String email, String profilePhoto,
                 Date birthday, String phoneNumber) {
@@ -99,10 +97,12 @@ public class User {
         this.email = email;
     }
 
+    @JsonIgnore
     @CreationTimestamp
     @Column(name = "create_date", nullable = false)
     private java.util.Date createDate;
 
+    @JsonIgnore
     @UpdateTimestamp
     @Column(name = "update_date", nullable = false)
     private java.util.Date updateDate;

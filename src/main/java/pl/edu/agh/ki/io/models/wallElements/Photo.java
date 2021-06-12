@@ -2,6 +2,7 @@ package pl.edu.agh.ki.io.models.wallElements;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pl.edu.agh.ki.io.models.User;
 
 import javax.persistence.Column;
@@ -9,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "photos")
@@ -21,7 +23,8 @@ public class Photo extends WallItem {
         this.photoPath = photoPath;
     }
 
-    public String getPhotoPath() {
-        return this.photoPath;
+    public Photo(User user, String content, String photoPath, double latitude, double longitude){
+        super(user, content, latitude, longitude);
+        this.photoPath = photoPath;
     }
 }

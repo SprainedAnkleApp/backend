@@ -35,9 +35,12 @@ public class PeakPostsApiController {
     private final ReactionsStorage reactionsStorage;
 
     @GetMapping("{peakid}/posts")
-    public ResponseEntity<Page<PeakPost>> getPeakPostsByPeakId(@PathVariable("peakid") Long peakId, PeakPostPage peakPostPage) {
+    public ResponseEntity<Page<PeakPostResponse>> getPeakPostsByPeakId(@PathVariable("peakid") Long peakId, PeakPostPage peakPostPage) {
         if (this.peakStorage.findPeakById(peakId).isPresent())
-            return new ResponseEntity<>(this.peakPostsStorage.findPeakPostsByPeakId(peakId, peakPostPage), HttpStatus.OK);
+            return new ResponseEntity<>(this.peakPostsStorage.findPeakPostsByPeakId(peakId, peakPostPage)
+                    .map(peakPost ->
+                            PeakPostResponse.fromPeakPostAndReactions(peakPost,
+                                    this.reactionsStorage.findByIdWallElementID(peakPost.getId()))), HttpStatus.OK);
         else return ResponseEntity.notFound().build();
     }
 

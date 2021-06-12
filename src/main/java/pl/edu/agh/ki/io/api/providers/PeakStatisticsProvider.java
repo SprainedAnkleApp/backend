@@ -24,7 +24,10 @@ public class PeakStatisticsProvider {
 
     public Double getAverageTimeCompletionForId(Long peakId) {
         List<PeakCompletion> peakCompletions = peakCompletionsStorage.findByPeakId(peakId);
-        return peakCompletions.size() == 0 ? 0.0 : peakCompletions.stream().map(peakCompletion -> peakCompletion.getCompletionTime().toMinutes()).reduce((long) 0, Long::sum).doubleValue() / peakCompletions.size();
+        return peakCompletions.size() == 0 ? 0.0 : Math.round(peakCompletions
+                .stream()
+                .map(peakCompletion -> peakCompletion.getCompletionTime().toMinutes())
+                .reduce((long) 0, Long::sum).doubleValue() / peakCompletions.size());
     }
 
     public Optional<PeakCompletion> getFirstCompletionForId(Long peakId) {

@@ -19,6 +19,12 @@ public class CommentResponse {
     private String signedUrl;
 
     public static CommentResponse fromComment(Comment comment) throws IOException {
+        String url;
+        if(comment.getUser().getProfilePhoto() != null) {
+            if (comment.getUser().getProfilePhoto().startsWith("http")) url = comment.getUser().getProfilePhoto();
+            else url = GoogleCloudFileService.generateV4GetObjectSignedUrl(comment.getUser().getProfilePhoto());
+        } else url = null;
+
         return CommentResponse.builder()
                 .id(comment.getId())
                 .content(comment.getContent())
@@ -26,9 +32,7 @@ public class CommentResponse {
                 .userId(comment.getUser().getId())
                 .userFirstName(comment.getUser().getFirstName())
                 .userLastName(comment.getUser().getLastName())
-                .signedUrl(comment.getUser().getProfilePhoto().startsWith("http") ?
-                        comment.getUser().getProfilePhoto() :
-                        GoogleCloudFileService.generateV4GetObjectSignedUrl(comment.getUser().getProfilePhoto()))
+                .signedUrl(url)
                 .build();
     }
 }

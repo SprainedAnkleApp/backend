@@ -21,6 +21,7 @@ public class PhotoResponse extends WallItemResponse{
     private double latitude;
     private double longitude;
     private UserResponse user;
+    private Long createDate;
 
     public static PhotoResponse fromPhotoAndReactions(Photo photo, List<Reaction> reactions) throws IOException {
         return PhotoResponse.builder()
@@ -30,6 +31,7 @@ public class PhotoResponse extends WallItemResponse{
                 .latitude(photo.getLatitude())
                 .longitude(photo.getLongitude())
                 .user(UserResponse.fromUser(photo.getUser()))
+                .createDate(photo.getCreateDate().getTime())
                 .reactions(reactions.stream().map(ReactionResponse::fromReaction).collect(Collectors.toList())).build();
     }
 }

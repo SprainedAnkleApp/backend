@@ -22,6 +22,7 @@ public class PeakPostResponse extends WallItemResponse {
     private double longitude;
     private UserResponse user;
     private String signedUrl;
+    private Long createDate;
 
     public static PeakPostResponse fromPeakPostAndReactions(PeakPost peakPost, List<Reaction> reactions) {
         return PeakPostResponse.builder()
@@ -31,6 +32,7 @@ public class PeakPostResponse extends WallItemResponse {
                 .latitude(peakPost.getLatitude())
                 .longitude(peakPost.getLongitude())
                 .user(UserResponse.fromUser(peakPost.getUser()))
+                .createDate(peakPost.getCreateDate().getTime())
                 .signedUrl(peakPost.getPhotoPath() != null ? GoogleCloudFileService.generateV4GetObjectSignedUrl(peakPost.getPhotoPath()) : "")
                 .reactions(reactions.stream().map(ReactionResponse::fromReaction).collect(Collectors.toList())).build();
     }

@@ -17,6 +17,7 @@ public class PostResponse extends WallItemResponse{
     private double latitude;
     private double longitude;
     private UserResponse user;
+    private Long createDate;
 
     public static PostResponse fromPost(WallItem post) {
         return PostResponse.builder().id(post.getId())
@@ -24,6 +25,7 @@ public class PostResponse extends WallItemResponse{
                 .latitude(post.getLatitude())
                 .longitude(post.getLongitude())
                 .user(UserResponse.fromUser(post.getUser()))
+                .createDate(post.getCreateDate().getTime())
                 .build();
     }
 
@@ -33,6 +35,7 @@ public class PostResponse extends WallItemResponse{
                 .latitude(post.getLatitude())
                 .longitude(post.getLongitude())
                 .user(UserResponse.fromUser(post.getUser()))
+                .createDate(post.getCreateDate().getTime())
                 .reactions(reactions.stream().map(ReactionResponse::fromReaction).collect(Collectors.toList())).build();
     }
 }

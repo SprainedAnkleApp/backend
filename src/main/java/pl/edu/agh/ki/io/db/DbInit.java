@@ -28,6 +28,7 @@ public class DbInit implements CommandLineRunner {
     private final ReactionsRepository reactionsRepository;
     private final FriendshipRepository friendshipRepository;
     private final CommentRepository commentRepository;
+    private final ChatMessageRepository chatMessageRepository;
 
     @Override
     public void run(String... args) {
@@ -95,6 +96,7 @@ public class DbInit implements CommandLineRunner {
     }
 
     private void clearRepositories() {
+        this.chatMessageRepository.deleteAll();
         this.commentRepository.deleteAll();
         this.friendshipRepository.deleteAll();
         this.reactionsRepository.deleteAll();

@@ -18,7 +18,7 @@ public interface WallItemRepository extends JpaRepository<WallItem, Long> {
     Optional<WallItem> findById(Long wallItemId);
 
     @Query(value = "select wi from WallItem wi " +
-            "where wi.user.id = :current_userid or wi.id in :friend_ids " +
+            "where wi.user.id = :current_userid or wi.user.id in :friend_ids " +
             "order by wi.createDate desc")
     Page<WallItem> findAllUserWallItems(@Param("current_userid") Long userId,
                                         @Param("friend_ids") List<Long> friendsIds,

@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.List;
 
 public abstract class WallItemResponse {
-    public static WallItemResponse fromWallItemAndReactions(WallItem wallItem, List<Reaction> reactions) throws IOException {
+    public static WallItemResponse fromWallItemAndReactions(WallItem wallItem, List<Reaction> reactions)  {
         switch (wallItem.getClass().getSimpleName()) {
             case "Post":
                 return PostResponse.fromPostAndReactions(wallItem, reactions);

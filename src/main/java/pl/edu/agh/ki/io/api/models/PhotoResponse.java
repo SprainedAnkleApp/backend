@@ -23,7 +23,7 @@ public class PhotoResponse extends WallItemResponse{
     private UserResponse user;
     private Long createDate;
 
-    public static PhotoResponse fromPhotoAndReactions(Photo photo, List<Reaction> reactions) throws IOException {
+    public static PhotoResponse fromPhotoAndReactions(Photo photo, List<Reaction> reactions) {
         return PhotoResponse.builder()
                 .id(photo.getId())
                 .content(photo.getContent())

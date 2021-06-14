@@ -53,11 +53,10 @@ public class PeaksApiController {
                 .stream()
                 .map(peak -> {
                     Optional<PeakCompletion> peakCompletion = peakCompletionsStorage.findByPeakIdAndUserId(peak.getId(), user.getId());
-                    return PeakResponse.fromPeakWithCompletionAndStatistics(
+                    return PeakResponse.fromPeakWithCompletion(
                             peak,
                             peakCompletion.isPresent(),
-                            peakCompletion.map(completion -> completion.getCompletionTime().toMinutes()).orElse(0L),
-                            getPeakStats(peak.getId())
+                            peakCompletion.map(completion -> completion.getCompletionTime().toMinutes()).orElse(0L)
                     );
                 })
                 .collect(Collectors.toList());

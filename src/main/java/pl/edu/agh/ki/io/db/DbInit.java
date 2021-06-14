@@ -114,7 +114,7 @@ public class DbInit implements CommandLineRunner {
                         "małopolskie",
                         "Góra położona na granicy polsko-słowackiej, w Tatrach Wysokich (jednej z części Tatr). Ma trzy wierzchołki, z których najwyższy jest środkowy (2501 metrów nad poziomem morza), znajdujący się w całości na terytorium Słowacji. Wierzchołek północno-zachodni, przez który biegnie granica, stanowi najwyżej położony punkt Polski i należy do Korony Europy.",
                         "Tatry",
-                        "https://upload.wikimedia.org/wikipedia/commons/8/87/Rysy%2C_szczyt.jpg",
+                        "https://www.tatry-przewodnik.com.pl/images/rysy-i-niznie-1.jpg",
                         49.139050,
                         20.220381
                 )
@@ -127,7 +127,7 @@ public class DbInit implements CommandLineRunner {
                         "małopolskie",
                         "Masyw górski w Paśmie Babiogórskim należącym do Beskidu Żywieckiego w Beskidach Zachodnich. Jest najwyższym szczytem Beskidów Zachodnich i poza Tatrami najwyższym szczytem w Polsce, drugim co do wybitności (po Śnieżce).",
                         "Beskid Żywiecki",
-                        "https://upload.wikimedia.org/wikipedia/commons/b/bc/Babia_Gora_from_Rycerzowa.jpg",
+                        "https://www.e-horyzont.pl/media/wysiwyg/jw-blog/2020/05/babia-gora2.jpg",
                         49.573333,
                         19.529444
                 )
@@ -140,7 +140,7 @@ public class DbInit implements CommandLineRunner {
                         "dolnośląskie",
                         "Najwyższy szczyt Karkonoszy oraz Sudetów, jak również Czech, województwa dolnośląskiego, a także całego Śląska. Najwybitniejszy szczyt Polski i Czech.",
                         "Karkonosze",
-                        "https://www.karpacz.pl/img/attractions/Sniezka/rys_24.jpg",
+                        "https://i.wpimg.pl/O/644x428/d.wpimg.pl/277550641-815155067/sniezka-karkonosze.jpg",
                         50.735833,
                         15.739167
                 )
@@ -153,7 +153,7 @@ public class DbInit implements CommandLineRunner {
                         "dolnośląskie",
                         "Jest to najwyższy, graniczny szczyt po polskiej stronie w Sudetach Wschodnich i w Masywie Śnieżnika, zwany też Śnieżnikiem Kłodzkim. Jest on jedyną górą w masywie Śnieżnika, która wystaje ponad górną granicę lasu.",
                         "Masyw Śnieżnika",
-                        "https://zieloniwpodrozy.pl/wp-content/uploads/2017/11/%C5%9Anie%C5%BCnik.jpg",
+                        "https://przyrodniczo.pl/wp-content/uploads/2017/11/snieznik3.jpg",
                         50.207004,
                         16.849226
                 )

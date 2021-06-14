@@ -26,6 +26,14 @@ public class UserResponse {
     private List<AchievementsProvider.Achievement> achievements;
 
 
+    public static UserResponse fromUserBasicFields(User user) {
+        return UserResponse.builder()
+                .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .profilePhoto((user.getProfilePhoto() == null || user.getProfilePhoto().startsWith("http")) ? user.getProfilePhoto() : GoogleCloudFileService.generateV4GetObjectSignedUrl(user.getProfilePhoto()))
+                .build();
+    }
     public static UserResponse fromUser(User user) {
         return UserResponse.builder()
                 .id(user.getId())

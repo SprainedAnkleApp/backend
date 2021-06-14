@@ -17,6 +17,7 @@ import pl.edu.agh.ki.io.models.User;
 import pl.edu.agh.ki.io.models.wallElements.WallItem;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -29,8 +30,8 @@ public class CommentsApiController{
     private final WallItemStorage wallItemStorage;
 
     @GetMapping("{wallitemid}/comments")
-    public ResponseEntity<Page<CommentResponse>> getComments(CommentPage commentPage, @PathVariable("wallitemid") Long wallItemId){
-        return new ResponseEntity<>(this.commentStorage.findAllByWallItem(commentPage, wallItemId), HttpStatus.OK);
+    public ResponseEntity<List<CommentResponse>> getComments(@PathVariable("wallitemid") Long wallItemId){
+        return new ResponseEntity<>(this.commentStorage.findAllByWallItem(wallItemId), HttpStatus.OK);
     }
 
     @PostMapping("{wallitemid}/comments")

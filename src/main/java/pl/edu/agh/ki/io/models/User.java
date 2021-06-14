@@ -69,7 +69,7 @@ public class User {
     private Set<PeakCompletion> peakCompletions = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany()
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<User> friends = new HashSet<>();
 
     @JsonIgnore

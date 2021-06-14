@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import pl.edu.agh.ki.io.models.Friendship;
 import pl.edu.agh.ki.io.models.User;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -27,4 +28,8 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Long> {
             "where f.addressee.id = :userId and f.status = 0 " +
             "order by f.addressee.firstName, f.addressee.lastName")
     Page<Friendship> findPendingByAddresseeId(@Param("userId") Long userId, Pageable pageable);
+
+    @Query(value = "select fr.requester from Friendship fr " +
+            "where fr.status = 1 and fr.addressee.id = :userId")
+    List<User> findUserFriends(@Param("userId") Long userId);
 }
